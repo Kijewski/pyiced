@@ -1,35 +1,37 @@
-pub(crate) mod elements;
-pub(crate) mod wrapped;
-pub(crate) mod to_native;
-pub(crate) mod app;
-pub(crate) mod wrapped_states;
-
-use std::fmt::{Debug, Write};
-
-use pyo3::exceptions::PyException;
 use pyo3::prelude::*;
 
-#[pymodule]
-fn pyiced(py: Python, m: &PyModule) -> PyResult<()> {
-    app::init(py, m)?;
-    wrapped::init(py, m)?;
-    wrapped_states::init(py, m)?;
-    Ok(())
+macro_rules! init_mod {
+    ($(mod $name:ident;)*) => {
+        $( mod $name; )*
+
+        #[pymodule]
+        fn pyiced(py: Python, m: &PyModule) -> PyResult<()> {
+            $( $name::init_mod(py, m)?; )*
+            Ok(())
+        }
+    };
 }
 
-pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
-    let mut result = String::new();
-    let err = match write!(&mut result, "{:#?}", value) {
-        Ok(()) => return Ok(result),
-        Err(err) => err,
-    };
+init_mod! {
+    mod app;
+    mod common;
+    mod states;
+    mod widgets;
+    mod wrapped;
+}
 
-    let mut result = String::new();
-    match write!(&mut result, "{:#?}", err) {
-        Ok(()) => return Err(PyException::new_err(result)),
-        Err(err) => {
-            dbg!(err);
-            Err(PyException::new_err("<EXCEPTION>"))
-        },
-    }
+#[macro_export]
+macro_rules! assign {
+    ($input:expr, $self:ident, $name:ident $(,)?) => {
+        match ($input, $self.$name) {
+            (input, ::std::option::Option::Some(value)) => input.$name(value),
+            (input, ::std::option::Option::None) => input,
+        }
+    };
+    ($input:expr, $self:ident, $name:ident, $($names:ident),+ $(,)?) => {
+        assign!(
+            assign!($input, $self, $name),
+            $self, $($names),+
+        )
+    };
 }

@@ -1,0 +1,43 @@
+[package]
+name = "_pyiced"
+edition = "2021"
+license = "MIT"
+authors = ["René Kijewski <pypi.org@k6i.de>"]
+homepage = "https://github.com/Kijewski/pyiced"
+
+# KEEP SYNCHRONOUS TO SETUP.CFG (version)
+# KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT (pyiced)
+# KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
+# Rust uses semver (https://semver.org/).
+# Python uses PEP 440 (https://www.python.org/dev/peps/pep-0440/).
+# Normal releases are exactly the same.
+# Pre-releases are X.Y.Z-aN in semver, and X.Y.ZaN in PEP 440.
+# Post-releases are X.Y.Z+N in semver, and X.Y.Z.postN in PEP 440.
+version = "0.3.0-a1"
+
+[lib]
+name = "_pyiced"
+crate-type = ["cdylib"]
+
+[dependencies]
+futures-util = "0.3"
+iced = { version = "0.3", default-features = false, features = ["canvas", "debug", "image", "svg", "tokio"] }
+iced_native = { version = "0.4", features = ["debug"] }
+iced_wgpu = { version = "0.4", optional = true }
+mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
+ouroboros = "0.14"
+parking_lot = { version = "0.11", features = ["arc_lock"] }
+pyo3 = { version = "0.15", default-features = false, features = ["extension-module", "macros", "multiple-pymethods"] }
+tokio = { version = "1", default-features = false, features = ["parking_lot", "sync"] }
+
+[build-dependencies]
+pyo3-build-config = "0.15"
+
+[features]
+default = ["wgpu"]
+wgpu = ["iced_wgpu", "iced/wgpu"]
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+codegen-units = 1

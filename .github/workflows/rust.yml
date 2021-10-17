@@ -1,0 +1,73 @@
+name: Rust
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: cache-fmt
+          path: target
+
+      - name: Install cargo
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: rustfmt
+
+      - run: cargo fmt --all -- --check
+
+  clippy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: cache-clippy
+          path: target
+
+      - name: Install cargo
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: clippy
+
+      - run: cargo clippy --all-targets -- -D warnings
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: cache-check
+          path: target
+
+      - name: Install cargo
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+
+      - run: cargo check

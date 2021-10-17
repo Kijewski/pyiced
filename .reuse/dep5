@@ -1,0 +1,7 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Copyright: 2021 René Kijewski <pypi.org@k6i.de>
+License: MIT
+
+Files: *
+Copyright: 2021 René Kijewski <pypi.org@k6i.de>
+License: MIT

@@ -1,0 +1,9 @@
+# keep synchronous to Cargo.toml
+pyiced == 0.3.0a1
+
+# keep synchronous to requirements-dev.txt
+cloud-sptheme == 1.*
+myst-parser == 0.15.*
+sphinx == 4.*
+sphinx_autodoc_typehints == 1.*
+sphinxprettysearchresults == 0.3.*

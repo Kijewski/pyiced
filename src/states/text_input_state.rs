@@ -7,25 +7,25 @@ use crate::common::debug_str;
 use crate::make_with_state;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<WrappedButtonState>()?;
+    m.add_class::<WrappedTextInputState>()?;
     Ok(())
 }
 
-pub(crate) type ButtonState = Arc<Mutex<iced::button::State>>;
+pub(crate) type TextInputState = Arc<Mutex<iced::text_input::State>>;
 
-#[pyclass(name="ButtonState", module="pyiced.pyiced")]
+#[pyclass(name="TextInputState", module="pyiced.pyiced")]
 #[derive(Debug, Default)]
-pub(crate) struct WrappedButtonState(pub ButtonState);
+pub(crate) struct WrappedTextInputState(pub TextInputState);
 
 #[pyproto]
-impl PyObjectProtocol for WrappedButtonState {
+impl PyObjectProtocol for WrappedTextInputState {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }
 }
 
 #[pymethods]
-impl WrappedButtonState {
+impl WrappedTextInputState {
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))
@@ -33,9 +33,9 @@ impl WrappedButtonState {
 }
 
 make_with_state! {
-    button_with_state(
-        iced::Button<Message>,
-        iced::Button<'this, Message>,
-        iced::button::State
+    text_input_with_state(
+        iced::TextInput<Message>,
+        iced::TextInput<'this, Message>,
+        iced::text_input::State,
     );
 }

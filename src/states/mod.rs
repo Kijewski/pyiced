@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use pyo3::prelude::*;
 
 macro_rules! init_mod {
@@ -14,5 +16,9 @@ macro_rules! init_mod {
 }
 
 init_mod! {
-    button_state -> { ButtonState, WrappedButtonState },
+    button_state -> { ButtonState, WrappedButtonState, button_with_state },
+    pick_list_state -> { PickListState, WrappedPickListState, pick_list_with_state },
+    scrollable_state -> { ScrollableState, WrappedScrollableState, scrollable_with_state },
+    slider_state -> { SliderState, WrappedSliderState },
+    text_input_state -> { TextInputState, WrappedTextInputState, text_input_with_state },
 }

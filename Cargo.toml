@@ -1,0 +1,30 @@
+[package]
+authors = ["Messense Lv <messense@icloud.com>"]
+name = "pyiced"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+futures-util = "0.3"
+iced = { version = "0.3", features = ["canvas", "debug", "image", "svg", "tokio"] }
+iced_native = { version = "0.4", features = ["debug"] }
+iced_wgpu = { version = "0.4", features = ["image", "svg"] }
+parking_lot = "0.11"
+pyo3 = { version = "0.14", features = ["extension-module", "abi3-py36"] }
+pyo3-asyncio = { version = "0.14", features = ["attributes", "tokio-runtime"] }
+tokio = { version = "1", default-features = false, features = ["parking_lot", "rt-multi-thread"] }
+
+[lib]
+name = "pyiced"
+crate-type = ["cdylib"]
+
+[profile.dev]
+split-debuginfo = "unpacked"
+debug = 2
+
+[profile.release]
+debug = 0
+opt-level = "s"
+lto = "thin"
+codegen-units = 1
+split-debuginfo = "unpacked"

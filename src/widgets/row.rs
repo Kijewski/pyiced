@@ -24,7 +24,7 @@ pub(crate) struct RowBuilder {
     pub align_items: Option<iced::Align>,
 }
 
-#[pyfunction(name="column")]
+#[pyfunction(name="row")]
 fn make_row<'p>(
     py: Python,
     children: &PyList,

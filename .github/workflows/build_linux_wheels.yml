@@ -49,7 +49,8 @@ jobs:
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_SKIP: "cp27-* pp27-* pp30-* pp31-* pp32-* pp33-* pp34-* pp35-*"
+#          CIBW_SKIP: "cp27-* pp27-* pp30-* pp31-* pp32-* pp33-* pp34-* pp35-* pp35-*"
+          CIBW_BUILD: cp36-*
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ github.event.inputs.manylinux }}
           CIBW_MANYLINUX_I686_IMAGE: ${{ github.event.inputs.manylinux }}
           CIBW_ARCHS: ${{ github.event.inputs.archs }}

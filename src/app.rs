@@ -1,7 +1,6 @@
 use iced::{Application, Clipboard, Color, Command, Element, Length, Settings, Space, Subscription, executor, window};
 use iced_native::subscription::events;
-use pyo3::exceptions::PyException;
-use pyo3::types::PyFloat;
+use pyo3::exceptions::{PyAttributeError, PyException};
 use {pyo3::prelude::*, wrap_pyfunction};
 
 use crate::common::{Message, ToNative, method_into_py, py_to_command};
@@ -97,10 +96,10 @@ impl<'a> Application for PythonApp {
         match &self.interop.scale_factor {
             Some(scale_factor) => Python::with_gil(|py| {
                 match scale_factor.call0(py) {
-                    Ok(s) => match s.as_ref(py).downcast::<PyFloat>() {
-                        Ok(value) => return value.value(),
+                    Ok(s) => match s.as_ref(py).extract() {
+                        Ok(value) => return value,
                         Err(err) => {
-                            dbg!(err); // TODO
+                            err.print(py);
                             1.0
                         },
                     },
@@ -174,6 +173,24 @@ impl<'a> Application for PythonApp {
     }
 }
 
+macro_rules! assign_py_to_obj {
+    ($py:expr, $dest:expr, $src:expr, $name:ident $(,)?) => {
+        match $src.getattr(stringify!($name)) {
+            Ok(data) if !data.is_none() => $dest.$name = data.extract()?,
+            Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
+            Ok(_) | Err(_) => {}
+        }
+    };
+
+    ($py:expr, $dest:expr, $src:expr, $name:ident, $func:expr $(,)?) => {
+        match $src.getattr(stringify!($name)) {
+            Ok(data) if !data.is_none() => $dest.$name = $func(data.extract()?),
+            Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
+            Ok(_) | Err(_) => {}
+        }
+    };
+}
+
 #[pyfunction]
 pub(crate) fn run_iced<'a>(
     py: Python,
@@ -185,6 +202,7 @@ pub(crate) fn run_iced<'a>(
     scale_factor: &'a PyAny,
     fullscreen: &'a PyAny,
     view: &'a PyAny,
+    settings: &'a PyAny,
 ) -> PyResult<()> {
     let methods = Interop {
         pyloop: pyloop.into_py(py),
@@ -196,7 +214,8 @@ pub(crate) fn run_iced<'a>(
         fullscreen: method_into_py(py, fullscreen),
         view: method_into_py(py, view),
     };
-    let settings = Settings {
+
+    let mut settings_ = Settings {
         window: Default::default(),
         flags: methods,
         default_font: None,
@@ -204,5 +223,29 @@ pub(crate) fn run_iced<'a>(
         exit_on_close_request: true,
         antialiasing: true,
     };
-    PythonApp::run(settings).map_err(|err| PyException::new_err(format!("{}", err)))
+
+    if !settings.is_none() {
+        assign_py_to_obj!(py, settings_, settings, default_text_size);
+        assign_py_to_obj!(py, settings_, settings, exit_on_close_request);
+        assign_py_to_obj!(py, settings_, settings, antialiasing);
+        // TODO: default_font
+
+        match settings.getattr("window") {
+            Ok(window) if !window.is_none() => {
+                assign_py_to_obj!(py, settings_.window, window, size);
+                assign_py_to_obj!(py, settings_.window, window, min_size, Some);
+                assign_py_to_obj!(py, settings_.window, window, max_size, Some);
+                assign_py_to_obj!(py, settings_.window, window, resizable);
+                assign_py_to_obj!(py, settings_.window, window, decorations);
+                assign_py_to_obj!(py, settings_.window, window, transparent);
+                assign_py_to_obj!(py, settings_.window, window, always_on_top);
+                // TODO: icon
+            },
+            Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
+            Ok(_) | Err(_) => {}
+        }
+    }
+
+    PythonApp::run(settings_)
+        .map_err(|err| PyException::new_err(format!("{}", err)))
 }

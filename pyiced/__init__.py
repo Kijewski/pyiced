@@ -39,5 +39,8 @@ def run_iced(obj):
     scale_factor = getattr(obj, 'scale_factor', None)
     fullscreen = getattr(obj, 'fullscreen', None)
     view = getattr(obj, 'view', None)
+    settings = getattr(obj, 'settings', None)
     with in_async_loop() as loop:
-        return _run_iced( loop, new, title, update, should_exit, scale_factor, fullscreen, view)
+        return _run_iced(
+            loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
+        )

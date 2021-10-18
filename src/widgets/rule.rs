@@ -19,7 +19,7 @@ pub(crate) struct RuleBuilder {
 impl GCProtocol for RuleBuilder {}
 
 #[pyfunction(name="rule")]
-fn make_rule<'p>(
+fn make_rule(
     horizontal: Option<u16>,
     vertical: Option<u16>,
 ) -> WrappedWidgetBuilder {
@@ -31,9 +31,9 @@ fn make_rule<'p>(
 
 impl ToNative for RuleBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let el = match self {
-            &Self { horizontal: Some(spacing), vertical: None } => Rule::horizontal(spacing),
-            &Self { horizontal: None, vertical: Some(spacing) } => Rule::vertical(spacing),
+        let el = match *self {
+            Self { horizontal: Some(spacing), vertical: None } => Rule::horizontal(spacing),
+            Self { horizontal: None, vertical: Some(spacing) } => Rule::vertical(spacing),
             _ => return empty_space(),
         };
         el.into()

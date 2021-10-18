@@ -35,7 +35,7 @@ impl GCProtocol for ContainerBuilder {
 }
 
 #[pyfunction(name="container")]
-fn make_container<'p>(
+fn make_container(
 ) -> WrappedWidgetBuilder {
     todo!()
 }

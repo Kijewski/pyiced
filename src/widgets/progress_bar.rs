@@ -24,7 +24,7 @@ pub(crate) struct ProgressBarBuilder {
 impl GCProtocol for ProgressBarBuilder {}
 
 #[pyfunction(name="progress_bar")]
-fn make_progress_bar<'p>(
+fn make_progress_bar(
 ) -> WrappedWidgetBuilder {
     todo!()
 }

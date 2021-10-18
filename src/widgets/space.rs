@@ -19,7 +19,7 @@ pub(crate) struct SpaceBuilder {
 impl GCProtocol for SpaceBuilder {}
 
 #[pyfunction(name="space")]
-fn make_space<'p>(
+fn make_space(
     width: &WrappedLength,
     height: &WrappedLength,
 ) -> WrappedWidgetBuilder {

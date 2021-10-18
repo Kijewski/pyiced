@@ -97,7 +97,7 @@ impl<'a> Application for PythonApp {
             Some(scale_factor) => Python::with_gil(|py| {
                 match scale_factor.call0(py) {
                     Ok(s) => match s.as_ref(py).extract() {
-                        Ok(value) => return value,
+                        Ok(value) => value,
                         Err(err) => {
                             err.print(py);
                             1.0
@@ -118,7 +118,7 @@ impl<'a> Application for PythonApp {
             Some(scale_factor) => Python::with_gil(|py| {
                 match scale_factor.call0(py) {
                     Ok(s) => match s.as_ref(py).extract() {
-                        Ok(WrappedColor(value)) => return value,
+                        Ok(WrappedColor(value)) => value,
                         Err(err) => {
                             dbg!(err); // TODO
                             Color::WHITE

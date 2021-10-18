@@ -29,7 +29,7 @@ pub(crate) struct ScrollableBuilder {
 impl GCProtocol for ScrollableBuilder {}
 
 #[pyfunction(name="scrollbar")]
-fn make_scrollbar<'p>(
+fn make_scrollbar(
 ) -> WrappedWidgetBuilder {
     todo!()
 }

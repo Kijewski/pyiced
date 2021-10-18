@@ -58,7 +58,7 @@ fn make_slider(
         value,
         on_change: Some(on_change),
         on_release: on_release.map(|o| o.0.clone()),
-        width: width.map(|o| o.0.clone()),
+        width: width.map(|o| o.0),
         height,
         step,
     }.into()

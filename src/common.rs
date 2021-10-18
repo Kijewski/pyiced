@@ -36,7 +36,7 @@ pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
 
     let mut result = String::new();
     match write!(&mut result, "{:#?}", err) {
-        Ok(()) => return Err(PyException::new_err(result)),
+        Ok(()) => Err(PyException::new_err(result)),
         Err(err) => {
             dbg!(err);
             Err(PyException::new_err("<EXCEPTION>"))
@@ -86,7 +86,7 @@ pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObje
                             fut.map(|result| {
                                 Python::with_gil(|py| match result {
                                     Ok(msg) if !msg.is_none(py) => match msg.as_ref(py).extract() {
-                                        Ok(WrappedMessage(msg)) => return msg,
+                                        Ok(WrappedMessage(msg)) => msg,
                                         Err(err) => {
                                             err.print(py);
                                             Message::None

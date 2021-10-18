@@ -35,7 +35,7 @@ impl GCProtocol for TooltipBuilder {
 }
 
 #[pyfunction(name="tooltip")]
-fn make_tooltip<'p>(
+fn make_tooltip(
     content: &WrappedWidgetBuilder,
     tooltip: String,
     position: &WrappedTooltipPosition,
@@ -47,9 +47,9 @@ fn make_tooltip<'p>(
     TooltipBuilder {
         content: Box::new(content.0.clone()),
         tooltip,
-        position: position.0.clone(),
+        position: position.0,
         size,
-        font: font.map(|o| o.0.clone()),
+        font: font.map(|o| o.0),
         gap,
         padding,
     }.into()

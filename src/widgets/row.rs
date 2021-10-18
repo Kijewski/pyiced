@@ -39,7 +39,7 @@ impl GCProtocol for RowBuilder {
 }
 
 #[pyfunction(name="row")]
-fn make_row<'p>(
+fn make_row(
     py: Python,
     children: &PyList,
     spacing: Option<u16>,
@@ -63,11 +63,11 @@ fn make_row<'p>(
         children,
         spacing,
         padding,
-        width: width.map(|o| o.0.clone()),
-        height: height.map(|o| o.0.clone()),
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
         max_width,
         max_height,
-        align_items: align_items.map(|o| o.0.clone()),
+        align_items: align_items.map(|o| o.0),
     }.into()
 }
 

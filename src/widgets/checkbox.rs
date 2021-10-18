@@ -38,7 +38,7 @@ impl GCProtocol for CheckboxBuilder {
 }
 
 #[pyfunction(name="checkbox")]
-fn make_checkbox<'p>(
+fn make_checkbox(
     is_checked: bool,
     label: String,
     f: Py<PyAny>,
@@ -53,10 +53,10 @@ fn make_checkbox<'p>(
         label,
         f: Some(f),
         size,
-        width: width.map(|o| o.0.clone()),
+        width: width.map(|o| o.0),
         spacing,
         text_size,
-        font: font.map(|o| o.0.clone()),
+        font: font.map(|o| o.0),
     }.into()
 }
 

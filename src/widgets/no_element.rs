@@ -15,7 +15,7 @@ pub(crate) struct NoElementBuilder;
 impl GCProtocol for NoElementBuilder {}
 
 #[pyfunction(name="no_element")]
-fn make_no_element<'p>() -> WrappedWidgetBuilder {
+fn make_no_element() -> WrappedWidgetBuilder {
     NoElementBuilder.into()
 }
 

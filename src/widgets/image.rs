@@ -22,15 +22,15 @@ pub(crate) struct ImageBuilder {
 impl GCProtocol for ImageBuilder {}
 
 #[pyfunction(name="image")]
-fn make_image<'p>(
+fn make_image(
     handle: WrappedImageHandle,
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
     ImageBuilder {
-        handle: handle.0.clone(),
-        width: width.map(|o| o.0.clone()),
-        height: height.map(|o| o.0.clone()),
+        handle: handle.0,
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
     }.into()
 }
 

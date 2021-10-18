@@ -41,7 +41,7 @@ impl GCProtocol for TextInputBuilder {
 }
 
 #[pyfunction(name="text_input")]
-fn make_text_input<'p>(
+fn make_text_input(
     state: &WrappedTextInputState,
     placeholder: String,
     value: String,
@@ -59,8 +59,8 @@ fn make_text_input<'p>(
         placeholder,
         value,
         on_change: Some(on_change),
-        font: font.map(|o| o.0.clone()),
-        width: width.map(|o| o.0.clone()),
+        font: font.map(|o| o.0),
+        width: width.map(|o| o.0),
         max_width,
         padding,
         size,

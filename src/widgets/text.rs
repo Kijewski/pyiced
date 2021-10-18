@@ -26,7 +26,7 @@ pub(crate) struct TextBuilder {
 impl GCProtocol for TextBuilder {}
 
 #[pyfunction(name="text")]
-fn make_text<'p>(
+fn make_text(
     label: String,
     size: Option<u16>,
     color: Option<&WrappedColor>,
@@ -39,12 +39,12 @@ fn make_text<'p>(
     TextBuilder {
         label,
         size,
-        color: color.map(|o| o.0.clone()),
-        font: font.map(|o| o.0.clone()),
-        width: width.map(|o| o.0.clone()),
-        height: height.map(|o| o.0.clone()),
-        horizontal_alignment: horizontal_alignment.map(|o| o.0.clone()),
-        vertical_alignment: vertical_alignment.map(|o| o.0.clone()),
+        color: color.map(|o| o.0),
+        font: font.map(|o| o.0),
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
+        horizontal_alignment: horizontal_alignment.map(|o| o.0),
+        vertical_alignment: vertical_alignment.map(|o| o.0),
     }.into()
 }
 

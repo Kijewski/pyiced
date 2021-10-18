@@ -1,3 +1,5 @@
+#![allow(clippy::too_many_arguments)]
+
 use pyo3::prelude::*;
 
 macro_rules! init_mod {

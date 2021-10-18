@@ -36,7 +36,7 @@ impl GCProtocol for ButtonBuilder {
 }
 
 #[pyfunction(name="button")]
-fn make_button<'p>(
+fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,
     width: Option<&WrappedLength>,
@@ -49,8 +49,8 @@ fn make_button<'p>(
     ButtonBuilder {
         state: Some(state.0.clone()),
         content: Box::new(content.0.clone()),
-        width: width.map(|o| o.0.clone()),
-        height: height.map(|o| o.0.clone()),
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
         min_width,
         min_height,
         padding,

@@ -22,15 +22,15 @@ pub(crate) struct SvgBuilder {
 impl GCProtocol for SvgBuilder {}
 
 #[pyfunction(name="svg")]
-fn make_svg<'p>(
+fn make_svg(
     handle: &WrappedSvgHandle,
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
     SvgBuilder {
         handle: handle.0.clone(),
-        width: width.map(|o| o.0.clone()),
-        height: height.map(|o| o.0.clone()),
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
     }.into()
 }
 

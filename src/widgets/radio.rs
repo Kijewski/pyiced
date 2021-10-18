@@ -37,7 +37,7 @@ impl GCProtocol for RadioBuilder {
 }
 
 #[pyfunction(name="radio")]
-fn make_radio<'p>(
+fn make_radio(
 ) -> WrappedWidgetBuilder {
     todo!()
 }

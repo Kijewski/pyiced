@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use iced::pick_list::State;
 use parking_lot::Mutex;
 use pyo3::{PyObjectProtocol, prelude::*};
 
@@ -11,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type PickListState = Arc<Mutex<iced::pick_list::State<Message>>>;
+pub(crate) type PickListState = Arc<Mutex<State<Message>>>;
 
 #[pyclass(name="PickListState", module="pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]

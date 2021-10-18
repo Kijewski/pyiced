@@ -1,3 +1,4 @@
+use iced::Font;
 use pyo3::{PyObjectProtocol, prelude::*};
 
 use crate::common::debug_str;
@@ -9,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyclass(name="Font", module="pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedFont(pub iced::Font);
+pub(crate) struct WrappedFont(pub Font);
 
 #[pyproto]
 impl PyObjectProtocol for WrappedFont {

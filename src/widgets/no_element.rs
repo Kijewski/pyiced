@@ -1,3 +1,4 @@
+use iced::Element;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::common::{GCProtocol, Message, ToNative, empty_space};
@@ -19,7 +20,7 @@ fn make_no_element<'p>() -> WrappedWidgetBuilder {
 }
 
 impl ToNative for NoElementBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
         empty_space()
     }
 }

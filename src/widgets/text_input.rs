@@ -1,3 +1,4 @@
+use iced::{Element, Font, Length};
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::common::{GCProtocol, Message, NonOptional, ToNative};
@@ -16,8 +17,8 @@ pub(crate) struct TextInputBuilder {
     pub placeholder: String,
     pub value: String,
     pub on_change: NonOptional<Py<PyAny>>, // fn f(value: String) -> crate::Message
-    pub font: Option<iced::Font>,
-    pub width: Option<iced::Length>,
+    pub font: Option<Font>,
+    pub width: Option<Length>,
     pub max_width: Option<u32>,
     pub padding: Option<u16>,
     pub size: Option<u16>,
@@ -69,10 +70,10 @@ fn make_text_input<'p>(
 }
 
 impl ToNative for TextInputBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
         todo!();
         // let on_change = to_msg_fn(&self.on_change.unwrap());
-        // let el = iced::TextInput::new(&mut self.state, &self.placeholder, &self.value, on_change);
+        // let el = TextInput::new(&mut self.state, &self.placeholder, &self.value, on_change);
         // let el = assign!(el, self, font, width, max_width, padding, size);
         // let el = match &self.on_submit {
         //     Some(on_submit) => el.on_submit(on_submit.clone()),

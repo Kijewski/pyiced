@@ -1,3 +1,4 @@
+use iced::Element;
 use pyo3::{PyObjectProtocol, PyGCProtocol, prelude::*};
 
 use crate::common::{Message, ToNative, debug_str, GCProtocol};
@@ -34,7 +35,7 @@ macro_rules! init_mod {
         )+
 
         impl ToNative for WidgetBuilder {
-            fn to_native(&self, py: Python) -> iced::Element<'static, Message> {
+            fn to_native(&self, py: Python) -> Element<'static, Message> {
                 match self {
                     $( WidgetBuilder::$name(value) => value.to_native(py) ),*
                 }

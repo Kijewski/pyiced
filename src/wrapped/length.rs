@@ -1,3 +1,4 @@
+use iced::Length;
 use pyo3::{PyObjectProtocol, prelude::*};
 
 use crate::common::debug_str;
@@ -9,28 +10,28 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyclass(name="Length", module="pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedLength(pub iced::Length);
+pub(crate) struct WrappedLength(pub Length);
 
 #[pymethods]
 impl WrappedLength {
     #[staticmethod]
     fn fill() -> Self {
-        Self(iced::Length::Fill)
+        Self(Length::Fill)
     }
 
     #[staticmethod]
     fn fill_portion(i: u16) -> Self {
-        Self(iced::Length::FillPortion(i))
+        Self(Length::FillPortion(i))
     }
 
     #[staticmethod]
     fn shrink() -> Self {
-        Self(iced::Length::Shrink)
+        Self(Length::Shrink)
     }
 
     #[staticmethod]
     fn units(i: u16) -> Self {
-        Self(iced::Length::Units(i))
+        Self(Length::Units(i))
     }
 }
 

@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyclass(name="ImageHandle", module="pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedImageHandle(pub iced::image::Handle);
+pub(crate) struct WrappedImageHandle(pub Handle);
 
 #[pymethods]
 impl WrappedImageHandle {

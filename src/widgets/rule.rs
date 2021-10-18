@@ -1,3 +1,4 @@
+use iced::{Element, Rule};
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::common::{GCProtocol, Message, ToNative, empty_space};
@@ -29,10 +30,10 @@ fn make_rule<'p>(
 }
 
 impl ToNative for RuleBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
         let el = match self {
-            &Self { horizontal: Some(spacing), vertical: None } => iced::Rule::horizontal(spacing),
-            &Self { horizontal: None, vertical: Some(spacing) } => iced::Rule::vertical(spacing),
+            &Self { horizontal: Some(spacing), vertical: None } => Rule::horizontal(spacing),
+            &Self { horizontal: None, vertical: Some(spacing) } => Rule::vertical(spacing),
             _ => return empty_space(),
         };
         el.into()

@@ -1,3 +1,4 @@
+use iced::{Color, Element, Font, HorizontalAlignment, Length, Text, VerticalAlignment};
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
@@ -14,12 +15,12 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 pub(crate) struct TextBuilder {
     pub label: String,
     pub size: Option<u16>,
-    pub color: Option<iced::Color>,
-    pub font: Option<iced::Font>,
-    pub width: Option<iced::Length>,
-    pub height: Option<iced::Length>,
-    pub horizontal_alignment: Option<iced::HorizontalAlignment>,
-    pub vertical_alignment: Option<iced::VerticalAlignment>,
+    pub color: Option<Color>,
+    pub font: Option<Font>,
+    pub width: Option<Length>,
+    pub height: Option<Length>,
+    pub horizontal_alignment: Option<HorizontalAlignment>,
+    pub vertical_alignment: Option<VerticalAlignment>,
 }
 
 impl GCProtocol for TextBuilder {}
@@ -48,8 +49,8 @@ fn make_text<'p>(
 }
 
 impl ToNative for TextBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
-        let el = iced::Text::new(&self.label);
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
+        let el = Text::new(&self.label);
         let el = assign!(el, self, size, color, font, width, height, horizontal_alignment, vertical_alignment);
         el.into()
     }

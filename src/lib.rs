@@ -43,12 +43,15 @@ macro_rules! make_with_state {
             use std::ops::DerefMut;
             use std::sync::Arc;
 
-            use iced::Element;
+            use iced::{Element, Length, Point, Rectangle};
+            use iced_native::layout::{Limits, Node};
+            use iced_native::{self, Widget};
+            use iced_wgpu::Renderer;
             use ouroboros::self_referencing;
             use parking_lot::lock_api::ArcMutexGuard;
             use parking_lot::{Mutex, RawMutex};
 
-            use crate::common::{Message, empty_space};
+            use crate::common::{empty_space, Message};
 
             #[self_referencing]
             struct WithState {
@@ -58,26 +61,20 @@ macro_rules! make_with_state {
                 widget: $Widget,
             }
 
-            impl<'this> iced_native::Widget<Message, iced_wgpu::Renderer> for WithState {
-                fn width(&self) -> iced::Length {
+            impl<'this> Widget<Message, Renderer> for WithState {
+                fn width(&self) -> Length {
+                    self.with_widget(|w| <$WidgetWoLifetime as Widget<Message, Renderer>>::width(w))
+                }
+
+                fn height(&self) -> Length {
                     self.with_widget(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::width(w)
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::height(w)
                     })
                 }
 
-                fn height(&self) -> iced::Length {
+                fn layout(&self, renderer: &Renderer, limits: &Limits) -> Node {
                     self.with_widget(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::height(w)
-                    })
-                }
-
-                fn layout(
-                    &self,
-                    renderer: &iced_wgpu::Renderer,
-                    limits: &iced_native::layout::Limits,
-                ) -> iced_native::layout::Node {
-                    self.with_widget(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::layout(
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::layout(
                             w, renderer, limits,
                         )
                     })
@@ -85,24 +82,27 @@ macro_rules! make_with_state {
 
                 fn draw(
                     &self,
-                    renderer: &mut iced_wgpu::Renderer,
-                    defaults: &<iced_wgpu::Renderer as iced_native::Renderer>::Defaults,
+                    renderer: &mut Renderer,
+                    defaults: &<Renderer as iced_native::Renderer>::Defaults,
                     layout: iced_native::Layout<'_>,
-                    cursor_position: iced::Point,
-                    viewport: &iced::Rectangle,
-                ) -> <iced_wgpu::Renderer as iced_native::Renderer>::Output {
+                    cursor_position: Point,
+                    viewport: &Rectangle,
+                ) -> <Renderer as iced_native::Renderer>::Output {
                     self.with_widget(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::draw(
-                            w, renderer, defaults, layout, cursor_position, viewport,
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::draw(
+                            w,
+                            renderer,
+                            defaults,
+                            layout,
+                            cursor_position,
+                            viewport,
                         )
                     })
                 }
 
                 fn hash_layout(&self, state: &mut iced_native::Hasher) {
                     self.with_widget(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::hash_layout(
-                            w, state,
-                        )
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::hash_layout(w, state)
                     })
                 }
 
@@ -110,14 +110,20 @@ macro_rules! make_with_state {
                     &mut self,
                     event: iced_native::Event,
                     layout: iced_native::Layout<'_>,
-                    cursor_position: iced::Point,
-                    renderer: &iced_wgpu::Renderer,
+                    cursor_position: Point,
+                    renderer: &Renderer,
                     clipboard: &mut dyn iced_native::Clipboard,
                     messages: &mut Vec<Message>,
                 ) -> iced_native::event::Status {
                     self.with_widget_mut(|w| {
-                        <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::on_event(
-                            w, event, layout, cursor_position, renderer, clipboard, messages,
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::on_event(
+                            w,
+                            event,
+                            layout,
+                            cursor_position,
+                            renderer,
+                            clipboard,
+                            messages,
                         )
                     })
                 }
@@ -126,9 +132,9 @@ macro_rules! make_with_state {
                 // fn overlay(
                 //     &mut self,
                 //     layout: iced_native::Layout<'_>,
-                // ) -> Option<iced_native::overlay::Element<'_, Message, iced_wgpu::Renderer>> {
+                // ) -> Option<iced_native::overlay::Element<'_, Message, Renderer>> {
                 //     self.with_widget_mut(|w| {
-                //         <$WidgetWoLifetime as iced_native::Widget<Message, iced_wgpu::Renderer>>::overlay(
+                //         <$WidgetWoLifetime as Widget<Message, Renderer>>::overlay(
                 //             w, layout,
                 //         )
                 //     })
@@ -155,6 +161,6 @@ macro_rules! make_with_state {
             }
         }
 
-        pub(crate) use __mod_with_state::{with_state as $name};
+        pub(crate) use __mod_with_state::with_state as $name;
     };
 }

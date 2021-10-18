@@ -1,8 +1,5 @@
-use std::path::PathBuf;
-
 use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
-use pyo3::exceptions::{PyTypeError, PyValueError};
-use pyo3::{PyObjectProtocol, prelude::*, types::{PyTuple, PyString, PyLong}};
+use pyo3::{PyObjectProtocol, prelude::*};
 
 use crate::common::{Message, debug_str};
 

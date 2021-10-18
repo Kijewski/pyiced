@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyclass(name="SvgHandle", module="pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedSvgHandle(pub iced::svg::Handle);
+pub(crate) struct WrappedSvgHandle(pub Handle);
 
 #[pymethods]
 impl WrappedSvgHandle {

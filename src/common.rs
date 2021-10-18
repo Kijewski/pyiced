@@ -1,7 +1,8 @@
 use std::fmt::{Debug, Write};
 
 use futures_util::FutureExt;
-use iced::{Command, Length};
+use iced::{Command, Element, Length, Space};
+use iced_native::Event;
 use pyo3::exceptions::PyException;
 use pyo3::{PyTraverseError, PyVisit, prelude::*};
 use pyo3::types::{PyList, PyTuple};
@@ -16,14 +17,14 @@ pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone)]
 pub(crate) enum Message {
     None,
-    Native(iced_native::Event),
+    Native(Event),
     Python(NonOptional<Py<PyAny>>),
 }
 
 pub(crate) type NonOptional<T> = Option<T>;
 
 pub(crate) trait ToNative {
-    fn to_native(&self, py: Python<'_>) -> iced::Element<'static, Message>;
+    fn to_native(&self, py: Python<'_>) -> Element<'static, Message>;
 }
 
 pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
@@ -43,8 +44,8 @@ pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
     }
 }
 
-pub(crate) fn empty_space() -> iced::Element<'static, Message> {
-    iced::Space::new(Length::Shrink, Length::Shrink).into()
+pub(crate) fn empty_space() -> Element<'static, Message> {
+    Space::new(Length::Shrink, Length::Shrink).into()
 }
 
 pub(crate) fn to_msg_fn<T>(f: &Py<PyAny>) -> impl Fn(T) -> Message

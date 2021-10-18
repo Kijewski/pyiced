@@ -1,3 +1,4 @@
+use iced::{Button, Element, Length};
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
@@ -15,8 +16,8 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 pub(crate) struct ButtonBuilder {
     pub state: NonOptional<ButtonState>,
     pub content: Box<WidgetBuilder>,
-    pub width: Option<iced::Length>,
-    pub height: Option<iced::Length>,
+    pub width: Option<Length>,
+    pub height: Option<Length>,
     pub min_width: Option<u32>,
     pub min_height: Option<u32>,
     pub padding: Option<u16>,
@@ -58,10 +59,10 @@ fn make_button<'p>(
 }
 
 impl ToNative for ButtonBuilder {
-    fn to_native(&self, py: Python) -> iced::Element<'static, Message> {
+    fn to_native(&self, py: Python) -> Element<'static, Message> {
         button_with_state(self.state.as_ref(), |state| {
             let content = self.content.to_native(py);
-            let el = iced::Button::new(state, content);
+            let el = Button::new(state, content);
             let el = assign!(el, self, width, height, min_width, min_height, padding);
             let el = match &self.on_press {
                 Some(on_press) => el.on_press(on_press.clone()),

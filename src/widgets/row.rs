@@ -1,3 +1,4 @@
+use iced::{Align, Element, Length, Row};
 use pyo3::types::PyList;
 use pyo3::{prelude::*, wrap_pyfunction};
 
@@ -17,11 +18,11 @@ pub(crate) struct RowBuilder {
     pub children: Vec<WidgetBuilder>,
     pub spacing: Option<u16>,
     pub padding: Option<u16>,
-    pub width: Option<iced::Length>,
-    pub height: Option<iced::Length>,
+    pub width: Option<Length>,
+    pub height: Option<Length>,
     pub max_width: Option<u32>,
     pub max_height: Option<u32>,
-    pub align_items: Option<iced::Align>,
+    pub align_items: Option<Align>,
 }
 
 impl GCProtocol for RowBuilder {
@@ -71,9 +72,9 @@ fn make_row<'p>(
 }
 
 impl ToNative for RowBuilder {
-    fn to_native(&self, py: Python) -> iced::Element<'static, Message> {
+    fn to_native(&self, py: Python) -> Element<'static, Message> {
         let children = self.children.iter().map(|child| child.to_native(py)).collect();
-        let el = iced::Row::with_children(children);
+        let el = Row::with_children(children);
         let el = assign!(el, self, spacing, padding, width, height, max_width, max_height, align_items);
         el.into()
     }

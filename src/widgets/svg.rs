@@ -1,3 +1,5 @@
+use iced::{Element, Length, Svg};
+use iced::svg::Handle;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
@@ -12,9 +14,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone)]
 pub(crate) struct SvgBuilder {
-    pub handle: iced::svg::Handle,
-    pub width: Option<iced::Length>,
-    pub height: Option<iced::Length>,
+    pub handle: Handle,
+    pub width: Option<Length>,
+    pub height: Option<Length>,
 }
 
 impl GCProtocol for SvgBuilder {}
@@ -33,8 +35,8 @@ fn make_svg<'p>(
 }
 
 impl ToNative for SvgBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
-        let el = iced::Svg::new(self.handle.clone());
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
+        let el = Svg::new(self.handle.clone());
         let el = assign!(el, self, width, height);
         el.into()
     }

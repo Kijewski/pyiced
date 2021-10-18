@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use iced::text_input::State;
 use parking_lot::Mutex;
 use pyo3::{PyObjectProtocol, prelude::*};
 
@@ -11,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type TextInputState = Arc<Mutex<iced::text_input::State>>;
+pub(crate) type TextInputState = Arc<Mutex<State>>;
 
 #[pyclass(name="TextInputState", module="pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]

@@ -1,3 +1,5 @@
+use iced::{Element, Image, Length};
+use iced::image::Handle;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
@@ -12,9 +14,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone)]
 pub(crate) struct ImageBuilder {
-    pub handle: iced::image::Handle,
-    pub width: Option<iced::Length>,
-    pub height: Option<iced::Length>,
+    pub handle: Handle,
+    pub width: Option<Length>,
+    pub height: Option<Length>,
 }
 
 impl GCProtocol for ImageBuilder {}
@@ -33,8 +35,8 @@ fn make_image<'p>(
 }
 
 impl ToNative for ImageBuilder {
-    fn to_native(&self, _py: Python) -> iced::Element<'static, Message> {
-        let el = iced::Image::new(self.handle.clone());
+    fn to_native(&self, _py: Python) -> Element<'static, Message> {
+        let el = Image::new(self.handle.clone());
         let el = assign!(el, self, width, height);
         el.into()
     }

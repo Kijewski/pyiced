@@ -1,5 +1,3 @@
-#![allow(unused_imports)]
-
 use pyo3::prelude::*;
 
 macro_rules! init_mod {

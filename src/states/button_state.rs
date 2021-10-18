@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use iced::button::State;
 use parking_lot::Mutex;
 use pyo3::{PyObjectProtocol, prelude::*};
 
@@ -11,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type ButtonState = Arc<Mutex<iced::button::State>>;
+pub(crate) type ButtonState = Arc<Mutex<State>>;
 
 #[pyclass(name="ButtonState", module="pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]

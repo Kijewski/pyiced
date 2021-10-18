@@ -1,7 +1,7 @@
 use iced::{Application, Clipboard, Color, Command, Element, Length, Settings, Space, Subscription, executor, window};
 use iced_native::subscription::events;
 use pyo3::exceptions::{PyAttributeError, PyException};
-use {pyo3::prelude::*, wrap_pyfunction};
+use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::common::{Message, ToNative, method_into_py, py_to_command};
 use crate::widgets::WrappedWidgetBuilder;

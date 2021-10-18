@@ -11,7 +11,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct ContainerBuilder {
     pub content: Box<WidgetBuilder>,
     pub padding: Option<u16>,
@@ -27,10 +27,6 @@ pub(crate) struct ContainerBuilder {
 impl GCProtocol for ContainerBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         self.content.traverse(visit)
-    }
-
-    fn clear(&mut self) {
-        *self.content = WidgetBuilder::NoElement(Default::default());
     }
 }
 

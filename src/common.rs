@@ -123,10 +123,14 @@ pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObje
 }
 
 #[allow(unused_variables)]
-pub(crate) trait GCProtocol {
+pub(crate) trait GCProtocol where
+    Self: Default,
+{
     fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
         Ok(())
     }
 
-    fn clear(&mut self) {}
+    fn clear(&mut self) {
+        *self = Self::default();
+    }
 }

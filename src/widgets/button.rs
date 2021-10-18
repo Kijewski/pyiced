@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct ButtonBuilder {
     pub state: NonOptional<ButtonState>,
     pub content: Box<WidgetBuilder>,
@@ -28,10 +28,6 @@ pub(crate) struct ButtonBuilder {
 impl GCProtocol for ButtonBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         self.content.traverse(visit)
-    }
-
-    fn clear(&mut self) {
-        *self.content = WidgetBuilder::NoElement(Default::default());
     }
 }
 

@@ -10,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct PickListBuilder {
     pub state: NonOptional<PickListState>,
     pub options: Vec<String>,
@@ -24,10 +24,6 @@ impl GCProtocol for PickListBuilder {
             visit.call(on_selected)?;
         }
         Ok(())
-    }
-
-    fn clear(&mut self) {
-        self.on_selected = None;
     }
 }
 

@@ -1,5 +1,3 @@
-use std::ops::RangeInclusive;
-
 use iced::{Element, Length, Slider};
 use pyo3::{prelude::*, wrap_pyfunction};
 
@@ -14,10 +12,11 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct SliderBuilder {
     pub state: NonOptional<SliderState>,
-    pub range: RangeInclusive<f32>,
+    pub start: f32,
+    pub end: f32,
     pub value: f32,
     pub on_change: NonOptional<Py<PyAny>>, // fn f(value: Float) -> crate::Message
     pub on_release: Option<Message>,
@@ -33,10 +32,6 @@ impl GCProtocol for SliderBuilder {
             visit.call(on_change)?;
         }
         Ok(())
-    }
-
-    fn clear(&mut self) {
-        self.on_change = None;
     }
 }
 
@@ -54,7 +49,8 @@ fn make_slider(
 ) -> WrappedWidgetBuilder {
     SliderBuilder {
         state: Some(state.0.clone()),
-        range: start..=end,
+        start,
+        end,
         value,
         on_change: Some(on_change),
         on_release: on_release.map(|o| o.0.clone()),
@@ -68,7 +64,8 @@ impl ToNative for SliderBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         slider_with_state(self.state.as_ref(), |state| {
             let on_change = to_msg_fn(self.on_change.as_ref().unwrap());
-            let el = Slider::new(state, self.range.clone(), self.value, on_change);
+            let range = self.start ..= self.end;
+            let el = Slider::new(state, range, self.value, on_change);
             let el = assign!(el, self, width, height, step);
             let el = match &self.on_release {
                 Some(on_release) => el.on_release(on_release.clone()),

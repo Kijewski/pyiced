@@ -9,7 +9,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct RuleBuilder {
     pub horizontal: Option<u16>,
     pub vertical: Option<u16>,

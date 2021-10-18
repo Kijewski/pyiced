@@ -13,7 +13,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct RowBuilder {
     pub children: Vec<WidgetBuilder>,
     pub spacing: Option<u16>,
@@ -31,10 +31,6 @@ impl GCProtocol for RowBuilder {
             child.traverse(visit)?;
         }
         Ok(())
-    }
-
-    fn clear(&mut self) {
-        self.children.clear();
     }
 }
 

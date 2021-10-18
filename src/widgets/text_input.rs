@@ -11,7 +11,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct TextInputBuilder {
     pub state: NonOptional<TextInputState>,
     pub placeholder: String,
@@ -33,10 +33,6 @@ impl GCProtocol for TextInputBuilder {
             visit.call(on_change)?;
         }
         Ok(())
-    }
-
-    fn clear(&mut self) {
-        self.on_change = None;
     }
 }
 

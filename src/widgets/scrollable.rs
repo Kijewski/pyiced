@@ -1,8 +1,8 @@
 use iced::{Align, Element, Length};
-use iced::scrollable::State;
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{GCProtocol, Message, ToNative};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative};
+use crate::states::ScrollableState;
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -10,9 +10,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct ScrollableBuilder {
-    pub state: State,
+    pub state: NonOptional<ScrollableState>,
     pub spacing: Option<u16>,
     pub padding: Option<u16>,
     pub width: Option<Length>,

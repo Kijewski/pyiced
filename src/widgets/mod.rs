@@ -100,13 +100,20 @@ impl From<WidgetBuilder> for WrappedWidgetBuilder {
     }
 }
 
+impl Default for WidgetBuilder {
+    fn default() -> Self {
+        Self::NoElement(NoElementBuilder::default())
+    }
+}
+
 #[pyproto]
 impl PyGCProtocol for WrappedWidgetBuilder {
     fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        self.0.traverse(&visit)
+        self.0.traverse(&visit)?;
+        Ok(())
     }
 
     fn __clear__(&mut self) {
-        self.0.clear()
+        self.0.clear();
     }
 }

@@ -1,5 +1,3 @@
-use std::ops::RangeInclusive;
-
 use iced::{Element, Length, ProgressBar};
 use pyo3::{prelude::*, wrap_pyfunction};
 
@@ -12,9 +10,10 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct ProgressBarBuilder {
-    pub range: RangeInclusive<f32>,
+    pub start: f32,
+    pub end: f32,
     pub value: f32,
     pub width: Option<Length>,
     pub height: Option<Length>,
@@ -31,7 +30,8 @@ fn make_progress_bar(
 
 impl ToNative for ProgressBarBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let el = ProgressBar::new(self.range.clone(), self.value);
+        let range = self.start ..= self.end;
+        let el = ProgressBar::new(range, self.value);
         let el = assign!(el, self, width, height);
         el.into()
     }

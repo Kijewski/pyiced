@@ -11,7 +11,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub(crate) struct CheckboxBuilder {
     pub is_checked: bool,
     pub label: String,
@@ -30,10 +30,6 @@ impl GCProtocol for CheckboxBuilder {
             visit.call(f)?;
         }
         Ok(())
-    }
-
-    fn clear(&mut self) {
-        self.f = None;
     }
 }
 

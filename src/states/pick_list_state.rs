@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 pub(crate) type PickListState = Arc<Mutex<iced::pick_list::State<Message>>>;
 
 #[pyclass(name="PickListState", module="pyiced.pyiced")]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedPickListState(pub PickListState);
 
 #[pyproto]

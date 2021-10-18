@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use pyo3::prelude::*;
 
 macro_rules! init_mod {
@@ -18,8 +20,10 @@ init_mod! {
     color -> WrappedColor,
     font -> WrappedFont,
     horizontal_alignment -> WrappedHorizontalAlignment,
+    image -> WrappedImageHandle,
     length -> WrappedLength,
     message -> WrappedMessage,
+    svg -> WrappedSvgHandle,
     tooltip_position -> WrappedTooltipPosition,
     vertical_alignment -> WrappedVerticalAlignment,
 }

@@ -1,7 +1,9 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::common::{Message, NonOptional, ToNative};
+use crate::states::{TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_text_input, m)?)?;
@@ -10,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone)]
 pub(crate) struct TextInputBuilder {
-    pub state: iced::text_input::State,
+    pub state: NonOptional<TextInputState>,
     pub placeholder: String,
     pub value: String,
     pub on_change: NonOptional<Py<PyAny>>, // fn f(value: String) -> crate::Message
@@ -26,8 +28,31 @@ pub(crate) struct TextInputBuilder {
 
 #[pyfunction(name="text_input")]
 fn make_text_input<'p>(
+    state: &WrappedTextInputState,
+    placeholder: String,
+    value: String,
+    on_change: Py<PyAny>,
+    font: Option<&WrappedFont>,
+    width: Option<&WrappedLength>,
+    max_width: Option<u32>,
+    padding: Option<u16>,
+    size: Option<u16>,
+    on_submit: Option<&WrappedMessage>,
+    password: bool,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    TextInputBuilder {
+        state: Some(state.0.clone()),
+        placeholder,
+        value,
+        on_change: Some(on_change),
+        font: font.map(|o| o.0.clone()),
+        width: width.map(|o| o.0.clone()),
+        max_width,
+        padding,
+        size,
+        on_submit: on_submit.map(|o| o.0.clone()),
+        password,
+    }.into()
 }
 
 impl ToNative for TextInputBuilder {

@@ -17,8 +17,13 @@ pub(crate) struct RuleBuilder {
 
 #[pyfunction(name="rule")]
 fn make_rule<'p>(
+    horizontal: Option<u16>,
+    vertical: Option<u16>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    RuleBuilder {
+        horizontal,
+        vertical,
+    }.into()
 }
 
 impl ToNative for RuleBuilder {

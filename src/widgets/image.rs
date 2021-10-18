@@ -3,6 +3,7 @@ use pyo3::{prelude::*, wrap_pyfunction};
 use crate::assign;
 use crate::common::{Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::{WrappedLength, WrappedImageHandle};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_image, m)?)?;
@@ -18,8 +19,15 @@ pub(crate) struct ImageBuilder {
 
 #[pyfunction(name="image")]
 fn make_image<'p>(
+    handle: WrappedImageHandle,
+    width: Option<&WrappedLength>,
+    height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    ImageBuilder {
+        handle: handle.0.clone(),
+        width: width.map(|o| o.0.clone()),
+        height: height.map(|o| o.0.clone()),
+    }.into()
 }
 
 impl ToNative for ImageBuilder {

@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 pub(crate) type ButtonState = Arc<Mutex<iced::button::State>>;
 
 #[pyclass(name="ButtonState", module="pyiced.pyiced")]
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedButtonState(pub ButtonState);
 
 #[pyproto]

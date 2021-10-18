@@ -1,6 +1,7 @@
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::{prelude::*, wrap_pyfunction, types::PyList};
 
 use crate::common::{Message, NonOptional, ToNative};
+use crate::states::{PickListState, WrappedPickListState};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -10,16 +11,35 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone)]
 pub(crate) struct PickListBuilder {
-    pub state: iced::pick_list::State<String>,
+    pub state: NonOptional<PickListState>,
     pub options: Vec<String>,
     pub selected: Option<String>,
     pub on_selected: NonOptional<Py<PyAny>>, // fn on_selected(value: String) -> crate::Message
 }
 
 #[pyfunction(name="pick_list")]
-fn make_pick_list<'p>(
+fn make_pick_list(
+    py: Python,
+    state: &WrappedPickListState,
+    options: &PyList,
+    selected: Option<String>,
+    on_selected: Py<PyAny>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    let options = options.iter()
+        .filter_map(|child| match child.str() {
+            Ok(s) => Some(s.to_string()),
+            Err(err) => {
+                err.print(py);
+                None
+            }
+        })
+        .collect();
+    PickListBuilder {
+        state: Some(state.0.clone()),
+        options,
+        selected,
+        on_selected: Some(on_selected),
+    }.into()
 }
 
 impl ToNative for PickListBuilder {

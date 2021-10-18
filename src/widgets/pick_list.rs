@@ -1,8 +1,10 @@
-use iced::Element;
+use std::borrow::Cow;
+
+use iced::{Element, PickList};
 use pyo3::{prelude::*, wrap_pyfunction, types::PyList};
 
-use crate::common::{GCProtocol, Message, NonOptional, ToNative};
-use crate::states::{PickListState, WrappedPickListState};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space, to_msg_fn};
+use crate::states::{PickListState, WrappedPickListState, pick_list_with_state};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -54,9 +56,14 @@ fn make_pick_list(
 
 impl ToNative for PickListBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        todo!();
-        // let on_select = to_msg_fn(&self.on_selected.unwrap());
-        // let el = PickList::new(&mut self.state, &self.options[..], self.selected.clone(), on_select);
-        // el.into()
+        let on_selected = match &self.on_selected {
+            Some(on_selected) => to_msg_fn(on_selected),
+            None => return empty_space(),
+        };
+        pick_list_with_state(self.state.as_ref(), |state| {
+            let options = Cow::Owned(self.options.clone());
+            let el = PickList::new(state, options, self.selected.clone(), on_selected);
+            Ok(el)
+        })
     }
 }

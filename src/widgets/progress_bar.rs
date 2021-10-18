@@ -4,6 +4,7 @@ use pyo3::{prelude::*, wrap_pyfunction};
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::WrappedLength;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_progress_bar, m)?)?;
@@ -24,8 +25,19 @@ impl GCProtocol for ProgressBarBuilder {}
 
 #[pyfunction(name="progress_bar")]
 fn make_progress_bar(
+    start: f32,
+    end: f32,
+    value: f32,
+    width: Option<&WrappedLength>,
+    height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    ProgressBarBuilder {
+        start,
+        end,
+        value,
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
+    }.into()
 }
 
 impl ToNative for ProgressBarBuilder {

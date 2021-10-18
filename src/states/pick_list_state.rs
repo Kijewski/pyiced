@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type PickListState = Arc<Mutex<State<Message>>>;
+pub(crate) type PickListState = Arc<Mutex<State<String>>>;
 
 #[pyclass(name="PickListState", module="pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]

@@ -3,8 +3,8 @@ use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
-use crate::widgets::WidgetBuilder;
-use crate::widgets::WrappedWidgetBuilder;
+use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
+use crate::wrapped::{WrappedAlign, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_container, m)?)?;
@@ -32,8 +32,25 @@ impl GCProtocol for ContainerBuilder {
 
 #[pyfunction(name="container")]
 fn make_container(
+    content: &WrappedWidgetBuilder,
+    padding: Option<u16>,
+    width: Option<&WrappedLength>,
+    height: Option<&WrappedLength>,
+    max_width: Option<u32>,
+    max_height: Option<u32>,
+    align_x: Option<&WrappedAlign>,
+    align_y: Option<&WrappedAlign>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    ContainerBuilder {
+        content: Box::new(content.0.clone()),
+        padding,
+        width: width.map(|o| o.0),
+        height: height.map(|o| o.0),
+        max_width,
+        max_height,
+        align_x: align_x.map(|o| o.0),
+        align_y: align_y.map(|o| o.0),
+    }.into()
 }
 
 impl ToNative for ContainerBuilder {

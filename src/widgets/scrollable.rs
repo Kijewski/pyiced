@@ -1,6 +1,6 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -23,6 +23,8 @@ pub(crate) struct ScrollableBuilder {
     pub scroller_width: Option<u16>,
     // style: TODO,
 }
+
+impl GCProtocol for ScrollableBuilder {}
 
 #[pyfunction(name="scrollbar")]
 fn make_scrollbar<'p>(

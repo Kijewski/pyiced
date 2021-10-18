@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedImageHandle};
 
@@ -16,6 +16,8 @@ pub(crate) struct ImageBuilder {
     pub width: Option<iced::Length>,
     pub height: Option<iced::Length>,
 }
+
+impl GCProtocol for ImageBuilder {}
 
 #[pyfunction(name="image")]
 fn make_image<'p>(

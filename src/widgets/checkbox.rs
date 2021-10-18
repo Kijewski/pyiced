@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, NonOptional, ToNative, to_msg_fn};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength};
 
@@ -21,6 +21,19 @@ pub(crate) struct CheckboxBuilder {
     pub text_size: Option<u16>,
     pub font: Option<iced::Font>,
     // style: TODO,
+}
+
+impl GCProtocol for CheckboxBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        if let Some(f) = &self.f {
+            visit.call(f)?;
+        }
+        Ok(())
+    }
+
+    fn clear(&mut self) {
+        self.f = None;
+    }
 }
 
 #[pyfunction(name="checkbox")]

@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedFont, WrappedTooltipPosition};
 
@@ -20,6 +20,16 @@ pub(crate) struct TooltipBuilder {
     pub gap: Option<u16>,
     pub padding: Option<u16>,
     // style: TODO,
+}
+
+impl GCProtocol for TooltipBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        self.content.traverse(visit)
+    }
+
+    fn clear(&mut self) {
+        *self.content = WidgetBuilder::NoElement(Default::default());
+    }
 }
 
 #[pyfunction(name="tooltip")]

@@ -1,6 +1,6 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
 
@@ -14,6 +14,8 @@ pub(crate) struct SpaceBuilder {
     pub width: iced::Length,
     pub height: iced::Length,
 }
+
+impl GCProtocol for SpaceBuilder {}
 
 #[pyfunction(name="space")]
 fn make_space<'p>(

@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedSvgHandle};
 
@@ -16,6 +16,8 @@ pub(crate) struct SvgBuilder {
     pub width: Option<iced::Length>,
     pub height: Option<iced::Length>,
 }
+
+impl GCProtocol for SvgBuilder {}
 
 #[pyfunction(name="svg")]
 fn make_svg<'p>(

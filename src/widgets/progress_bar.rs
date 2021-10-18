@@ -3,7 +3,7 @@ use std::ops::RangeInclusive;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -19,6 +19,8 @@ pub(crate) struct ProgressBarBuilder {
     pub height: Option<iced::Length>,
     // style: TODO,
 }
+
+impl GCProtocol for ProgressBarBuilder {}
 
 #[pyfunction(name="progress_bar")]
 fn make_progress_bar<'p>(

@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::wrapped::{WrappedColor, WrappedFont, WrappedLength, WrappedHorizontalAlignment, WrappedVerticalAlignment};
 use crate::widgets::WrappedWidgetBuilder;
 
@@ -21,6 +21,8 @@ pub(crate) struct TextBuilder {
     pub horizontal_alignment: Option<iced::HorizontalAlignment>,
     pub vertical_alignment: Option<iced::VerticalAlignment>,
 }
+
+impl GCProtocol for TextBuilder {}
 
 #[pyfunction(name="text")]
 fn make_text<'p>(

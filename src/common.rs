@@ -3,7 +3,7 @@ use std::fmt::{Debug, Write};
 use futures_util::FutureExt;
 use iced::{Command, Length};
 use pyo3::exceptions::PyException;
-use pyo3::prelude::*;
+use pyo3::{PyTraverseError, PyVisit, prelude::*};
 use pyo3::types::{PyList, PyTuple};
 use pyo3_asyncio::into_future_with_loop;
 
@@ -17,7 +17,7 @@ pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
 pub(crate) enum Message {
     None,
     Native(iced_native::Event),
-    Python(Py<PyAny>),
+    Python(NonOptional<Py<PyAny>>),
 }
 
 pub(crate) type NonOptional<T> = Option<T>;
@@ -119,4 +119,13 @@ pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObje
             Command::none()
         }
     }
+}
+
+#[allow(unused_variables)]
+pub(crate) trait GCProtocol {
+    fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
+        Ok(())
+    }
+
+    fn clear(&mut self) {}
 }

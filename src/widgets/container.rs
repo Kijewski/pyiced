@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WidgetBuilder;
 use crate::widgets::WrappedWidgetBuilder;
 
@@ -21,6 +21,16 @@ pub(crate) struct ContainerBuilder {
     pub align_x: Option<iced::Align>,
     pub align_y: Option<iced::Align>,
     // style: TODO,
+}
+
+impl GCProtocol for ContainerBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        self.content.traverse(visit)
+    }
+
+    fn clear(&mut self) {
+        *self.content = WidgetBuilder::NoElement(Default::default());
+    }
 }
 
 #[pyfunction(name="container")]

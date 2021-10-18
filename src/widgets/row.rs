@@ -2,7 +2,7 @@ use pyo3::types::PyList;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WidgetBuilder;
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedAlign, WrappedLength};
@@ -22,6 +22,19 @@ pub(crate) struct RowBuilder {
     pub max_width: Option<u32>,
     pub max_height: Option<u32>,
     pub align_items: Option<iced::Align>,
+}
+
+impl GCProtocol for RowBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        for child in self.children.iter() {
+            child.traverse(visit)?;
+        }
+        Ok(())
+    }
+
+    fn clear(&mut self) {
+        self.children.clear();
+    }
 }
 
 #[pyfunction(name="row")]

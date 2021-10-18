@@ -1,7 +1,7 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative};
 use crate::states::{WrappedButtonState, ButtonState, button_with_state};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedMessage, WrappedLength};
@@ -22,6 +22,16 @@ pub(crate) struct ButtonBuilder {
     pub padding: Option<u16>,
     pub on_press: Option<Message>,
     // style: TODO,
+}
+
+impl GCProtocol for ButtonBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        self.content.traverse(visit)
+    }
+
+    fn clear(&mut self) {
+        *self.content = WidgetBuilder::NoElement(Default::default());
+    }
 }
 
 #[pyfunction(name="button")]

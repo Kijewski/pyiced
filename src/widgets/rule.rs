@@ -1,6 +1,6 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{Message, ToNative, empty_space};
+use crate::common::{GCProtocol, Message, ToNative, empty_space};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -14,6 +14,8 @@ pub(crate) struct RuleBuilder {
     pub vertical: Option<u16>,
     // style: TODO,
 }
+
+impl GCProtocol for RuleBuilder {}
 
 #[pyfunction(name="rule")]
 fn make_rule<'p>(

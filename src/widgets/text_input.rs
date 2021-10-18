@@ -1,6 +1,6 @@
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative};
 use crate::states::{TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
@@ -24,6 +24,19 @@ pub(crate) struct TextInputBuilder {
     pub on_submit: Option<Message>,
     pub password: bool,
     // style: TODO,
+}
+
+impl GCProtocol for TextInputBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        if let Some(on_change) = &self.on_change {
+            visit.call(on_change)?;
+        }
+        Ok(())
+    }
+
+    fn clear(&mut self) {
+        self.on_change = None;
+    }
 }
 
 #[pyfunction(name="text_input")]

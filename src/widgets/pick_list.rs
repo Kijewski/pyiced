@@ -1,6 +1,6 @@
 use pyo3::{prelude::*, wrap_pyfunction, types::PyList};
 
-use crate::common::{Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative};
 use crate::states::{PickListState, WrappedPickListState};
 use crate::widgets::WrappedWidgetBuilder;
 
@@ -15,6 +15,19 @@ pub(crate) struct PickListBuilder {
     pub options: Vec<String>,
     pub selected: Option<String>,
     pub on_selected: NonOptional<Py<PyAny>>, // fn on_selected(value: String) -> crate::Message
+}
+
+impl GCProtocol for PickListBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        if let Some(on_selected) = &self.on_selected  {
+            visit.call(on_selected)?;
+        }
+        Ok(())
+    }
+
+    fn clear(&mut self) {
+        self.on_selected = None;
+    }
 }
 
 #[pyfunction(name="pick_list")]

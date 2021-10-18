@@ -3,7 +3,7 @@ use std::ops::RangeInclusive;
 use pyo3::{prelude::*, wrap_pyfunction};
 
 use crate::assign;
-use crate::common::{Message, NonOptional, ToNative, to_msg_fn};
+use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
 use crate::states::{SliderState, WrappedSliderState, slider_with_state};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedMessage};
@@ -24,6 +24,19 @@ pub(crate) struct SliderBuilder {
     pub height: Option<u16>,
     pub step: Option<f32>,
     // style: TODO,
+}
+
+impl GCProtocol for SliderBuilder {
+    fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        if let Some(on_change) = &self.on_change {
+            visit.call(on_change)?;
+        }
+        Ok(())
+    }
+
+    fn clear(&mut self) {
+        self.on_change = None;
+    }
 }
 
 #[pyfunction(name="slider")]

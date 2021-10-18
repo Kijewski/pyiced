@@ -1,6 +1,6 @@
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::{PyObjectProtocol, PyGCProtocol, prelude::*};
 
-use crate::common::{Message, ToNative, debug_str};
+use crate::common::{Message, ToNative, debug_str, GCProtocol};
 
 macro_rules! init_mod {
     ($($name:ident($module:ident -> $typ:ident)),+ $(,)?) => {
@@ -17,16 +17,6 @@ macro_rules! init_mod {
         #[derive(Debug, Clone)]
         pub(crate) enum WidgetBuilder {
             $( $name($typ) ),+
-        }
-
-        #[pyclass(name="Element", module="pyiced.pyiced")]
-        #[derive(Debug, Clone)]
-        pub(crate) struct WrappedWidgetBuilder(pub WidgetBuilder);
-
-        impl From<WidgetBuilder> for WrappedWidgetBuilder {
-            fn from(value: WidgetBuilder) -> WrappedWidgetBuilder {
-                Self(value)
-            }
         }
 
         $(
@@ -59,10 +49,22 @@ macro_rules! init_mod {
                 }
             }
         }
+
+        impl GCProtocol for WidgetBuilder {
+            fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+                match self {
+                    $( WidgetBuilder::$name(value) => value.traverse(visit) ),+
+                }
+            }
+        
+            fn clear(&mut self) {
+                match self {
+                    $( WidgetBuilder::$name(value) => value.clear() ),+
+                }
+            }
+        }
     };
 }
-
-
 
 init_mod!(
     NoElement(no_element -> NoElementBuilder),
@@ -86,3 +88,24 @@ init_mod!(
     TextInput(text_input -> TextInputBuilder),
     Tooltip(tooltip -> TooltipBuilder),
 );
+
+#[pyclass(name="Element", module="pyiced.pyiced")]
+#[derive(Debug, Clone)]
+pub(crate) struct WrappedWidgetBuilder(pub WidgetBuilder);
+
+impl From<WidgetBuilder> for WrappedWidgetBuilder {
+    fn from(value: WidgetBuilder) -> WrappedWidgetBuilder {
+        Self(value)
+    }
+}
+
+#[pyproto]
+impl PyGCProtocol for WrappedWidgetBuilder {
+    fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+        self.0.traverse(&visit)
+    }
+
+    fn __clear__(&mut self) {
+        self.0.clear()
+    }
+}

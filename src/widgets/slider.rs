@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedMessage};
@@ -64,8 +64,12 @@ fn make_slider(
 
 impl ToNative for SliderBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
+        let on_change= match &self.on_change{
+            Some(on_change) => on_change,
+            None => return empty_space(),
+        };
         slider_with_state(self.state.as_ref(), |state| {
-            let on_change = to_msg_fn(self.on_change.as_ref().unwrap());
+            let on_change = to_msg_fn(on_change);
             let range = self.start..=self.end;
             let el = Slider::new(state, range, self.value, on_change);
             let el = assign!(el, self, width, height, step);

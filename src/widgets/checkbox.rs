@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength};
 
@@ -60,7 +60,11 @@ fn make_checkbox(
 
 impl ToNative for CheckboxBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let f = to_msg_fn(self.f.as_ref().unwrap());
+        let f = match &self.f {
+            Some(f) => f,
+            None => return empty_space(),
+        };
+        let f = to_msg_fn(f);
         let el = Checkbox::new(self.is_checked, &self.label, f);
         let el = assign!(el, self, size, width, spacing, text_size, font);
         el.into()

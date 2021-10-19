@@ -1,5 +1,6 @@
 use iced::Color;
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 
@@ -8,7 +9,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[pyclass(name="Color", module="pyiced.pyiced")]
+#[pyclass(name = "Color", module = "pyiced.pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedColor(pub Color);
 

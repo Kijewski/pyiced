@@ -1,9 +1,13 @@
-use iced::{Application, Clipboard, Color, Command, Element, Length, Settings, Space, Subscription, executor, window};
+use iced::{
+    executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
+    Subscription,
+};
 use iced_native::subscription::events;
 use pyo3::exceptions::{PyAttributeError, PyException};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
-use crate::common::{Message, ToNative, method_into_py, py_to_command};
+use crate::common::{method_into_py, py_to_command, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedColor, WrappedMessage};
 
@@ -31,16 +35,16 @@ struct Interop {
 
 impl<'a> Application for PythonApp {
     type Executor = executor::Default;
-    type Message = Message;
     type Flags = Interop;
+    type Message = Message;
 
     fn new(interop: Self::Flags) -> (PythonApp, Command<Message>) {
         let app = PythonApp { interop };
 
         let command = match &app.interop.new {
-            Some(new) => Python::with_gil(|py| {
-                py_to_command(py, &app.interop.pyloop, new.call0(py))
-            }),
+            Some(new) => {
+                Python::with_gil(|py| py_to_command(py, &app.interop.pyloop, new.call0(py)))
+            },
             None => Command::none(),
         };
 
@@ -58,7 +62,7 @@ impl<'a> Application for PythonApp {
                 Err(err) => {
                     err.print(py);
                     "<EXCEPTION>".to_owned()
-                }
+                },
             }),
             None => "PyIced Application".to_owned(),
         }
@@ -94,20 +98,18 @@ impl<'a> Application for PythonApp {
 
     fn scale_factor(&self) -> f64 {
         match &self.interop.scale_factor {
-            Some(scale_factor) => Python::with_gil(|py| {
-                match scale_factor.call0(py) {
-                    Ok(s) => match s.as_ref(py).extract() {
-                        Ok(value) => value,
-                        Err(err) => {
-                            err.print(py);
-                            1.0
-                        },
-                    },
+            Some(scale_factor) => Python::with_gil(|py| match scale_factor.call0(py) {
+                Ok(s) => match s.as_ref(py).extract() {
+                    Ok(value) => value,
                     Err(err) => {
                         err.print(py);
                         1.0
                     },
-                }
+                },
+                Err(err) => {
+                    err.print(py);
+                    1.0
+                },
             }),
             None => 1.0,
         }
@@ -115,20 +117,18 @@ impl<'a> Application for PythonApp {
 
     fn background_color(&self) -> Color {
         match &self.interop.scale_factor {
-            Some(scale_factor) => Python::with_gil(|py| {
-                match scale_factor.call0(py) {
-                    Ok(s) => match s.as_ref(py).extract() {
-                        Ok(WrappedColor(value)) => value,
-                        Err(err) => {
-                            err.print(py);
-                            Color::WHITE
-                        },
-                    },
+            Some(scale_factor) => Python::with_gil(|py| match scale_factor.call0(py) {
+                Ok(s) => match s.as_ref(py).extract() {
+                    Ok(WrappedColor(value)) => value,
                     Err(err) => {
                         err.print(py);
                         Color::WHITE
                     },
-                }
+                },
+                Err(err) => {
+                    err.print(py);
+                    Color::WHITE
+                },
             }),
             None => Color::WHITE,
         }
@@ -178,7 +178,7 @@ macro_rules! assign_py_to_obj {
         match $src.getattr(stringify!($name)) {
             Ok(data) if !data.is_none() => $dest.$name = data.extract()?,
             Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
-            Ok(_) | Err(_) => {}
+            Ok(_) | Err(_) => {},
         }
     };
 
@@ -186,7 +186,7 @@ macro_rules! assign_py_to_obj {
         match $src.getattr(stringify!($name)) {
             Ok(data) if !data.is_none() => $dest.$name = $func(data.extract()?),
             Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
-            Ok(_) | Err(_) => {}
+            Ok(_) | Err(_) => {},
         }
     };
 }
@@ -242,10 +242,9 @@ pub(crate) fn run_iced<'a>(
                 // TODO: icon
             },
             Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
-            Ok(_) | Err(_) => {}
+            Ok(_) | Err(_) => {},
         }
     }
 
-    PythonApp::run(settings_)
-        .map_err(|err| PyException::new_err(format!("{}", err)))
+    PythonApp::run(settings_).map_err(|err| PyException::new_err(format!("{}", err)))
 }

@@ -1,11 +1,11 @@
 use iced::{Align, Element, Length, Row};
+use pyo3::prelude::*;
 use pyo3::types::PyList;
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
-use crate::widgets::WidgetBuilder;
-use crate::widgets::WrappedWidgetBuilder;
+use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedAlign, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -34,7 +34,7 @@ impl GCProtocol for RowBuilder {
     }
 }
 
-#[pyfunction(name="row")]
+#[pyfunction(name = "row")]
 fn make_row(
     py: Python,
     children: &PyList,
@@ -46,13 +46,14 @@ fn make_row(
     max_height: Option<u32>,
     align_items: Option<&WrappedAlign>,
 ) -> WrappedWidgetBuilder {
-    let children = children.iter()
+    let children = children
+        .iter()
         .filter_map(|child| match child.extract() {
             Ok(WrappedWidgetBuilder(widget)) => Some(widget),
             Err(err) => {
                 err.print(py);
                 None
-            }
+            },
         })
         .collect();
     RowBuilder {
@@ -64,14 +65,29 @@ fn make_row(
         max_width,
         max_height,
         align_items: align_items.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for RowBuilder {
     fn to_native(&self, py: Python) -> Element<'static, Message> {
-        let children = self.children.iter().map(|child| child.to_native(py)).collect();
+        let children = self
+            .children
+            .iter()
+            .map(|child| child.to_native(py))
+            .collect();
         let el = Row::with_children(children);
-        let el = assign!(el, self, spacing, padding, width, height, max_width, max_height, align_items);
+        let el = assign!(
+            el,
+            self,
+            spacing,
+            padding,
+            width,
+            height,
+            max_width,
+            max_height,
+            align_items
+        );
         el.into()
     }
 }

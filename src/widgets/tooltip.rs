@@ -1,9 +1,10 @@
-use iced::{Element, Font, Tooltip};
 use iced::tooltip::Position;
-use pyo3::{prelude::*, wrap_pyfunction};
+use iced::{Element, Font, Tooltip};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space};
+use crate::common::{empty_space, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedFont, WrappedTooltipPosition};
 
@@ -30,7 +31,7 @@ impl GCProtocol for TooltipBuilder {
     }
 }
 
-#[pyfunction(name="tooltip")]
+#[pyfunction(name = "tooltip")]
 fn make_tooltip(
     content: &WrappedWidgetBuilder,
     tooltip: String,
@@ -48,7 +49,8 @@ fn make_tooltip(
         font: font.map(|o| o.0),
         gap,
         padding,
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for TooltipBuilder {

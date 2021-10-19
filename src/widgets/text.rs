@@ -1,10 +1,13 @@
 use iced::{Color, Element, Font, HorizontalAlignment, Length, Text, VerticalAlignment};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
-use crate::wrapped::{WrappedColor, WrappedFont, WrappedLength, WrappedHorizontalAlignment, WrappedVerticalAlignment};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::{
+    WrappedColor, WrappedFont, WrappedHorizontalAlignment, WrappedLength, WrappedVerticalAlignment,
+};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_text, m)?)?;
@@ -25,7 +28,7 @@ pub(crate) struct TextBuilder {
 
 impl GCProtocol for TextBuilder {}
 
-#[pyfunction(name="text")]
+#[pyfunction(name = "text")]
 fn make_text(
     label: String,
     size: Option<u16>,
@@ -45,13 +48,24 @@ fn make_text(
         height: height.map(|o| o.0),
         horizontal_alignment: horizontal_alignment.map(|o| o.0),
         vertical_alignment: vertical_alignment.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for TextBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         let el = Text::new(&self.label);
-        let el = assign!(el, self, size, color, font, width, height, horizontal_alignment, vertical_alignment);
+        let el = assign!(
+            el,
+            self,
+            size,
+            color,
+            font,
+            width,
+            height,
+            horizontal_alignment,
+            vertical_alignment
+        );
         el.into()
     }
 }

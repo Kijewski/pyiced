@@ -1,8 +1,9 @@
 use iced::{Element, Length, Radio};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
+use crate::common::{to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
 
@@ -33,7 +34,7 @@ impl GCProtocol for RadioBuilder {
     }
 }
 
-#[pyfunction(name="radio")]
+#[pyfunction(name = "radio")]
 fn make_radio(
     value: i64,
     label: String,
@@ -53,7 +54,8 @@ fn make_radio(
         width: width.map(|o| o.0),
         spacing,
         text_size,
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for RadioBuilder {

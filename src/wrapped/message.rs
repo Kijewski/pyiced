@@ -1,14 +1,14 @@
-use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::{PyGCProtocol, PyObjectProtocol, PyTraverseError, PyVisit};
 
-use crate::common::{Message, debug_str};
+use crate::common::{debug_str, Message};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedMessage>()?;
     Ok(())
 }
 
-#[pyclass(name="Message", module="pyiced.pyiced", gc)]
+#[pyclass(name = "Message", module = "pyiced.pyiced", gc)]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedMessage(pub Message);
 
@@ -64,7 +64,8 @@ impl WrappedMessage {
             iced_native::Event::Window(_) => "window",
             iced_native::Event::Touch(_) => "touch",
             iced_native::Event::Keyboard(_) => "keyboard",
-        }.into_py(py)
+        }
+        .into_py(py)
     }
 
     // keyboard
@@ -76,11 +77,12 @@ impl WrappedMessage {
             Err(_) => return ().into_py(py),
         };
         match v {
-            iced::keyboard::Event::KeyPressed { ..} => "keypressed",
+            iced::keyboard::Event::KeyPressed { .. } => "keypressed",
             iced::keyboard::Event::KeyReleased { .. } => "keyreleased",
             iced::keyboard::Event::CharacterReceived(_) => "characterreceived",
             iced::keyboard::Event::ModifiersChanged(_) => "modifierschanged",
-        }.into_py(py)
+        }
+        .into_py(py)
     }
 
     #[getter]
@@ -91,7 +93,9 @@ impl WrappedMessage {
         };
         match v {
             iced::keyboard::Event::KeyPressed { key_code, .. }
-            | iced::keyboard::Event::KeyReleased { key_code, .. } => format!("{:?}", key_code).into_py(py),
+            | iced::keyboard::Event::KeyReleased { key_code, .. } => {
+                format!("{:?}", key_code).into_py(py)
+            },
             _ => ().into_py(py),
         }
     }
@@ -177,7 +181,8 @@ impl WrappedMessage {
             iced::mouse::Event::ButtonPressed(_) => "buttonpressed",
             iced::mouse::Event::ButtonReleased(_) => "buttonreleased",
             iced::mouse::Event::WheelScrolled { .. } => "wheelscrolled",
-        }.into_py(py)
+        }
+        .into_py(py)
     }
 
     #[getter]
@@ -199,8 +204,8 @@ impl WrappedMessage {
             Err(_) => return ().into_py(py),
         };
         match v {
-            iced::mouse::Event::ButtonPressed(b)
-            | iced::mouse::Event::ButtonReleased(b) => match b {
+            iced::mouse::Event::ButtonPressed(b) | iced::mouse::Event::ButtonReleased(b) => match b
+            {
                 iced::mouse::Button::Left => "left".into_py(py),
                 iced::mouse::Button::Right => "right".into_py(py),
                 iced::mouse::Button::Middle => "middle".into_py(py),
@@ -220,7 +225,8 @@ impl WrappedMessage {
             iced::mouse::Event::WheelScrolled { delta } => match delta {
                 iced::mouse::ScrollDelta::Lines { .. } => "lines",
                 iced::mouse::ScrollDelta::Pixels { .. } => "pixels",
-            }.into_py(py),
+            }
+            .into_py(py),
             _ => ().into_py(py),
         }
     }
@@ -253,7 +259,8 @@ impl WrappedMessage {
             iced_native::touch::Event::FingerMoved { .. } => "fingermoved",
             iced_native::touch::Event::FingerLifted { .. } => "fingerlifted",
             iced_native::touch::Event::FingerLost { .. } => "fingerlost",
-        }.into_py(py)
+        }
+        .into_py(py)
     }
 
     #[getter]
@@ -266,7 +273,7 @@ impl WrappedMessage {
             iced_native::touch::Event::FingerPressed { id, .. }
             | iced_native::touch::Event::FingerMoved { id, .. }
             | iced_native::touch::Event::FingerLifted { id, .. }
-            | iced_native::touch::Event::FingerLost { id, .. } => id.0.into_py(py)
+            | iced_native::touch::Event::FingerLost { id, .. } => id.0.into_py(py),
         }
     }
 
@@ -282,7 +289,7 @@ impl WrappedMessage {
             | iced_native::touch::Event::FingerLifted { position, .. }
             | iced_native::touch::Event::FingerLost { position, .. } => {
                 (position.x, position.y).into_py(py)
-            }
+            },
         }
     }
 
@@ -302,7 +309,8 @@ impl WrappedMessage {
             iced_native::window::Event::FileHovered(_) => "filehovered",
             iced_native::window::Event::FileDropped(_) => "filedropped",
             iced_native::window::Event::FilesHoveredLeft => "fileshoveredleft",
-        }.into_py(py)
+        }
+        .into_py(py)
     }
 
     #[getter]

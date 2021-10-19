@@ -1,11 +1,12 @@
 use iced::{Button, Element, Length};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, NonOptional, ToNative};
-use crate::states::{WrappedButtonState, ButtonState, button_with_state};
+use crate::states::{button_with_state, ButtonState, WrappedButtonState};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
-use crate::wrapped::{WrappedMessage, WrappedLength};
+use crate::wrapped::{WrappedLength, WrappedMessage};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_button, m)?)?;
@@ -31,7 +32,7 @@ impl GCProtocol for ButtonBuilder {
     }
 }
 
-#[pyfunction(name="button")]
+#[pyfunction(name = "button")]
 fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,
@@ -51,7 +52,8 @@ fn make_button(
         min_height,
         padding,
         on_press: on_press.map(|o| o.0.clone()),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for ButtonBuilder {

@@ -1,9 +1,10 @@
 use iced::{Element, Font, Length, TextInput};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space, to_msg_fn};
-use crate::states::{TextInputState, WrappedTextInputState, text_input_with_state};
+use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::states::{text_input_with_state, TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
 
@@ -37,7 +38,7 @@ impl GCProtocol for TextInputBuilder {
     }
 }
 
-#[pyfunction(name="text_input")]
+#[pyfunction(name = "text_input")]
 fn make_text_input(
     state: &WrappedTextInputState,
     placeholder: String,
@@ -63,7 +64,8 @@ fn make_text_input(
         size,
         on_submit: on_submit.map(|o| o.0.clone()),
         password,
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for TextInputBuilder {

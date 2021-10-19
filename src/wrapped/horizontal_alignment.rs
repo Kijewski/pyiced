@@ -1,6 +1,7 @@
 use iced::HorizontalAlignment;
 use pyo3::exceptions::PyValueError;
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 
@@ -9,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[pyclass(name="HorizontalAlignment", module="pyiced.pyiced")]
+#[pyclass(name = "HorizontalAlignment", module = "pyiced.pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedHorizontalAlignment(pub HorizontalAlignment);
 

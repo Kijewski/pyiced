@@ -1,12 +1,13 @@
 use iced::Element;
-use pyo3::{PyObjectProtocol, PyGCProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::{PyGCProtocol, PyObjectProtocol};
 
-use crate::common::{Message, ToNative, debug_str, GCProtocol};
+use crate::common::{debug_str, GCProtocol, Message, ToNative};
 
 macro_rules! init_mod {
     ($($name:ident($module:ident -> $typ:ident)),+ $(,)?) => {
         $( mod $module; )*
-        
+
         $( pub(crate) use $module :: $typ; )*
 
         pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
@@ -84,7 +85,7 @@ init_mod!(
     Tooltip(tooltip -> TooltipBuilder),
 );
 
-#[pyclass(name="Element", module="pyiced.pyiced")]
+#[pyclass(name = "Element", module = "pyiced.pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedWidgetBuilder(pub WidgetBuilder);
 

@@ -1,11 +1,12 @@
-use iced::{Element, Image, Length};
 use iced::image::Handle;
-use pyo3::{prelude::*, wrap_pyfunction};
+use iced::{Element, Image, Length};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space};
+use crate::common::{empty_space, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{WrappedLength, WrappedImageHandle};
+use crate::wrapped::{WrappedImageHandle, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_image, m)?)?;
@@ -21,7 +22,7 @@ pub(crate) struct ImageBuilder {
 
 impl GCProtocol for ImageBuilder {}
 
-#[pyfunction(name="image")]
+#[pyfunction(name = "image")]
 fn make_image(
     handle: &WrappedImageHandle,
     width: Option<&WrappedLength>,
@@ -31,7 +32,8 @@ fn make_image(
         handle: Some(handle.0.clone()),
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for ImageBuilder {

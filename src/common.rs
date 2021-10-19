@@ -4,8 +4,9 @@ use futures_util::FutureExt;
 use iced::{Command, Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::PyException;
-use pyo3::{PyTraverseError, PyVisit, prelude::*};
+use pyo3::prelude::*;
 use pyo3::types::{PyList, PyTuple};
+use pyo3::{PyTraverseError, PyVisit};
 use pyo3_asyncio::into_future_with_loop;
 
 use crate::wrapped::WrappedMessage;
@@ -53,20 +54,22 @@ where
     (T,): IntoPy<Py<PyTuple>>,
 {
     let f = f.clone();
-    move |value: T| Python::with_gil(|py| match f.call1(py, (value,)) {
-        Ok(value) if !value.is_none(py) => match value.extract(py) {
-            Ok(WrappedMessage(message)) => message,
+    move |value: T| {
+        Python::with_gil(|py| match f.call1(py, (value,)) {
+            Ok(value) if !value.is_none(py) => match value.extract(py) {
+                Ok(WrappedMessage(message)) => message,
+                Err(err) => {
+                    err.print(py);
+                    Message::None
+                },
+            },
+            Ok(_) => Message::None,
             Err(err) => {
                 err.print(py);
                 Message::None
-            }
-        },
-        Ok(_) => Message::None,
-        Err(err) => {
-            err.print(py);
-            Message::None
-        },
-    })
+            },
+        })
+    }
 }
 
 pub(crate) fn method_into_py(py: Python, method: &PyAny) -> Option<Py<PyAny>> {
@@ -76,7 +79,11 @@ pub(crate) fn method_into_py(py: Python, method: &PyAny) -> Option<Py<PyAny>> {
     }
 }
 
-pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObject>) -> Command<Message> {
+pub(crate) fn py_to_command(
+    py: Python,
+    pyloop: &Py<PyAny>,
+    vec: PyResult<PyObject>,
+) -> Command<Message> {
     match vec {
         Ok(vec) if !vec.is_none(py) => match vec.as_ref(py).downcast::<PyList>() {
             Ok(vec) if !vec.is_none() && !vec.is_empty() => {
@@ -90,40 +97,41 @@ pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObje
                                         Err(err) => {
                                             err.print(py);
                                             Message::None
-                                        }
+                                        },
                                     },
                                     Ok(_) => Message::None,
                                     Err(err) => {
                                         err.print(py);
                                         Message::None
-                                    }
+                                    },
                                 })
                             })
                         }),
                         Err(err) => {
                             Python::with_gil(|py| err.print(py));
                             Command::from(async { Message::None })
-                        }
+                        },
                     }
                 });
                 Command::batch(vec)
-            }
+            },
             Ok(_) => Command::none(),
             Err(err) => {
                 PyErr::from(err).print(py);
                 Command::none()
-            }
+            },
         },
         Ok(_) => Command::none(),
         Err(err) => {
             err.print(py);
             Command::none()
-        }
+        },
     }
 }
 
 #[allow(unused_variables)]
-pub(crate) trait GCProtocol where
+pub(crate) trait GCProtocol
+where
     Self: Default,
 {
     fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {

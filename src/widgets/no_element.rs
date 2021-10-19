@@ -1,7 +1,8 @@
 use iced::Element;
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
-use crate::common::{GCProtocol, Message, ToNative, empty_space};
+use crate::common::{empty_space, GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -14,7 +15,7 @@ pub(crate) struct NoElementBuilder;
 
 impl GCProtocol for NoElementBuilder {}
 
-#[pyfunction(name="no_element")]
+#[pyfunction(name = "no_element")]
 fn make_no_element() -> WrappedWidgetBuilder {
     NoElementBuilder.into()
 }

@@ -1,9 +1,10 @@
 use iced::{Align, Element, Length, Scrollable};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, NonOptional, ToNative};
-use crate::states::{ScrollableState, scrollable_with_state, WrappedScrollableState};
+use crate::states::{scrollable_with_state, ScrollableState, WrappedScrollableState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedAlign, WrappedLength};
 
@@ -30,7 +31,7 @@ pub(crate) struct ScrollableBuilder {
 
 impl GCProtocol for ScrollableBuilder {}
 
-#[pyfunction(name="scrollbar")]
+#[pyfunction(name = "scrollbar")]
 fn make_scrollbar(
     state: &WrappedScrollableState,
     spacing: Option<u16>,
@@ -56,7 +57,8 @@ fn make_scrollbar(
         scrollbar_width,
         scrollbar_margin,
         scroller_width,
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for ScrollableBuilder {
@@ -64,8 +66,18 @@ impl ToNative for ScrollableBuilder {
         scrollable_with_state(self.state.as_ref(), |state| {
             let el = Scrollable::new(state);
             let el = assign!(
-                el, self, spacing, padding, width, height, max_width, max_height, align_items,
-                scrollbar_width, scrollbar_margin, scroller_width,
+                el,
+                self,
+                spacing,
+                padding,
+                width,
+                height,
+                max_width,
+                max_height,
+                align_items,
+                scrollbar_width,
+                scrollbar_margin,
+                scroller_width,
             );
             Ok(el)
         })

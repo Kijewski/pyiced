@@ -2,7 +2,8 @@ use std::sync::Arc;
 
 use iced::scrollable::State;
 use parking_lot::Mutex;
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 use crate::make_with_state;
@@ -14,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type ScrollableState = Arc<Mutex<State>>;
 
-#[pyclass(name="ScrollableState", module="pyiced.pyiced")]
+#[pyclass(name = "ScrollableState", module = "pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedScrollableState(pub ScrollableState);
 

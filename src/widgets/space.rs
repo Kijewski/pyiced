@@ -1,7 +1,8 @@
 use iced::{Element, Length, Space};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space};
+use crate::common::{empty_space, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
 
@@ -18,15 +19,13 @@ pub(crate) struct SpaceBuilder {
 
 impl GCProtocol for SpaceBuilder {}
 
-#[pyfunction(name="space")]
-fn make_space(
-    width: &WrappedLength,
-    height: &WrappedLength,
-) -> WrappedWidgetBuilder {
+#[pyfunction(name = "space")]
+fn make_space(width: &WrappedLength, height: &WrappedLength) -> WrappedWidgetBuilder {
     SpaceBuilder {
         width: Some(width.0),
         height: Some(height.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for SpaceBuilder {

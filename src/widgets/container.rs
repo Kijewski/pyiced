@@ -1,5 +1,6 @@
 use iced::{Align, Container, Element, Length};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
@@ -30,7 +31,7 @@ impl GCProtocol for ContainerBuilder {
     }
 }
 
-#[pyfunction(name="container")]
+#[pyfunction(name = "container")]
 fn make_container(
     content: &WrappedWidgetBuilder,
     padding: Option<u16>,
@@ -50,14 +51,17 @@ fn make_container(
         max_height,
         align_x: align_x.map(|o| o.0),
         align_y: align_y.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for ContainerBuilder {
     fn to_native(&self, py: Python) -> Element<'static, Message> {
         let content = self.content.to_native(py);
         let el = Container::new(content);
-        let el = assign!(el, self, padding, width, height, max_width, max_height, align_x, align_y);
+        let el = assign!(
+            el, self, padding, width, height, max_width, max_height, align_x, align_y
+        );
         el.into()
     }
 }

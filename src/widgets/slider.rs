@@ -1,9 +1,10 @@
 use iced::{Element, Length, Slider};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
-use crate::states::{SliderState, WrappedSliderState, slider_with_state};
+use crate::common::{to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedMessage};
 
@@ -35,7 +36,7 @@ impl GCProtocol for SliderBuilder {
     }
 }
 
-#[pyfunction(name="slider")]
+#[pyfunction(name = "slider")]
 fn make_slider(
     state: &WrappedSliderState,
     start: f32,
@@ -57,14 +58,15 @@ fn make_slider(
         width: width.map(|o| o.0),
         height,
         step,
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for SliderBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         slider_with_state(self.state.as_ref(), |state| {
             let on_change = to_msg_fn(self.on_change.as_ref().unwrap());
-            let range = self.start ..= self.end;
+            let range = self.start..=self.end;
             let el = Slider::new(state, range, self.value, on_change);
             let el = assign!(el, self, width, height, step);
             let el = match &self.on_release {

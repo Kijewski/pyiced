@@ -1,10 +1,12 @@
 use std::borrow::Cow;
 
 use iced::{Element, PickList};
-use pyo3::{prelude::*, wrap_pyfunction, types::PyList};
+use pyo3::prelude::*;
+use pyo3::types::PyList;
+use pyo3::wrap_pyfunction;
 
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space, to_msg_fn};
-use crate::states::{PickListState, WrappedPickListState, pick_list_with_state};
+use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::states::{pick_list_with_state, PickListState, WrappedPickListState};
 use crate::widgets::WrappedWidgetBuilder;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -22,14 +24,14 @@ pub(crate) struct PickListBuilder {
 
 impl GCProtocol for PickListBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        if let Some(on_selected) = &self.on_selected  {
+        if let Some(on_selected) = &self.on_selected {
             visit.call(on_selected)?;
         }
         Ok(())
     }
 }
 
-#[pyfunction(name="pick_list")]
+#[pyfunction(name = "pick_list")]
 fn make_pick_list(
     py: Python,
     state: &WrappedPickListState,
@@ -37,13 +39,14 @@ fn make_pick_list(
     selected: Option<String>,
     on_selected: Py<PyAny>,
 ) -> WrappedWidgetBuilder {
-    let options = options.iter()
+    let options = options
+        .iter()
         .filter_map(|child| match child.str() {
             Ok(s) => Some(s.to_string()),
             Err(err) => {
                 err.print(py);
                 None
-            }
+            },
         })
         .collect();
     PickListBuilder {
@@ -51,7 +54,8 @@ fn make_pick_list(
         options,
         selected,
         on_selected: Some(on_selected),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for PickListBuilder {

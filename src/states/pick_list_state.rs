@@ -2,9 +2,10 @@ use std::sync::Arc;
 
 use iced::pick_list::State;
 use parking_lot::Mutex;
-use pyo3::{PyObjectProtocol, prelude::*};
+use pyo3::prelude::*;
+use pyo3::PyObjectProtocol;
 
-use crate::common::{Message, debug_str};
+use crate::common::{debug_str, Message};
 use crate::make_with_state;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -14,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type PickListState = Arc<Mutex<State<String>>>;
 
-#[pyclass(name="PickListState", module="pyiced.pyiced")]
+#[pyclass(name = "PickListState", module = "pyiced.pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedPickListState(pub PickListState);
 

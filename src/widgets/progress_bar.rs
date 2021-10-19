@@ -1,5 +1,6 @@
 use iced::{Element, Length, ProgressBar};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
@@ -23,7 +24,7 @@ pub(crate) struct ProgressBarBuilder {
 
 impl GCProtocol for ProgressBarBuilder {}
 
-#[pyfunction(name="progress_bar")]
+#[pyfunction(name = "progress_bar")]
 fn make_progress_bar(
     start: f32,
     end: f32,
@@ -37,12 +38,13 @@ fn make_progress_bar(
         value,
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for ProgressBarBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let range = self.start ..= self.end;
+        let range = self.start..=self.end;
         let el = ProgressBar::new(range, self.value);
         let el = assign!(el, self, width, height);
         el.into()

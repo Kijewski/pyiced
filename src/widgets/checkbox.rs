@@ -1,8 +1,9 @@
 use iced::{Checkbox, Element, Font, Length};
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::prelude::*;
+use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
+use crate::common::{to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength};
 
@@ -33,7 +34,7 @@ impl GCProtocol for CheckboxBuilder {
     }
 }
 
-#[pyfunction(name="checkbox")]
+#[pyfunction(name = "checkbox")]
 fn make_checkbox(
     is_checked: bool,
     label: String,
@@ -53,7 +54,8 @@ fn make_checkbox(
         spacing,
         text_size,
         font: font.map(|o| o.0),
-    }.into()
+    }
+    .into()
 }
 
 impl ToNative for CheckboxBuilder {

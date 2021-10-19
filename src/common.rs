@@ -129,8 +129,4 @@ pub(crate) trait GCProtocol where
     fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
         Ok(())
     }
-
-    fn clear(&mut self) {
-        *self = Self::default();
-    }
 }

@@ -56,28 +56,30 @@ macro_rules! make_with_state {
             use crate::common::{empty_space, Message};
 
             #[self_referencing]
-            struct WithState {
+            struct WidgetWithState {
                 _guard: ArcMutexGuard<RawMutex, $State>,
                 #[borrows(mut _guard)]
-                #[not_covariant]
+                #[covariant]
                 widget: $Widget,
             }
 
-            impl<'this> Widget<Message, Renderer> for WithState {
+            impl Widget<Message, Renderer> for WidgetWithState {
                 fn width(&self) -> Length {
-                    self.with_widget(|w| <$WidgetWoLifetime as Widget<Message, Renderer>>::width(w))
+                    self.with_widget(|widget| {
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::width(widget)
+                    })
                 }
 
                 fn height(&self) -> Length {
-                    self.with_widget(|w| {
-                        <$WidgetWoLifetime as Widget<Message, Renderer>>::height(w)
+                    self.with_widget(|widget| {
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::height(widget)
                     })
                 }
 
                 fn layout(&self, renderer: &Renderer, limits: &Limits) -> Node {
-                    self.with_widget(|w| {
+                    self.with_widget(|widget| {
                         <$WidgetWoLifetime as Widget<Message, Renderer>>::layout(
-                            w, renderer, limits,
+                            widget, renderer, limits,
                         )
                     })
                 }
@@ -90,9 +92,9 @@ macro_rules! make_with_state {
                     cursor_position: Point,
                     viewport: &Rectangle,
                 ) -> <Renderer as iced_native::Renderer>::Output {
-                    self.with_widget(|w| {
+                    self.with_widget(|widget| {
                         <$WidgetWoLifetime as Widget<Message, Renderer>>::draw(
-                            w,
+                            widget,
                             renderer,
                             defaults,
                             layout,
@@ -103,8 +105,8 @@ macro_rules! make_with_state {
                 }
 
                 fn hash_layout(&self, state: &mut iced_native::Hasher) {
-                    self.with_widget(|w| {
-                        <$WidgetWoLifetime as Widget<Message, Renderer>>::hash_layout(w, state)
+                    self.with_widget(|widget| {
+                        <$WidgetWoLifetime as Widget<Message, Renderer>>::hash_layout(widget, state)
                     })
                 }
 
@@ -117,9 +119,9 @@ macro_rules! make_with_state {
                     clipboard: &mut dyn iced_native::Clipboard,
                     messages: &mut Vec<Message>,
                 ) -> iced_native::event::Status {
-                    self.with_widget_mut(|w| {
+                    self.with_widget_mut(|widget| {
                         <$WidgetWoLifetime as Widget<Message, Renderer>>::on_event(
-                            w,
+                            widget,
                             event,
                             layout,
                             cursor_position,
@@ -130,17 +132,15 @@ macro_rules! make_with_state {
                     })
                 }
 
-                // TODO:
-                // fn overlay(
-                //     &mut self,
-                //     layout: iced_native::Layout<'_>,
-                // ) -> Option<iced_native::overlay::Element<'_, Message, Renderer>> {
-                //     self.with_widget_mut(|w| {
-                //         <$WidgetWoLifetime as Widget<Message, Renderer>>::overlay(
-                //             w, layout,
-                //         )
-                //     })
-                // }
+                fn overlay(
+                    &mut self,
+                    layout: iced_native::Layout<'_>,
+                ) -> Option<iced_native::overlay::Element<'_, Message, Renderer>> {
+                    // TODO: is this transmute sound?
+                    let widget: &mut $WidgetWoLifetime =
+                        self.with_widget_mut(|widget| unsafe { std::mem::transmute(widget) });
+                    widget.overlay(layout)
+                }
             }
 
             #[allow(dead_code)]
@@ -152,12 +152,12 @@ macro_rules! make_with_state {
                     Some(guard) => guard,
                     None => return empty_space(),
                 };
-                let builder = WithStateTryBuilder {
+                let builder = WidgetWithStateTryBuilder {
                     _guard: guard,
                     widget_builder: move |guard| make(guard.deref_mut()),
                 };
                 match builder.try_build() {
-                    Ok(w) => Element::new(w),
+                    Ok(widget) => Element::new(widget),
                     Err(_) => empty_space(),
                 }
             }

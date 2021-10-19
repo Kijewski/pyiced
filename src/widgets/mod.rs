@@ -57,12 +57,6 @@ macro_rules! init_mod {
                     $( WidgetBuilder::$name(value) => value.traverse(visit) ),+
                 }
             }
-        
-            fn clear(&mut self) {
-                match self {
-                    $( WidgetBuilder::$name(value) => value.clear() ),+
-                }
-            }
         }
     };
 }
@@ -114,6 +108,6 @@ impl PyGCProtocol for WrappedWidgetBuilder {
     }
 
     fn __clear__(&mut self) {
-        self.0.clear();
+        self.0 = Default::default();
     }
 }

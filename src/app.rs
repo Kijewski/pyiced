@@ -120,7 +120,7 @@ impl<'a> Application for PythonApp {
                     Ok(s) => match s.as_ref(py).extract() {
                         Ok(WrappedColor(value)) => value,
                         Err(err) => {
-                            dbg!(err); // TODO
+                            err.print(py);
                             Color::WHITE
                         },
                     },

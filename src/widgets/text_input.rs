@@ -1,8 +1,9 @@
-use iced::{Element, Font, Length};
+use iced::{Element, Font, Length, TextInput};
 use pyo3::{prelude::*, wrap_pyfunction};
 
-use crate::common::{GCProtocol, Message, NonOptional, ToNative};
-use crate::states::{TextInputState, WrappedTextInputState};
+use crate::assign;
+use crate::common::{GCProtocol, Message, NonOptional, ToNative, empty_space, to_msg_fn};
+use crate::states::{TextInputState, WrappedTextInputState, text_input_with_state};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
 
@@ -67,18 +68,22 @@ fn make_text_input(
 
 impl ToNative for TextInputBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        todo!();
-        // let on_change = to_msg_fn(&self.on_change.unwrap());
-        // let el = TextInput::new(&mut self.state, &self.placeholder, &self.value, on_change);
-        // let el = assign!(el, self, font, width, max_width, padding, size);
-        // let el = match &self.on_submit {
-        //     Some(on_submit) => el.on_submit(on_submit.clone()),
-        //     _ => el,
-        // };
-        // let el = match self.password {
-        //     true => el.password(),
-        //     false => el,
-        // };
-        // el.into()
+        let on_change = match &self.on_change {
+            Some(on_change) => to_msg_fn(on_change),
+            None => return empty_space(),
+        };
+        text_input_with_state(self.state.as_ref(), |state| {
+            let el = TextInput::new(state, &self.placeholder, &self.value, on_change);
+            let el = assign!(el, self, font, width, max_width, padding, size);
+            let el = match &self.on_submit {
+                Some(on_submit) => el.on_submit(on_submit.clone()),
+                _ => el,
+            };
+            let el = match self.password {
+                true => el.password(),
+                false => el,
+            };
+            Ok(el)
+        })
     }
 }

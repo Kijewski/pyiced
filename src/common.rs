@@ -110,7 +110,7 @@ pub(crate) fn py_to_command(py: Python, pyloop: &Py<PyAny>, vec: PyResult<PyObje
             }
             Ok(_) => Command::none(),
             Err(err) => {
-                dbg!(err); // TODO
+                PyErr::from(err).print(py);
                 Command::none()
             }
         },

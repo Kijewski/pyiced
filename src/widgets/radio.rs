@@ -4,6 +4,7 @@ use pyo3::{prelude::*, wrap_pyfunction};
 use crate::assign;
 use crate::common::{GCProtocol, Message, NonOptional, ToNative, to_msg_fn};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::WrappedLength;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_radio, m)?)?;
@@ -34,14 +35,31 @@ impl GCProtocol for RadioBuilder {
 
 #[pyfunction(name="radio")]
 fn make_radio(
+    value: i64,
+    label: String,
+    selected: Option<i64>,
+    f: Py<PyAny>,
+    size: Option<u16>,
+    width: Option<&WrappedLength>,
+    spacing: Option<u16>,
+    text_size: Option<u16>,
 ) -> WrappedWidgetBuilder {
-    todo!()
+    RadioBuilder {
+        value,
+        label,
+        selected,
+        f: Some(f),
+        size,
+        width: width.map(|o| o.0),
+        spacing,
+        text_size,
+    }.into()
 }
 
 impl ToNative for RadioBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         let f = to_msg_fn(self.f.as_ref().unwrap());
-        let el = Radio::new(self.value, &self.label, self.selected, f);
+        let el = Radio::new(self.value, self.label.clone(), self.selected, f);
         let el = assign!(el, self, size, width, spacing, text_size);
         el.into()
     }

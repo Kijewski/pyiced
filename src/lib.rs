@@ -7,7 +7,7 @@ macro_rules! init_mod {
         $( mod $name; )*
 
         #[pymodule]
-        fn pyiced(py: Python, m: &PyModule) -> PyResult<()> {
+        fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
             $( $name::init_mod(py, m)?; )*
             Ok(())
         }
@@ -20,6 +20,14 @@ init_mod! {
     mod states;
     mod widgets;
     mod wrapped;
+}
+
+#[pymodule]
+fn pyiced(py: Python, m: &PyModule) -> PyResult<()> {
+    init_mod(py, m)?;
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
+    m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
+    Ok(())
 }
 
 #[macro_export]

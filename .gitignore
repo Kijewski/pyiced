@@ -29,6 +29,7 @@ run.cgi
 *.cpp
 *.py[co]
 *.egg-info
+*.whl
 
 .*
 !.git*

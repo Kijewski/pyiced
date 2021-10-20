@@ -1,9 +1,34 @@
 from contextlib import contextmanager
 from asyncio import Event, get_event_loop, run
+from enum import Enum
 from queue import Queue
 from threading import Thread
 
-from pyiced.pyiced import run_iced as _run_iced
+from . import pyiced as _pyiced
+
+
+# KEEP SYNCHRONOUS TO MODULE EXPORTS
+__all__ = [
+    # states
+    'ButtonState', 'PickListState', 'ScrollableState', 'SliderState', 'TextInputState',
+
+    # widgets
+    'Element', 'no_element', 'button', 'checkbox', 'column', 'container', 'image', 'pick_list',
+    'progress_bar', 'radio', 'row', 'rule', 'scrollbar', 'slider', 'space', 'svg', 'text',
+    'text_input', 'tooltip',
+
+    # wrapped
+    'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Message',
+    'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
+]
+
+for name in __all__:
+    exec(f'{name} = _pyiced.{name}')
+
+__all__ += ['run_iced']
+
+__author__ = _pyiced.__author__
+__version__ = _pyiced.__version__
 
 
 async def thread_code(put_task):
@@ -41,6 +66,6 @@ def run_iced(obj):
     view = getattr(obj, 'view', None)
     settings = getattr(obj, 'settings', None)
     with in_async_loop() as loop:
-        return _run_iced(
+        return _pyiced.run_iced(
             loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
         )

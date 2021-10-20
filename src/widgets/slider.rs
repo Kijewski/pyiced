@@ -64,7 +64,7 @@ fn make_slider(
 
 impl ToNative for SliderBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let on_change= match &self.on_change{
+        let on_change = match &self.on_change {
             Some(on_change) => on_change,
             None => return empty_space(),
         };

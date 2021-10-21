@@ -14,6 +14,7 @@ futures-util = "0.3"
 iced = { version = "0.3", default-features = false, features = ["canvas", "debug", "image", "wgpu", "svg", "tokio"] }
 iced_native = { version = "0.4", features = ["debug"] }
 iced_wgpu = { version = "0.4", features = ["image", "svg"] }
+mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
 ouroboros = "0.13"
 parking_lot = { version = "0.11", features = ["arc_lock"] }
 pyo3 = { version = "0.14", default-features = false, features = ["extension-module", "abi3", "abi3-py36"] }

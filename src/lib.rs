@@ -1,6 +1,10 @@
 #![allow(clippy::too_many_arguments)]
 
+use mimalloc::MiMalloc;
 use pyo3::prelude::*;
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 macro_rules! init_mod {
     ($(mod $name:ident;)*) => {

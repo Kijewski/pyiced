@@ -92,7 +92,7 @@ pub(crate) fn py_to_command(
                         Ok(fut) => Command::from({
                             fut.map(|result| {
                                 Python::with_gil(|py| match result {
-                                    Ok(msg) if !msg.is_none(py) => match msg.as_ref(py).extract() {
+                                    Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
                                         Ok(WrappedMessage(msg)) => msg,
                                         Err(err) => {
                                             err.print(py);

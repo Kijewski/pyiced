@@ -1,10 +1,12 @@
+from abc import ABCMeta, abstractmethod
+from collections.abc import Awaitable
 from contextlib import contextmanager
 from asyncio import Event, get_event_loop, run
-from enum import Enum
 from queue import Queue
 from threading import Thread
+from typing import NoReturn, Optional
 
-from . import pyiced as _pyiced
+from . import _pyiced
 
 
 # KEEP SYNCHRONOUS TO MODULE EXPORTS
@@ -25,10 +27,115 @@ __all__ = [
 for name in __all__:
     exec(f'{name} = _pyiced.{name}')
 
-__all__ += ['run_iced']
+__all__ += ['run_iced', 'IcedApp']
 
 __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
+
+Command = Awaitable[Optional[Message]]
+Commands = list[Command]
+
+
+class WindowSettings:
+    @property
+    def size(self) -> tuple[int, int]:
+        '''
+        Dimensions of the newly crated window.
+    
+        Returns
+        -------
+        Size in pixels : (int, int)
+        '''
+        return (1024, 768)
+
+    @property
+    def min_size(self) -> Optional[tuple[int, int]]:
+        return None
+
+    @property
+    def max_size(self) -> Optional[tuple[int, int]]:
+        return None
+
+    @property
+    def resizable(self) -> bool:
+        return True
+
+    @property
+    def decorations(self) -> bool:
+        return True
+
+    @property
+    def transparent(self) -> bool:
+        return False
+
+    @property
+    def always_on_top(self) -> bool:
+        return False
+
+    # TODO: pub icon: Option<Icon>,
+
+
+class Settings:
+    @property
+    def default_text_size(self) -> int:
+        return 20
+
+    @property
+    def exit_on_close_request(self) -> bool:
+        return True
+
+    @property
+    def antialiasing(self) -> bool:
+        return True
+
+    # TODO: default_font
+
+    @property
+    def window(self) -> Optional[WindowSettings]:
+        return None
+
+
+class IcedApp(metaclass=ABCMeta):
+    def settings(self) -> Optional[Settings]:
+        return None
+
+    def new(self) -> Optional[Commands]:
+        return None
+
+    def title(self) -> str:
+        return f'PyIced {__version__}'
+
+    def should_exit(self) -> bool:
+        return False
+
+    def scale_factor(self) -> float:
+        return 1.0
+
+    def fullscreen(self) -> bool:
+        return False
+
+    def update(self, msg: Message) -> Optional[Commands]:
+        return None
+
+    @abstractmethod
+    def view(self) -> Element:
+        ...
+
+
+def run_iced(app: IcedApp) -> NoReturn:
+    new = app.new
+    title = app.title
+    update = app.update
+    should_exit = app.should_exit
+    scale_factor = app.scale_factor
+    fullscreen = app.fullscreen
+    view = app.view
+    settings = app.settings
+
+    with in_async_loop() as loop:
+        return _pyiced.run_iced(
+            loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
+        )
 
 
 async def thread_code(put_task):
@@ -54,18 +161,3 @@ def in_async_loop():
             done()
     finally:
         thread.join()
-
-
-def run_iced(obj):
-    new = getattr(obj, 'new', None)
-    title = getattr(obj, 'title', None)
-    update = getattr(obj, 'update', None)
-    should_exit = getattr(obj, 'should_exit', None)
-    scale_factor = getattr(obj, 'scale_factor', None)
-    fullscreen = getattr(obj, 'fullscreen', None)
-    view = getattr(obj, 'view', None)
-    settings = getattr(obj, 'settings', None)
-    with in_async_loop() as loop:
-        return _pyiced.run_iced(
-            loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
-        )

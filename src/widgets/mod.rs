@@ -85,7 +85,7 @@ init_mod!(
     Tooltip(tooltip -> TooltipBuilder),
 );
 
-#[pyclass(name = "Element", module = "pyiced.pyiced")]
+#[pyclass(name = "Element", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedWidgetBuilder(pub WidgetBuilder);
 

@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
-#[pyclass(name = "Font", module = "pyiced.pyiced")]
+#[pyclass(name = "Font", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedFont(pub Font, Private);
 

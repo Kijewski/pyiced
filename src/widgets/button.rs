@@ -33,6 +33,34 @@ impl GCProtocol for ButtonBuilder {
 }
 
 #[pyfunction(name = "button")]
+/// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None)
+/// --
+///
+/// Make a button
+/// 
+/// Parameters
+/// ----------
+/// state : ButtonState
+///     Current state of the button. The same object must be given between calls.
+/// content : Element
+///     The element displayed inside the button, e.g. a :func:`~pyiced.text`.
+/// width : Length
+///     Width the the button.
+/// height : Length
+///     Height the the button.
+/// min_width : int
+///     Minimum width of the button in pixels.
+/// min_height : int
+///     Minimum height of the button in pixels.
+/// padding : int
+///     Amount of pixels surrounding the contained element.
+/// on_press : Message
+///     Message to send when the key was clicked. Without this argument the button won't be clickable.
+///
+/// Returns
+/// -------
+/// Element
+///     Newly created button.
 fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,

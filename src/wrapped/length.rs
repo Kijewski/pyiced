@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
-#[pyclass(name = "Length", module = "pyiced.pyiced")]
+#[pyclass(name = "Length", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedLength(pub Length, Private);
 

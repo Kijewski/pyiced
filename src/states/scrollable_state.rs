@@ -15,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type ScrollableState = Arc<Mutex<State>>;
 
-#[pyclass(name = "ScrollableState", module = "pyiced.pyiced")]
+#[pyclass(name = "ScrollableState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedScrollableState(pub ScrollableState);
 

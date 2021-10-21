@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
-#[pyclass(name = "SvgHandle", module = "pyiced.pyiced")]
+#[pyclass(name = "SvgHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedSvgHandle(pub Handle, Private);
 

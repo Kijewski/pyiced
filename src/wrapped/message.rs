@@ -8,7 +8,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[pyclass(name = "Message", module = "pyiced.pyiced", gc)]
+#[pyclass(name = "Message", module = "pyiced", gc)]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedMessage(pub Message);
 

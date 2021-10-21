@@ -1,13 +1,22 @@
 [package]
-name = "pyiced"
+name = "_pyiced"
 edition = "2021"
 license = "MIT"
 
+# KEEP SYNCHRONOUS TO CARGO.TOML
+# KEEP SYNCHRONOUS TO DOCS/CONF.PY
 # KEEP SYNCHRONOUS TO SETUP.PY
+# KEEP SYNCHRONOUS TO REQUIREMENTS.READTHEDOCS.TXT
+
+# KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
+
 authors = ["René Kijewski <rene.[SURNAME]@fu-berlin.de>"]
 homepage = "https://github.com/Kijewski/pyiced"
-# KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
 version = "0.3.0"
+
+[lib]
+name = "_pyiced"
+crate-type = ["cdylib"]
 
 [dependencies]
 futures-util = "0.3"
@@ -21,10 +30,6 @@ pyo3 = { version = "0.14", default-features = false, features = ["extension-modu
 pyo3-asyncio = { version = "0.14", features = ["attributes", "tokio-runtime"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", default-features = false, features = ["parking_lot"] }
-
-[lib]
-name = "pyiced"
-crate-type = ["cdylib"]
 
 [profile.release]
 opt-level = "s"

@@ -3,5 +3,5 @@ from setuptools_rust import RustExtension, Strip
 
 
 setup(
-    rust_extensions=[RustExtension('pyiced.pyiced', 'Cargo.toml', debug=False, strip=Strip.Debug)],
+    rust_extensions=[RustExtension('pyiced._pyiced', 'Cargo.toml', debug=False, strip=Strip.Debug)],
 )

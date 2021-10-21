@@ -27,7 +27,7 @@ init_mod! {
 }
 
 #[pymodule]
-fn pyiced(py: Python, m: &PyModule) -> PyResult<()> {
+fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     init_mod(py, m)?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
@@ -202,7 +202,7 @@ macro_rules! wrap_rust_enum {
 
         #[pyclass(
             name = $Name,
-            module = "pyiced.pyiced",
+            module = "pyiced",
             freelist = $crate::CountIdents!($($UpperCase)*),
         )]
         #[derive(Debug, Clone)]

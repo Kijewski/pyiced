@@ -9,30 +9,33 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Private;
+
 #[pyclass(name = "Length", module = "pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedLength(pub Length);
+pub(crate) struct WrappedLength(pub Length, Private);
 
 #[pymethods]
 impl WrappedLength {
     #[staticmethod]
     fn fill() -> Self {
-        Self(Length::Fill)
+        Self(Length::Fill, Private)
     }
 
     #[staticmethod]
     fn fill_portion(i: u16) -> Self {
-        Self(Length::FillPortion(i))
+        Self(Length::FillPortion(i), Private)
     }
 
     #[staticmethod]
     fn shrink() -> Self {
-        Self(Length::Shrink)
+        Self(Length::Shrink, Private)
     }
 
     #[staticmethod]
     fn units(i: u16) -> Self {
-        Self(Length::Units(i))
+        Self(Length::Units(i), Private)
     }
 }
 

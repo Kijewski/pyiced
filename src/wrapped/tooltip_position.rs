@@ -1,37 +1,9 @@
-use iced::tooltip::Position;
-use pyo3::exceptions::PyValueError;
-use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
-
-use crate::common::debug_str;
-
-pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<WrappedTooltipPosition>()?;
-    Ok(())
-}
-
-#[pyclass(name = "TooltipPosition", module = "pyiced.pyiced")]
-#[derive(Debug, Clone)]
-pub(crate) struct WrappedTooltipPosition(pub Position);
-
-#[pymethods]
-impl WrappedTooltipPosition {
-    #[new]
-    fn new(v: &str) -> PyResult<Self> {
-        Ok(Self(match v {
-            "-" | "f" | "follow_cursor" | "FollowCursor" => Position::FollowCursor,
-            "^" | "t" | "top" | "Top" => Position::Top,
-            "v" | "b" | "bottom" | "Bottom" => Position::Bottom,
-            "<" | "l" | "left" | "Left" => Position::Left,
-            ">" | "r" | "right" | "Right" => Position::Right,
-            _ => return Err(PyValueError::new_err(v.to_owned())),
-        }))
+crate::wrap_rust_enum!(
+    "TooltipPosition" -> WrappedTooltipPosition(iced::tooltip::Position) {
+        FOLLOW_CURSOR -> iced::tooltip::Position::FollowCursor,
+        TOP -> iced::tooltip::Position::Top,
+        BOTTOM -> iced::tooltip::Position::Bottom,
+        LEFT -> iced::tooltip::Position::Left,
+        RIGHT -> iced::tooltip::Position::Right,
     }
-}
-
-#[pyproto]
-impl PyObjectProtocol for WrappedTooltipPosition {
-    fn __str__(&self) -> PyResult<String> {
-        debug_str(&self.0)
-    }
-}
+);

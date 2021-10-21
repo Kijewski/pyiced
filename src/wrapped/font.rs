@@ -9,9 +9,26 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Private;
+
 #[pyclass(name = "Font", module = "pyiced.pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedFont(pub Font);
+pub(crate) struct WrappedFont(pub Font, Private);
+
+#[pymethods]
+impl WrappedFont {
+    #[new]
+    fn new(_name: &str, _bytes: &[u8]) -> Self {
+        todo!() // needs 'static lifetime
+    }
+
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn DEFAULT() -> Self {
+        Self(Font::Default, Private)
+    }
+}
 
 #[pyproto]
 impl PyObjectProtocol for WrappedFont {

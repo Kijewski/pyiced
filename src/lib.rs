@@ -174,3 +174,62 @@ macro_rules! make_with_state {
         pub(crate) use __mod_with_state::with_state as $name;
     };
 }
+
+#[macro_export]
+macro_rules! wrap_rust_enum {
+    (
+        $Name:literal -> $WrappedName:ident($RustType:ty)
+        {
+            $($UpperCase:ident -> $Value:expr),* $(,)?
+        }
+    ) => {
+        use pyo3::prelude::*;
+        use pyo3::PyObjectProtocol;
+
+        use crate::common::debug_str;
+
+        pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
+            m.add_class::<$WrappedName>()?;
+            Ok(())
+        }
+
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        struct Private;
+
+        #[pyclass(
+            name = $Name,
+            module = "pyiced.pyiced",
+            freelist = $crate::CountIdents!($($UpperCase)*),
+        )]
+        #[derive(Debug, Clone)]
+        pub(crate) struct $WrappedName(pub $RustType, Private);
+
+        #[pymethods]
+        impl $WrappedName {
+            $(
+                #[classattr]
+                #[allow(non_snake_case)]
+                fn $UpperCase() -> Self {
+                    Self($Value, Private)
+                }
+            )*
+        }
+
+        #[pyproto]
+        impl PyObjectProtocol for $WrappedName {
+            fn __str__(&self) -> PyResult<String> {
+                debug_str(&self.0)
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! CountIdents {
+    () => {
+        0
+    };
+    ($ident:ident $($idents:ident)*) => {
+        (1 + $crate::CountIdents!($($idents)*))
+    };
+}

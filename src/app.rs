@@ -118,8 +118,8 @@ impl<'a> Application for PythonApp {
     fn background_color(&self) -> Color {
         match &self.interop.scale_factor {
             Some(scale_factor) => Python::with_gil(|py| match scale_factor.call0(py) {
-                Ok(s) => match s.as_ref(py).extract() {
-                    Ok(WrappedColor(value)) => value,
+                Ok(s) => match s.as_ref(py).extract::<WrappedColor>() {
+                    Ok(color) => color.0,
                     Err(err) => {
                         err.print(py);
                         Color::WHITE

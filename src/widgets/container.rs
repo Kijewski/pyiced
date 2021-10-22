@@ -32,6 +32,22 @@ impl GCProtocol for ContainerBuilder {
 }
 
 #[pyfunction(name = "container")]
+/// container($module, /, content, *, padding=None, width=None, height=None, max_width=None, max_height=None, align_x=None, align_y=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::container::Container <https://docs.rs/iced_native/0.4.0/iced_native/widget/container/struct.Container.html>`_
 fn make_container(
     content: &WrappedWidgetBuilder,
     padding: Option<u16>,

@@ -32,6 +32,36 @@ impl GCProtocol for TooltipBuilder {
 }
 
 #[pyfunction(name = "tooltip")]
+/// tooltip($module, /, content, tooltip, position, *, font, gap, padding)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// content : Element
+///     TODO
+/// tooltip : String
+///     TODO
+/// position : TooltipPosition
+///     TODO
+/// size : Optional[int]
+///     TODO
+/// font : Optional[Font]
+///     TODO
+/// gap : Optional[int]
+///     TODO
+/// padding : Optional[int]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::tooltip::Tooltip <https://docs.rs/iced_native/0.4.0/iced_native/widget/tooltip/struct.Tooltip.html>`_
 fn make_tooltip(
     content: &WrappedWidgetBuilder,
     tooltip: String,

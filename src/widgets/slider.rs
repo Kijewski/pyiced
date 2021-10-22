@@ -35,6 +35,40 @@ impl GCProtocol for SliderBuilder {
 }
 
 #[pyfunction(name = "slider")]
+/// slider($module, /, state, start, end, value, on_change, *, on_release=None, width=None, height=None, step=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// state : SliderState
+///     TODO
+/// start : float
+///     TODO
+/// end : float
+///     TODO
+/// value : float
+///     TODO
+/// on_change : Callable[[float], Optional[Message]]
+///     TODO
+/// on_release : Optional[Message]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[int]
+///     TODO
+/// step : Optiona[float]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::slider::Slider <https://docs.rs/iced_native/0.4.0/iced_native/widget/slider/struct.Slider.html>`_
 fn make_slider(
     state: &WrappedSliderState,
     start: f32,

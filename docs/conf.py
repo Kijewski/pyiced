@@ -16,12 +16,10 @@ needs_sphinx = '4.2'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.inheritance_diagram',
-    'sphinx_autodoc_typehints',
     'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.napoleon',
 ]
 
 napoleon_google_docstring = False
@@ -30,6 +28,8 @@ napoleon_type_aliases = {
     "Callable": "typing.Callable",
     "Optional": "typing.Optional",
 }
+
+autosectionlabel_prefix_document = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

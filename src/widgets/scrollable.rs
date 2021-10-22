@@ -34,6 +34,46 @@ pub(crate) struct ScrollableBuilder {
 impl GCProtocol for ScrollableBuilder {}
 
 #[pyfunction(name = "scrollable")]
+/// scrollable($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// state : ScrollableState
+///     TODO
+/// children : Iterator[Optional[Element]]
+///     TODO
+/// spacing : Optional[int]
+///     TODO
+/// padding : Optional[int]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[Length]
+///     TODO
+/// max_width : Optional[int]
+///     TODO
+/// max_height : Optional[int]
+///     TODO
+/// align_items : Optional[Align]
+///     TODO
+/// scrollbar_width : Optional[int]
+///     TODO
+/// scrollbar_margin : Optional[int]
+///     TODO
+/// scroller_width : Optional[int]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::scrollable::Scrollable <https://docs.rs/iced_native/0.4.0/iced_native/widget/scrollable/struct.Scrollable.html>`_
 fn make_scrollable(
     py: Python,
     state: &WrappedScrollableState,

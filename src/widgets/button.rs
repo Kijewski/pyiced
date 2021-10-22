@@ -61,7 +61,7 @@ impl GCProtocol for ButtonBuilder {
 /// Returns
 /// -------
 /// Element
-///     Newly created button.
+///     The newly created button.
 ///
 /// See also
 /// --------

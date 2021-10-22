@@ -23,6 +23,28 @@ pub(crate) struct ImageBuilder {
 impl GCProtocol for ImageBuilder {}
 
 #[pyfunction(name = "image")]
+/// image($module, /, handle, *, width=None, height=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// handle : ImageHandle
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[Length]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::image::Image <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Image.html>`_
 fn make_image(
     handle: &WrappedImageHandle,
     width: Option<&WrappedLength>,

@@ -1,7 +1,33 @@
 Displayable Elements
 ====================
 
-.. autofunction:: pyiced.no_element
+TODO
+
+Overview
+--------
+
+.. autosummary::
+    ~pyiced.button
+    ~pyiced.checkbox
+    ~pyiced.column
+    ~pyiced.container
+    ~pyiced.image
+    ~pyiced.pick_list
+    ~pyiced.progress_bar
+    ~pyiced.radio
+    ~pyiced.row
+    ~pyiced.rule
+    ~pyiced.scrollable
+    ~pyiced.slider
+    ~pyiced.space
+    ~pyiced.svg
+    ~pyiced.text
+    ~pyiced.text_input
+    ~pyiced.tooltip
+    ~pyiced.no_element
+
+Details
+-------
 
 .. autofunction:: pyiced.button
 
@@ -13,6 +39,8 @@ Displayable Elements
 
 .. autofunction:: pyiced.image
 
+.. autofunction:: pyiced.no_element
+
 .. autofunction:: pyiced.pick_list
 
 .. autofunction:: pyiced.progress_bar
@@ -23,7 +51,7 @@ Displayable Elements
 
 .. autofunction:: pyiced.rule
 
-.. autofunction:: pyiced.scrollbar
+.. autofunction:: pyiced.scrollable
 
 .. autofunction:: pyiced.slider
 

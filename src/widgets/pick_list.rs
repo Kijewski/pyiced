@@ -29,6 +29,30 @@ impl GCProtocol for PickListBuilder {
 }
 
 #[pyfunction(name = "pick_list")]
+/// pick_list($module, /, state, options, selected, on_selected)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// state : PickListState
+///     TODO
+/// options : Iterable[Optional[str]]
+///     TODO
+/// selected : Optional[str]
+///     TODO
+/// on_selected : Callable[[str], Optional[Message]]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::pick_list::PickList <https://docs.rs/iced_native/0.4.0/iced_native/widget/pick_list/struct.PickList.html>`_
 fn make_pick_list(
     py: Python,
     state: &WrappedPickListState,

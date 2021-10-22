@@ -29,6 +29,38 @@ pub(crate) struct TextBuilder {
 impl GCProtocol for TextBuilder {}
 
 #[pyfunction(name = "text")]
+/// text($module, /, label, *, size=None, color=None, font=None, width=None, height=None, horizontal_alignment=None, vertical_alignment=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// label : str
+///     TODO
+/// size : Optional[int]
+///     TODO
+/// color : Optional[Color]
+///     TODO
+/// font : Optional[Font]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[Length]
+///     TODO
+/// horizontal_alignment : Optional[HorizontalAlignment]
+///     TODO
+/// vertical_alignment : Optional[VerticalAlignment]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::text::Text <https://docs.rs/iced_native/0.4.0/iced_native/widget/text/struct.Text.html>`_
 fn make_text(
     label: String,
     size: Option<u16>,

@@ -34,6 +34,38 @@ impl GCProtocol for ColumnBuilder {
 }
 
 #[pyfunction(name = "column")]
+/// column($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_height=None, align_items=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// children : Iterable[Optional[Element]]
+///     TODO
+/// spacing : Optional[int]
+///     TODO
+/// padding : Optional[int]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[Length]
+///     TODO
+/// max_width : Optional[int]
+///     TODO
+/// max_height : Optional[int]
+///     TODO
+/// align_items : Optional[Align]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::column::Column <https://docs.rs/iced_native/0.4.0/iced_native/widget/column/struct.Column.html>`_
 fn make_column(
     py: Python,
     children: &PyAny,

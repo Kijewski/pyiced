@@ -37,6 +37,44 @@ impl GCProtocol for TextInputBuilder {
 }
 
 #[pyfunction(name = "text_input")]
+/// text_input($module, /, state, placeholder, value, on_change, *, font=None, width=None, max_width=None, padding=None, size=None, on_submit=None, password=False)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// state : TextInputState
+///     TODO
+/// placeholder : str
+///     TODO
+/// value : str
+///     TODO
+/// on_change : Callable[[str], Optional[Message]] 
+///     TODO
+/// font : Optional[Font]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// max_width : Optional[int]
+///     TODO
+/// padding : Optional[int]
+///     TODO
+/// size : Optional[int]
+///     TODO
+/// on_submit : Optional[Message]
+///     TODO
+/// password : bool
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::text_input::TextInput <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.TextInput.html>`_
 fn make_text_input(
     state: &WrappedTextInputState,
     placeholder: String,
@@ -48,7 +86,7 @@ fn make_text_input(
     padding: Option<u16>,
     size: Option<u16>,
     on_submit: Option<&WrappedMessage>,
-    password: bool,
+    password: Option<bool>,
 ) -> WrappedWidgetBuilder {
     TextInputBuilder {
         state: state.0.clone(),
@@ -61,7 +99,7 @@ fn make_text_input(
         padding,
         size,
         on_submit: on_submit.map(|o| o.0.clone()),
-        password,
+        password: password.unwrap_or(false),
     }
     .into()
 }

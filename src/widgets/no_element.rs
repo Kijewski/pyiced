@@ -16,6 +16,17 @@ pub(crate) struct NoElementBuilder;
 impl GCProtocol for NoElementBuilder {}
 
 #[pyfunction(name = "no_element")]
+/// no_element($module, /, content, *, padding=None, width=None, height=None, max_width=None, max_height=None, align_x=None, align_y=None)
+/// --
+///
+/// A :func:`~pyiced.space` with minimum width and height.
+/// 
+/// You should never actually need to use this function is code.
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created empty space.
 fn make_no_element() -> WrappedWidgetBuilder {
     NoElementBuilder.into()
 }

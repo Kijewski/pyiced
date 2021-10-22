@@ -23,6 +23,28 @@ pub(crate) struct SvgBuilder {
 impl GCProtocol for SvgBuilder {}
 
 #[pyfunction(name = "svg")]
+/// svg($module, /, handle, *, width=None, height=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// handle : SvgHandle
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// heigth : Optional[Length]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::svg::Svg <https://docs.rs/iced_native/0.4.0/iced_native/widget/svg/struct.Svg.html>`_
 fn make_svg(
     handle: &WrappedSvgHandle,
     width: Option<&WrappedLength>,

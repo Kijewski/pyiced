@@ -56,7 +56,7 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
         for name in &[
             "Awaitable",
             "Callable",
-            "List",
+            "Iterable",
             "NoReturn",
             "Optional",
             "Tuple",

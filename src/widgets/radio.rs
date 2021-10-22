@@ -33,6 +33,38 @@ impl GCProtocol for RadioBuilder {
 }
 
 #[pyfunction(name = "radio")]
+/// radio($module, /, value, label, selected, f, *, size=None, width=None, spacing=None, text_size=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// value : int
+///     TODO
+/// label : String
+///     TODO
+/// selected : Optional[int]
+///     TODO
+/// f : Callable[[int], Optional[Message]]
+///     TODO
+/// size : Optional[int]
+///     TODO
+/// width : Optional[Length]
+///     TODO
+/// spacing : Optional[int]
+///     TODO
+/// text_size : Optional[int]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::radio::Radio <https://docs.rs/iced_native/0.4.0/iced_native/widget/radio/struct.Radio.html>`_
 fn make_radio(
     value: i64,
     label: String,

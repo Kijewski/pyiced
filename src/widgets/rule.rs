@@ -1,4 +1,5 @@
 use iced::{Element, Rule};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
@@ -20,12 +21,40 @@ pub(crate) struct RuleBuilder {
 impl GCProtocol for RuleBuilder {}
 
 #[pyfunction(name = "rule")]
-fn make_rule(horizontal: Option<u16>, vertical: Option<u16>) -> WrappedWidgetBuilder {
-    RuleBuilder {
-        horizontal,
-        vertical,
+/// rule($module, *, horizontal=0, vertical=0)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// horizontal : int
+///     TODO
+/// vertical : int
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::rule::Rule <https://docs.rs/iced_native/0.4.0/iced_native/widget/rule/struct.Rule.html>`_
+fn make_rule(horizontal: Option<u16>, vertical: Option<u16>) -> PyResult<WrappedWidgetBuilder> {
+    let horizontal = horizontal.and_then(|v| match v {
+        0 => None,
+        v => Some(v),
+    });
+    let vertical = vertical.and_then(|v| match v {
+        0 => None,
+        v => Some(v),
+    });
+    if horizontal.is_some() != vertical.is_some() {
+        return Err(PyErr::new::<PyValueError, _>("You need to specify EITHER 'horizontal' OR 'vertical' with a value > 0."));
     }
-    .into()
+    let el = RuleBuilder { horizontal, vertical };
+    Ok(el.into())
 }
 
 impl ToNative for RuleBuilder {

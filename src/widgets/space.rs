@@ -20,6 +20,26 @@ pub(crate) struct SpaceBuilder {
 impl GCProtocol for SpaceBuilder {}
 
 #[pyfunction(name = "space")]
+/// space($module, *, width=None, height=None)
+/// --
+///
+/// Make a .
+///
+/// Parameters
+/// ----------
+/// width : Optional[Length]
+///     TODO
+/// height : Optional[Length]
+///     TODO
+///
+/// Returns
+/// -------
+/// Element
+///     The newly created .
+///
+/// See also
+/// --------
+/// * `iced_native::widget::space::Space <https://docs.rs/iced_native/0.4.0/iced_native/widget/space/struct.Space.html>`_
 fn make_space(
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,

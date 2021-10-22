@@ -63,36 +63,49 @@ class WindowSettings:
     def size(self) -> Tuple[int, int]:
         '''
         Dimensions of the newly crated window.
-    
-        Returns
-        -------
-        (int, int)
-            size in pixels
         '''
         return (1024, 768)
 
     @property
     def min_size(self) -> Optional[Tuple[int, int]]:
+        '''
+        TODO
+        '''
         return None
 
     @property
     def max_size(self) -> Optional[Tuple[int, int]]:
+        '''
+        TODO
+        '''
         return None
 
     @property
     def resizable(self) -> bool:
+        '''
+        TODO
+        '''
         return True
 
     @property
     def decorations(self) -> bool:
+        '''
+        TODO
+        '''
         return True
 
     @property
     def transparent(self) -> bool:
+        '''
+        TODO
+        '''
         return False
 
     @property
     def always_on_top(self) -> bool:
+        '''
+        TODO
+        '''
         return False
 
     # TODO: pub icon: Option<Icon>,
@@ -101,60 +114,108 @@ class WindowSettings:
 class Settings:
     @property
     def default_text_size(self) -> int:
+        '''
+        TODO
+        '''
         return 20
 
     @property
     def exit_on_close_request(self) -> bool:
+        '''
+        TODO
+        '''
         return True
 
     @property
     def antialiasing(self) -> bool:
+        '''
+        TODO
+        '''
         return True
 
     # TODO: default_font
 
     @property
     def window(self) -> Optional[WindowSettings]:
+        '''
+        TODO
+        '''
         return None
 
 
 class IcedApp(metaclass=ABCMeta):
     def run(self, *, run=_run) -> NoReturn:
+        '''
+        TODO
+        '''
         return run_iced(self, run=run)
 
     def settings(self) -> Optional[Settings]:
+        '''
+        TODO
+        '''
         return None
 
     def new(self) -> Optional[Commands]:
+        '''
+        TODO
+        '''
         return None
 
     def title(self) -> str:
+        '''
+        TODO
+        '''
         return f'PyIced {__version__}'
 
     def should_exit(self) -> bool:
+        '''
+        TODO
+        '''
         return False
 
     def scale_factor(self) -> float:
+        '''
+        TODO
+        '''
         return 1.0
 
     def fullscreen(self) -> bool:
+        '''
+        TODO
+        '''
         return False
 
     def update(self, msg: Message) -> Optional[Commands]:
+        '''
+        TODO
+        '''
         return None
 
     def subscriptions(self) -> Optional[Iterable[Subscription]]:
+        '''
+        TODO
+        '''
         return None
 
     def background_color(self) -> Optional[Color]:
+        '''
+        TODO
+        '''
         return Color.WHITE
 
     @abstractmethod
     def view(self) -> Element:
+        '''
+        TODO
+        '''
         ...
 
 
 def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
+    '''
+    TODO
+    '''
     with in_async_loop(run) as loop:
         return _pyiced.run_iced(
             pyloop=loop,
@@ -172,6 +233,9 @@ def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
 
 
 async def thread_code(put_task):
+    '''
+    TODO
+    '''
     def done():
         loop.call_soon_threadsafe(done_event.set)
 
@@ -183,6 +247,9 @@ async def thread_code(put_task):
 
 @contextmanager
 def in_async_loop(run):
+    '''
+    TODO
+    '''
     put_task = Queue(1)
     thread = Thread(None, run, args=(thread_code(put_task),))
     thread.start()

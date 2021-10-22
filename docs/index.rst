@@ -11,6 +11,14 @@ Installation
 To install from source you need recent version of `Rust <https://www.rust-lang.org/>`_ installed in
 your <tt>$PATH</tt>. See e.g. `rustup <https://rustup.rs/>`_.
 
+Quick Example
+-------------
+
+A simple counter with two buttons to increment and decrement a value:
+
+.. literalinclude :: ../examples/counter.py
+   :language: python
+
 Table of Contents
 -----------------
 

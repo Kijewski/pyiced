@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
-
-from pyiced import Align, button, ButtonState, column, container, Message, IcedApp, Length, text
+from pyiced import (
+    Align, button, ButtonState, column, container, Message, IcedApp, Length,
+    text,
+)
 
 
 class App(IcedApp):
@@ -14,20 +15,31 @@ class App(IcedApp):
 
     def update(self, message):
         match message:
-            case Message(python='incr'):
+            case Message(python='increment'):
                 self.__value += 1
-            case Message(python='decr'):
+            case Message(python='decrement'):
                 self.__value -= 1
 
     def view(self):
+        increment_button = button(
+            self.__incr_button_state,
+            text('Increment'),
+            on_press=Message('increment'),
+        )
+        value_label = text(f'{self.__value}', size=50)
+        decerement_button = button(
+            self.__decr_button_state,
+            text('Decrement'),
+            on_press=Message('decrement'),
+        )
         return container(
             column([
-                button(self.__incr_button_state, text('Increment'), on_press=Message('incr')),
-                text(f'{self.__value}', size=50),
-                button(self.__decr_button_state, text('Decrement'), on_press=Message('decr')),
+                increment_button,
+                value_label,
+                decerement_button,
             ]),
-            padding=20, align_x=Align.CENTER, align_y=Align.CENTER, width=Length.FILL,
-            height=Length.FILL,
+            padding=20, align_x=Align.CENTER, align_y=Align.CENTER,
+            width=Length.FILL, height=Length.FILL,
         )
 
 

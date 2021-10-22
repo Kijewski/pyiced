@@ -52,20 +52,6 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     init_mod(py, m)?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
-    if let Ok(typing) = py.import("typing") {
-        for name in &[
-            "Awaitable",
-            "Callable",
-            "Iterable",
-            "NoReturn",
-            "Optional",
-            "Tuple",
-        ] {
-            if let Ok(value) = typing.getattr(name) {
-                let _ = m.add(name, value);
-            }
-        }
-    }
     Ok(())
 }
 

@@ -16,8 +16,8 @@ class App(IcedApp):
     def view(self):
         increment_button = button(
             self.__incr_button_state,  # To track the state across redraws.
-            text('Increment'),         # This is the in the button.
-            on_press=Message('incr'),  # This value is received update().
+            text('Increment'),         # This is content on the button.
+            on_press=Message('incr'),  # This value is received in update().
         )
         value_label = text(f'{self.__value}', size=50)
         decerement_button = button(
@@ -36,7 +36,9 @@ class App(IcedApp):
         )
 
     def update(self, message):
-        # When an event occures, this method is called.
+        # When an event occurs, this method is called.
+        # It can optionally return a list of async functions,
+        # to handle the event.
         match message:
             case Message(python='incr'):
                 self.__value += 1

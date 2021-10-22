@@ -2,12 +2,13 @@ use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
-use iced_native::subscription::events;
 use pyo3::exceptions::{PyAttributeError, PyException};
 use pyo3::prelude::*;
+use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
 use crate::common::{method_into_py, py_to_command, Message, ToNative};
+use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedColor, WrappedMessage};
 
@@ -31,6 +32,8 @@ struct Interop {
     pub scale_factor: Option<Py<PyAny>>,
     pub fullscreen: Option<Py<PyAny>>,
     pub view: Option<Py<PyAny>>,
+    pub subscriptions: Option<Py<PyAny>>,
+    pub background_color: Option<Py<PyAny>>,
 }
 
 impl<'a> Application for PythonApp {
@@ -52,7 +55,35 @@ impl<'a> Application for PythonApp {
     }
 
     fn subscription(&self) -> Subscription<Message> {
-        events().map(Message::Native)
+        match &self.interop.subscriptions {
+            Some(subscriptions) => Python::with_gil(|py| match subscriptions.call0(py) {
+                Ok(subscriptions) if !subscriptions.is_none(py) => {
+                    match subscriptions.as_ref(py).downcast::<PyList>() {
+                        Ok(subscriptions) => {
+                            Subscription::batch(subscriptions.iter().filter_map(|subscription| {
+                                match subscription.extract::<WrappedSubscription>() {
+                                    Ok(subscription) => Some(subscription.0.to_subscription()),
+                                    Err(err) => {
+                                        err.print(py);
+                                        None
+                                    },
+                                }
+                            }))
+                        },
+                        Err(err) => {
+                            PyErr::from(err).print(py);
+                            Subscription::none()
+                        },
+                    }
+                },
+                Ok(_) => Subscription::none(),
+                Err(err) => {
+                    err.print(py);
+                    Subscription::none()
+                },
+            }),
+            None => Subscription::none(),
+        }
     }
 
     fn title(&self) -> String {
@@ -99,7 +130,7 @@ impl<'a> Application for PythonApp {
     fn scale_factor(&self) -> f64 {
         match &self.interop.scale_factor {
             Some(scale_factor) => Python::with_gil(|py| match scale_factor.call0(py) {
-                Ok(s) => match s.as_ref(py).extract() {
+                Ok(s) => match s.extract(py) {
                     Ok(value) => value,
                     Err(err) => {
                         err.print(py);
@@ -116,9 +147,9 @@ impl<'a> Application for PythonApp {
     }
 
     fn background_color(&self) -> Color {
-        match &self.interop.scale_factor {
-            Some(scale_factor) => Python::with_gil(|py| match scale_factor.call0(py) {
-                Ok(s) => match s.as_ref(py).extract::<WrappedColor>() {
+        match &self.interop.background_color {
+            Some(background_color) => Python::with_gil(|py| match background_color.call0(py) {
+                Ok(s) => match s.extract::<WrappedColor>(py) {
                     Ok(color) => color.0,
                     Err(err) => {
                         err.print(py);
@@ -202,7 +233,9 @@ pub(crate) fn run_iced<'a>(
     scale_factor: &'a PyAny,
     fullscreen: &'a PyAny,
     view: &'a PyAny,
+    subscriptions: &'a PyAny,
     settings: &'a PyAny,
+    background_color: &'a PyAny,
 ) -> PyResult<()> {
     let methods = Interop {
         pyloop: pyloop.into_py(py),
@@ -213,6 +246,8 @@ pub(crate) fn run_iced<'a>(
         scale_factor: method_into_py(py, scale_factor),
         fullscreen: method_into_py(py, fullscreen),
         view: method_into_py(py, view),
+        subscriptions: method_into_py(py, subscriptions),
+        background_color: method_into_py(py, background_color),
     };
 
     let mut settings_ = Settings {

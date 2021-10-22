@@ -42,6 +42,7 @@ init_mod! {
     mod app;
     mod common;
     mod states;
+    mod subscriptions;
     mod widgets;
     mod wrapped;
 }
@@ -52,7 +53,14 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
     if let Ok(typing) = py.import("typing") {
-        for name in &["Awaitable", "Callable", "List", "NoReturn", "Optional", "Tuple"] {
+        for name in &[
+            "Awaitable",
+            "Callable",
+            "List",
+            "NoReturn",
+            "Optional",
+            "Tuple",
+        ] {
             if let Ok(value) = typing.getattr(name) {
                 let _ = m.add(name, value);
             }

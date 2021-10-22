@@ -15,6 +15,10 @@ Programming an IcedApp
    :members:
    :undoc-members:
 
+.. autoclass:: pyiced.Subscription
+   :members:
+   :undoc-members:
+
 .. autoclass:: pyiced.Settings
    :members:
    :undoc-members:

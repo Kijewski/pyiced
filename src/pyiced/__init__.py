@@ -41,6 +41,9 @@ __all__ = [
     # wrapped
     'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Message',
     'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
+
+    # subscription
+    'Subscription',
 ]
 
 for name in __all__:
@@ -137,29 +140,36 @@ class IcedApp(metaclass=ABCMeta):
     def update(self, msg: Message) -> Optional[Commands]:
         return None
 
+    def subscriptions(self) -> Optional[List[Subscription]]:
+        return None
+
+    def background_color(self) -> Optional[Color]:
+        return Color.WHITE
+
     @abstractmethod
     def view(self) -> Element:
         ...
 
 
 def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
-    new = app.new
-    title = app.title
-    update = app.update
-    should_exit = app.should_exit
-    scale_factor = app.scale_factor
-    fullscreen = app.fullscreen
-    view = app.view
-    settings = app.settings
-
     with in_async_loop(run) as loop:
         return _pyiced.run_iced(
-            loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
+            pyloop=loop,
+            new=app.new,
+            title=app.title,
+            update=app.update,
+            should_exit=app.should_exit,
+            scale_factor=app.scale_factor,
+            fullscreen=app.fullscreen,
+            view=app.view,
+            subscriptions=app.subscriptions,
+            settings=app.settings,
+            background_color=app.background_color,
         )
 
 
 async def thread_code(put_task):
-    def done(task):
+    def done():
         loop.call_soon_threadsafe(done_event.set)
 
     done_event = Event()

@@ -20,12 +20,19 @@ pub(crate) struct SpaceBuilder {
 impl GCProtocol for SpaceBuilder {}
 
 #[pyfunction(name = "space")]
-fn make_space(width: &WrappedLength, height: &WrappedLength) -> WrappedWidgetBuilder {
-    SpaceBuilder {
-        width: width.0,
-        height: height.0,
-    }
-    .into()
+fn make_space(
+    width: Option<&WrappedLength>,
+    height: Option<&WrappedLength>,
+) -> WrappedWidgetBuilder {
+    let width = match width {
+        Some(width) => width.0,
+        None => Length::Shrink,
+    };
+    let height = match height {
+        Some(height) => height.0,
+        None => Length::Shrink,
+    };
+    SpaceBuilder { width, height }.into()
 }
 
 impl ToNative for SpaceBuilder {

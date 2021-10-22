@@ -35,7 +35,7 @@ __all__ = [
 
     # widgets
     'Element', 'no_element', 'button', 'checkbox', 'column', 'container', 'image', 'pick_list',
-    'progress_bar', 'radio', 'row', 'rule', 'scrollbar', 'slider', 'space', 'svg', 'text',
+    'progress_bar', 'radio', 'row', 'rule', 'scrollable', 'slider', 'space', 'svg', 'text',
     'text_input', 'tooltip',
 
     # wrapped

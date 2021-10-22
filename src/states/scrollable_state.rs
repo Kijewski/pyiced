@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use iced::scrollable::State;
 use parking_lot::Mutex;
+use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 use pyo3::PyObjectProtocol;
 
@@ -31,6 +32,24 @@ impl WrappedScrollableState {
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))
+    }
+
+    // TODO: scroll
+    // TODO: scroll_to
+    // TODO: offset
+
+    fn is_scroller_grabbed(&self) -> PyResult<bool> {
+        match self.0.try_lock() {
+            Some(guard) => Ok(guard.is_scroller_grabbed()),
+            None => Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
+        }
+    }
+
+    fn is_scroll_box_touched(&self) -> PyResult<bool> {
+        match self.0.try_lock() {
+            Some(guard) => Ok(guard.is_scroll_box_touched()),
+            None => Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
+        }
     }
 }
 

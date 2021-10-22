@@ -48,12 +48,15 @@ fn make_row(
 ) -> WrappedWidgetBuilder {
     let children = children
         .iter()
-        .filter_map(|child| match child.extract() {
-            Ok(WrappedWidgetBuilder(widget)) => Some(widget),
-            Err(err) => {
-                err.print(py);
-                None
+        .filter_map(|child| match child.is_none() {
+            false => match child.extract() {
+                Ok(WrappedWidgetBuilder(widget)) => Some(widget),
+                Err(err) => {
+                    err.print(py);
+                    None
+                },
             },
+            true => None,
         })
         .collect();
     RowBuilder {

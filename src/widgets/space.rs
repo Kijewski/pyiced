@@ -2,7 +2,7 @@ use iced::{Element, Length, Space};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
-use crate::common::{empty_space, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
 
@@ -11,10 +11,10 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct SpaceBuilder {
-    pub width: NonOptional<Length>,
-    pub height: NonOptional<Length>,
+    pub width: Length,
+    pub height: Length,
 }
 
 impl GCProtocol for SpaceBuilder {}
@@ -22,19 +22,15 @@ impl GCProtocol for SpaceBuilder {}
 #[pyfunction(name = "space")]
 fn make_space(width: &WrappedLength, height: &WrappedLength) -> WrappedWidgetBuilder {
     SpaceBuilder {
-        width: Some(width.0),
-        height: Some(height.0),
+        width: width.0,
+        height: height.0,
     }
     .into()
 }
 
 impl ToNative for SpaceBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let (width, height) = match (self.width, self.height) {
-            (Some(width), Some(height)) => (width, height),
-            _ => return empty_space(),
-        };
-        let el = Space::new(width, height);
+        let el = Space::new(self.width, self.height);
         el.into()
     }
 }

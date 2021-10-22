@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedMessage};
@@ -13,13 +13,13 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct SliderBuilder {
-    pub state: NonOptional<SliderState>,
+    pub state: SliderState,
     pub start: f32,
     pub end: f32,
     pub value: f32,
-    pub on_change: NonOptional<Py<PyAny>>, // fn f(value: Float) -> crate::Message
+    pub on_change: Py<PyAny>, // fn f(value: Float) -> crate::Message
     pub on_release: Option<Message>,
     pub width: Option<Length>,
     pub height: Option<u16>,
@@ -29,9 +29,7 @@ pub(crate) struct SliderBuilder {
 
 impl GCProtocol for SliderBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        if let Some(on_change) = &self.on_change {
-            visit.call(on_change)?;
-        }
+        visit.call(&self.on_change)?;
         Ok(())
     }
 }
@@ -49,11 +47,11 @@ fn make_slider(
     step: Option<f32>,
 ) -> WrappedWidgetBuilder {
     SliderBuilder {
-        state: Some(state.0.clone()),
+        state: state.0.clone(),
         start,
         end,
         value,
-        on_change: Some(on_change),
+        on_change,
         on_release: on_release.map(|o| o.0.clone()),
         width: width.map(|o| o.0),
         height,
@@ -64,12 +62,8 @@ fn make_slider(
 
 impl ToNative for SliderBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let on_change = match &self.on_change {
-            Some(on_change) => on_change,
-            None => return empty_space(),
-        };
-        slider_with_state(self.state.as_ref(), |state| {
-            let on_change = to_msg_fn(on_change);
+        let on_change = to_msg_fn(&self.on_change);
+        slider_with_state(&self.state, |state| {
             let range = self.start..=self.end;
             let el = Slider::new(state, range, self.value, on_change);
             let el = assign!(el, self, width, height, step);

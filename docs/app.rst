@@ -23,12 +23,10 @@ Programming an IcedApp
    :members:
    :undoc-members:
 
-Type aliseses
--------------
+Type aliases
+------------
 
 .. autoclass:: pyiced.Command
-   :members:
-   :undoc-members:
 
 .. autoclass:: pyiced.Commands
    :members:

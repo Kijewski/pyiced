@@ -1,5 +1,5 @@
-(Enumerated) Values
-===================
+Values and Enums
+================
 
 .. autoclass:: pyiced.Align
    :members:

@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{scrollable_with_state, ScrollableState, WrappedScrollableState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedAlign, WrappedLength};
@@ -15,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone, Default)]
 pub(crate) struct ScrollableBuilder {
-    pub state: NonOptional<ScrollableState>,
+    pub state: ScrollableState,
     pub spacing: Option<u16>,
     pub padding: Option<u16>,
     pub width: Option<Length>,
@@ -46,7 +46,7 @@ fn make_scrollbar(
     scroller_width: Option<u16>,
 ) -> WrappedWidgetBuilder {
     ScrollableBuilder {
-        state: Some(state.0.clone()),
+        state: state.0.clone(),
         spacing,
         padding,
         width: width.map(|o| o.0),
@@ -63,7 +63,7 @@ fn make_scrollbar(
 
 impl ToNative for ScrollableBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        scrollable_with_state(self.state.as_ref(), |state| {
+        scrollable_with_state(&self.state, |state| {
             let el = Scrollable::new(state);
             let el = assign!(
                 el,

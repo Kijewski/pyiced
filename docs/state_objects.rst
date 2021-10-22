@@ -1,9 +1,12 @@
 State Objects
 =============
 
-The keep the state of :class:`~pyiced.Element Elements` across multiple invocations of
-:func:`~pyiced.IcedApp.view IcedApp.view()`, e.g. the cursor position in a 
-:func:`~pyiced.IcedApp.text_input text input`, you have to supply a state object.
+To keep the state of an :class:`~pyiced.Element` across multiple invocations of
+:meth:`~pyiced.IcedApp.view`, e.g. the cursor position in a 
+:func:`~pyiced.text_input`, you have to supply a state object.
+If the same state object is used for multiple elements in the same
+:meth:`~pyiced.IcedApp.view` call, only the first elements gets displayed,
+and further elements become empty space.
 
 .. autoclass:: pyiced.ButtonState
    :members:

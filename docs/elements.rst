@@ -1,5 +1,5 @@
-Elements
-========
+Displayable Elements
+====================
 
 .. autofunction:: pyiced.no_element
 

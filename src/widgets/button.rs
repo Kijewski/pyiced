@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedLength, WrappedMessage};
@@ -13,9 +13,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct ButtonBuilder {
-    pub state: NonOptional<ButtonState>,
+    pub state: ButtonState,
     pub content: Box<WidgetBuilder>,
     pub width: Option<Length>,
     pub height: Option<Length>,
@@ -36,31 +36,36 @@ impl GCProtocol for ButtonBuilder {
 /// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None)
 /// --
 ///
-/// Make a button
-/// 
+/// Make a button.
+///
 /// Parameters
 /// ----------
 /// state : ButtonState
 ///     Current state of the button. The same object must be given between calls.
 /// content : Element
 ///     The element displayed inside the button, e.g. a :func:`~pyiced.text`.
-/// width : Length
+/// width : Optional[Length]
 ///     Width the the button.
-/// height : Length
+/// height : Optional[Length]
 ///     Height the the button.
-/// min_width : int
+/// min_width : Optional[int]
 ///     Minimum width of the button in pixels.
-/// min_height : int
+/// min_height : Optional[int]
 ///     Minimum height of the button in pixels.
-/// padding : int
+/// padding : Optional[int]
 ///     Amount of pixels surrounding the contained element.
-/// on_press : Message
-///     Message to send when the key was clicked. Without this argument the button won't be clickable.
+/// on_press : Optional[Message]
+///     Message to send to the app's :meth:`~pyiced.IcedApp.update` loop when the key was clicked.
+///     Without this argument the button won't be clickable.
 ///
 /// Returns
 /// -------
 /// Element
 ///     Newly created button.
+///
+/// See also
+/// --------
+/// * `iced_native::widget::button::Button <https://docs.rs/iced_native/0.4.0/iced_native/widget/button/struct.Button.html>`_
 fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,
@@ -72,7 +77,7 @@ fn make_button(
     on_press: Option<&WrappedMessage>,
 ) -> WrappedWidgetBuilder {
     ButtonBuilder {
-        state: Some(state.0.clone()),
+        state: state.0.clone(),
         content: Box::new(content.0.clone()),
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
@@ -86,7 +91,7 @@ fn make_button(
 
 impl ToNative for ButtonBuilder {
     fn to_native(&self, py: Python) -> Element<'static, Message> {
-        button_with_state(self.state.as_ref(), |state| {
+        button_with_state(&self.state, |state| {
             let content = self.content.to_native(py);
             let el = Button::new(state, content);
             let el = assign!(el, self, width, height, min_width, min_height, padding);

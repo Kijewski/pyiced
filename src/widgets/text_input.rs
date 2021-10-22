@@ -3,7 +3,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{text_input_with_state, TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
@@ -13,12 +13,12 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct TextInputBuilder {
-    pub state: NonOptional<TextInputState>,
+    pub state: TextInputState,
     pub placeholder: String,
     pub value: String,
-    pub on_change: NonOptional<Py<PyAny>>, // fn f(value: String) -> crate::Message
+    pub on_change: Py<PyAny>, // fn f(value: String) -> crate::Message
     pub font: Option<Font>,
     pub width: Option<Length>,
     pub max_width: Option<u32>,
@@ -31,9 +31,7 @@ pub(crate) struct TextInputBuilder {
 
 impl GCProtocol for TextInputBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        if let Some(on_change) = &self.on_change {
-            visit.call(on_change)?;
-        }
+        visit.call(&self.on_change)?;
         Ok(())
     }
 }
@@ -53,10 +51,10 @@ fn make_text_input(
     password: bool,
 ) -> WrappedWidgetBuilder {
     TextInputBuilder {
-        state: Some(state.0.clone()),
+        state: state.0.clone(),
         placeholder,
         value,
-        on_change: Some(on_change),
+        on_change,
         font: font.map(|o| o.0),
         width: width.map(|o| o.0),
         max_width,
@@ -70,11 +68,8 @@ fn make_text_input(
 
 impl ToNative for TextInputBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let on_change = match &self.on_change {
-            Some(on_change) => to_msg_fn(on_change),
-            None => return empty_space(),
-        };
-        text_input_with_state(self.state.as_ref(), |state| {
+        text_input_with_state(&self.state, |state| {
+            let on_change = to_msg_fn(&self.on_change);
             let el = TextInput::new(state, &self.placeholder, &self.value, on_change);
             let el = assign!(el, self, font, width, max_width, padding, size);
             let el = match &self.on_submit {

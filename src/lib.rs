@@ -31,6 +31,13 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     init_mod(py, m)?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
+    if let Ok(typing) = py.import("typing") {
+        for name in &["Awaitable", "Callable", "List", "NoReturn", "Optional", "Tuple"] {
+            if let Ok(value) = typing.getattr(name) {
+                let _ = m.add(name, value);
+            }
+        }
+    }
     Ok(())
 }
 
@@ -157,10 +164,10 @@ macro_rules! make_with_state {
 
             #[allow(dead_code)]
             pub(crate) fn with_state(
-                arc: Option<&Arc<Mutex<$State>>>,
+                arc: &Arc<Mutex<$State>>,
                 make: impl for<'this> FnOnce(&'this mut $State) -> Result<$Widget, ()>,
             ) -> Element<'static, Message> {
-                let guard = match arc.and_then(|arc| arc.try_lock_arc()) {
+                let guard = match arc.try_lock_arc() {
                     Some(guard) => guard,
                     None => return empty_space(),
                 };

@@ -1,2 +1,3 @@
-include pyproject.toml Cargo.toml
+include Cargo.toml pyproject.toml requirements-dev.txt requirements.readthedocs.txt rustfmt.toml
+recursive-include docs *
 recursive-include src *

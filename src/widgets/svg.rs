@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{empty_space, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedSvgHandle};
 
@@ -13,9 +13,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct SvgBuilder {
-    pub handle: NonOptional<Handle>,
+    pub handle: Handle,
     pub width: Option<Length>,
     pub height: Option<Length>,
 }
@@ -29,7 +29,7 @@ fn make_svg(
     height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
     SvgBuilder {
-        handle: Some(handle.0.clone()),
+        handle: handle.0.clone(),
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
     }
@@ -38,11 +38,7 @@ fn make_svg(
 
 impl ToNative for SvgBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let handle = match &self.handle {
-            Some(handle) => handle.clone(),
-            None => return empty_space(),
-        };
-        let el = Svg::new(handle);
+        let el = Svg::new(self.handle.clone());
         let el = assign!(el, self, width, height);
         el.into()
     }

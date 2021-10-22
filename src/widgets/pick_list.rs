@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
-use crate::common::{empty_space, to_msg_fn, GCProtocol, Message, NonOptional, ToNative};
+use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{pick_list_with_state, PickListState, WrappedPickListState};
 use crate::widgets::WrappedWidgetBuilder;
 
@@ -14,19 +14,17 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub(crate) struct PickListBuilder {
-    pub state: NonOptional<PickListState>,
+    pub state: PickListState,
     pub options: Vec<String>,
     pub selected: Option<String>,
-    pub on_selected: NonOptional<Py<PyAny>>, // fn on_selected(value: String) -> crate::Message
+    pub on_selected: Py<PyAny>, // fn on_selected(value: String) -> crate::Message
 }
 
 impl GCProtocol for PickListBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        if let Some(on_selected) = &self.on_selected {
-            visit.call(on_selected)?;
-        }
+        visit.call(&self.on_selected)?;
         Ok(())
     }
 }
@@ -50,21 +48,18 @@ fn make_pick_list(
         })
         .collect();
     PickListBuilder {
-        state: Some(state.0.clone()),
+        state: state.0.clone(),
         options,
         selected,
-        on_selected: Some(on_selected),
+        on_selected,
     }
     .into()
 }
 
 impl ToNative for PickListBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        let on_selected = match &self.on_selected {
-            Some(on_selected) => to_msg_fn(on_selected),
-            None => return empty_space(),
-        };
-        pick_list_with_state(self.state.as_ref(), |state| {
+        pick_list_with_state(&self.state, |state| {
+            let on_selected = to_msg_fn(&self.on_selected);
             let options = Cow::Owned(self.options.clone());
             let el = PickList::new(state, options, self.selected.clone(), on_selected);
             Ok(el)

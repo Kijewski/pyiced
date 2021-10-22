@@ -15,17 +15,14 @@ pub(crate) struct WrappedMessage(pub Message);
 #[pyproto]
 impl PyGCProtocol for WrappedMessage {
     fn __traverse__(&self, visit: PyVisit) -> Result<(), PyTraverseError> {
-        if let Message::Python(Some(obj)) = &self.0 {
+        if let Message::Python(obj) = &self.0 {
             visit.call(obj)?;
         }
         Ok(())
     }
 
     fn __clear__(&mut self) {
-        // Clear reference, this decrements ref counter.
-        if let Message::Python(obj) = &mut self.0 {
-            *obj = None;
-        }
+        *self = WrappedMessage(Message::None);
     }
 }
 
@@ -33,7 +30,7 @@ impl PyGCProtocol for WrappedMessage {
 impl WrappedMessage {
     #[new]
     fn new(value: Py<PyAny>) -> Self {
-        WrappedMessage(Message::Python(Some(value)))
+        WrappedMessage(Message::Python(value))
     }
 
     #[getter]
@@ -48,7 +45,7 @@ impl WrappedMessage {
     #[getter]
     fn python(&self, py: Python) -> Py<PyAny> {
         match &self.0 {
-            Message::Python(Some(value)) => value.into_py(py),
+            Message::Python(value) => value.into_py(py),
             _ => ().into_py(py),
         }
     }

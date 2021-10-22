@@ -19,10 +19,8 @@ pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
 pub(crate) enum Message {
     None,
     Native(Event),
-    Python(NonOptional<Py<PyAny>>),
+    Python(Py<PyAny>),
 }
-
-pub(crate) type NonOptional<T> = Option<T>;
 
 pub(crate) trait ToNative {
     fn to_native(&self, py: Python<'_>) -> Element<'static, Message>;
@@ -130,10 +128,7 @@ pub(crate) fn py_to_command(
 }
 
 #[allow(unused_variables)]
-pub(crate) trait GCProtocol
-where
-    Self: Default,
-{
+pub(crate) trait GCProtocol {
     fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
         Ok(())
     }

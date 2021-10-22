@@ -9,7 +9,7 @@ import pyiced
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+needs_sphinx = '4.2'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -24,6 +24,13 @@ extensions = [
     'sphinx.ext.autosectionlabel',
 ]
 
+napoleon_google_docstring = False
+napoleon_type_aliases = {
+    "Awaitable": "typing.Awaitable",
+    "Callable": "typing.Callable",
+    "Optional": "typing.Optional",
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -37,9 +44,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'PyIced'
-copyright = u'2021, René Kijewski'
-author = u'René Kijewski'
+project = 'PyIced'
+copyright = '2021, René Kijewski'
+author = 'René Kijewski'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -54,7 +61,7 @@ version = release  # '.'.join(release.split('.', 2)[:2])
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -80,7 +87,10 @@ html_theme = 'cloud'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['_static']
+html_static_path = ['_static']
+html_css_files = [
+    'custom.css',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -89,11 +99,12 @@ html_theme = 'cloud'
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
     '**': [
+        'globaltoc.html',
         'localtoc.html',
+        'sourcelink.html',
         'searchbox.html',
     ]
 }
-
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -126,7 +137,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'PyIced.tex', u'PyIced Documentation',
-     u'René Kijewski', 'manual'),
+     'René Kijewski', 'manual'),
 ]
 
 

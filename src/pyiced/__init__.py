@@ -1,10 +1,9 @@
 from abc import ABCMeta, abstractmethod
-from collections.abc import Awaitable
 from contextlib import contextmanager
-from asyncio import Event, get_event_loop, run
+from asyncio import Event, get_event_loop, run as _run
 from queue import Queue
 from threading import Thread
-from typing import NoReturn, Optional
+from typing import Awaitable, List, NoReturn, Optional, Tuple
 
 from . import _pyiced
 
@@ -33,27 +32,28 @@ __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
 
 Command = Awaitable[Optional[Message]]
-Commands = list[Command]
+Commands = List[Command]
 
 
 class WindowSettings:
     @property
-    def size(self) -> tuple[int, int]:
+    def size(self) -> Tuple[int, int]:
         '''
         Dimensions of the newly crated window.
     
         Returns
         -------
-        Size in pixels : (int, int)
+        (int, int)
+            size in pixels
         '''
         return (1024, 768)
 
     @property
-    def min_size(self) -> Optional[tuple[int, int]]:
+    def min_size(self) -> Optional[Tuple[int, int]]:
         return None
 
     @property
-    def max_size(self) -> Optional[tuple[int, int]]:
+    def max_size(self) -> Optional[Tuple[int, int]]:
         return None
 
     @property
@@ -122,7 +122,7 @@ class IcedApp(metaclass=ABCMeta):
         ...
 
 
-def run_iced(app: IcedApp) -> NoReturn:
+def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
     new = app.new
     title = app.title
     update = app.update
@@ -132,7 +132,7 @@ def run_iced(app: IcedApp) -> NoReturn:
     view = app.view
     settings = app.settings
 
-    with in_async_loop() as loop:
+    with in_async_loop(run) as loop:
         return _pyiced.run_iced(
             loop, new, title, update, should_exit, scale_factor, fullscreen, view, settings,
         )
@@ -149,7 +149,7 @@ async def thread_code(put_task):
 
 
 @contextmanager
-def in_async_loop():
+def in_async_loop(run):
     put_task = Queue(1)
     thread = Thread(None, run, args=(thread_code(put_task),))
     thread.start()

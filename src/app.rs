@@ -4,7 +4,6 @@ use iced::{
 };
 use pyo3::exceptions::{PyAttributeError, PyException};
 use pyo3::prelude::*;
-use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
 use crate::common::{method_into_py, py_to_command, Message, ToNative};
@@ -55,35 +54,46 @@ impl<'a> Application for PythonApp {
     }
 
     fn subscription(&self) -> Subscription<Message> {
-        match &self.interop.subscriptions {
-            Some(subscriptions) => Python::with_gil(|py| match subscriptions.call0(py) {
-                Ok(subscriptions) if !subscriptions.is_none(py) => {
-                    match subscriptions.as_ref(py).downcast::<PyList>() {
-                        Ok(subscriptions) => {
-                            Subscription::batch(subscriptions.iter().filter_map(|subscription| {
-                                match subscription.extract::<WrappedSubscription>() {
-                                    Ok(subscription) => Some(subscription.0.to_subscription()),
-                                    Err(err) => {
-                                        err.print(py);
-                                        None
-                                    },
-                                }
-                            }))
-                        },
-                        Err(err) => {
-                            PyErr::from(err).print(py);
-                            Subscription::none()
-                        },
-                    }
-                },
-                Ok(_) => Subscription::none(),
+        let subscriptions = match &self.interop.subscriptions {
+            Some(subscriptions) => subscriptions,
+            None => return Subscription::none(),
+        };
+        Python::with_gil(|py| {
+            let subscriptions = match subscriptions.call0(py) {
+                Ok(subscriptions) if !subscriptions.is_none(py) => subscriptions,
+                Ok(_) => return Subscription::none(),
                 Err(err) => {
                     err.print(py);
-                    Subscription::none()
-                },
-            }),
-            None => Subscription::none(),
-        }
+                    return Subscription::none();
+                }
+            };
+            let subscriptions = match subscriptions.as_ref(py).iter() {
+                Ok(subscriptions) => subscriptions,
+                Err(err) => {
+                    err.print(py);
+                    return Subscription::none();
+                }
+            };
+            let subscriptions = subscriptions.filter_map(|subscription| {
+                let subscription = match subscription {
+                    Ok(subscription) if !subscription.is_none() => subscription,
+                    Ok(_) => return None,
+                    Err(err) => {
+                        err.print(py);
+                        return None;
+                    },
+                };
+                let subscription = match subscription.extract::<WrappedSubscription>() {
+                    Ok(subscription) => subscription.0,
+                    Err(err) => {
+                        err.print(py);
+                        return None;
+                    },
+                };
+                Some(subscription.to_subscription())
+            });
+            Subscription::batch(subscriptions)
+        })
     }
 
     fn title(&self) -> String {

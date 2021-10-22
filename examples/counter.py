@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pyiced import button, ButtonState, column, container, Message, IcedApp, Length, text
+from pyiced import Align, button, ButtonState, column, container, Message, IcedApp, Length, text
 
 
 class App(IcedApp):
@@ -26,7 +26,8 @@ class App(IcedApp):
                 text(f'{self.__value}', size=50),
                 button(self.__decr_button_state, text('Decrement'), on_press=Message('decr')),
             ]),
-            padding=20, center_x=True, center_y=True, width=Length.FILL, height=Length.FILL,
+            padding=20, align_x=Align.CENTER, align_y=Align.CENTER, width=Length.FILL,
+            height=Length.FILL,
         )
 
 

@@ -5,7 +5,7 @@ use iced::{Command, Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::PyException;
 use pyo3::prelude::*;
-use pyo3::types::{PyList, PyTuple};
+use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyVisit};
 use pyo3_asyncio::into_future_with_loop;
 
@@ -80,51 +80,59 @@ pub(crate) fn method_into_py(py: Python, method: &PyAny) -> Option<Py<PyAny>> {
 pub(crate) fn py_to_command(
     py: Python,
     pyloop: &Py<PyAny>,
-    vec: PyResult<PyObject>,
+    vec: PyResult<Py<PyAny>>,
 ) -> Command<Message> {
-    match vec {
-        Ok(vec) if !vec.is_none(py) => match vec.as_ref(py).downcast::<PyList>() {
-            Ok(vec) if !vec.is_none() && !vec.is_empty() => {
-                let vec = vec.into_iter().map(|command| {
-                    match into_future_with_loop(pyloop.as_ref(py), command) {
-                        Ok(fut) => Command::from({
-                            fut.map(|result| {
-                                Python::with_gil(|py| match result {
-                                    Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
-                                        Ok(WrappedMessage(msg)) => msg,
-                                        Err(err) => {
-                                            err.print(py);
-                                            Message::None
-                                        },
-                                    },
-                                    Ok(_) => Message::None,
-                                    Err(err) => {
-                                        err.print(py);
-                                        Message::None
-                                    },
-                                })
-                            })
-                        }),
-                        Err(err) => {
-                            Python::with_gil(|py| err.print(py));
-                            Command::from(async { Message::None })
-                        },
-                    }
-                });
-                Command::batch(vec)
-            },
-            Ok(_) => Command::none(),
-            Err(err) => {
-                PyErr::from(err).print(py);
-                Command::none()
-            },
-        },
-        Ok(_) => Command::none(),
+    let vec = match vec {
+        Ok(vec) if !vec.is_none(py) => vec,
+        Ok(_) => return Command::none(),
         Err(err) => {
             err.print(py);
-            Command::none()
-        },
-    }
+            return Command::none();
+        }
+    };
+    let vec = match vec.as_ref(py).iter() {
+        Ok(vec) => vec,
+        Err(err) => {
+            err.print(py);
+            return Command::none();
+        }
+    };
+
+    let vec = vec
+        .into_iter()
+        .filter_map(|command| {
+            let command = match command {
+                Ok(command) => command,
+                Err(err) => {
+                    err.print(py);
+                    return None;
+                },
+            };
+            let fut = match into_future_with_loop(pyloop.as_ref(py), command) {
+                Ok(fut) => fut,
+                Err(err) => {
+                    err.print(py);
+                    return None;
+                },
+            };
+            Some(Command::from(fut.map(|result| {
+                Python::with_gil(|py| match result {
+                    Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
+                        Ok(WrappedMessage(msg)) => msg,
+                        Err(err) => {
+                            err.print(py);
+                            Message::None
+                        },
+                    },
+                    Ok(_) => Message::None,
+                    Err(err) => {
+                        err.print(py);
+                        Message::None
+                    },
+                })
+            })))
+        });
+    Command::batch(vec)
 }
 
 #[allow(unused_variables)]

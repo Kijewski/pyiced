@@ -1,6 +1,5 @@
 use iced::{Align, Element, Length, Scrollable};
 use pyo3::prelude::*;
-use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
@@ -17,7 +16,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone)]
 pub(crate) struct ScrollableBuilder {
     pub state: ScrollableState,
-    pub contents: Vec<WidgetBuilder>,
+    pub children: Vec<WidgetBuilder>,
     pub spacing: Option<u16>,
     pub padding: Option<u16>,
     pub width: Option<Length>,
@@ -38,7 +37,7 @@ impl GCProtocol for ScrollableBuilder {}
 fn make_scrollable(
     py: Python,
     state: &WrappedScrollableState,
-    contents: &PyList,
+    children: &PyAny,
     spacing: Option<u16>,
     padding: Option<u16>,
     width: Option<&WrappedLength>,
@@ -50,23 +49,29 @@ fn make_scrollable(
     scrollbar_margin: Option<u16>,
     scroller_width: Option<u16>,
     // on_scroll: Py<PyAny>,
-) -> WrappedWidgetBuilder {
-    let contents = contents
-        .iter()
-        .filter_map(|content| match content.is_none() {
-            false => match content.extract() {
-                Ok(WrappedWidgetBuilder(widget)) => Some(widget),
-                Err(err) => {
-                    err.print(py);
-                    None
+) -> PyResult<WrappedWidgetBuilder> {
+    let children = children
+        .iter()?
+        .filter_map(|child| match child {
+            Ok(child) => match child.is_none() {
+                false => match child.extract() {
+                    Ok(WrappedWidgetBuilder(widget)) => Some(widget),
+                    Err(err) => {
+                        err.print(py);
+                        None
+                    },
                 },
+                true => None,
             },
-            true => None,
+            Err(err) => {
+                err.print(py);
+                None
+            },
         })
         .collect();
-    ScrollableBuilder {
+    let el = ScrollableBuilder {
         state: state.0.clone(),
-        contents,
+        children,
         spacing,
         padding,
         width: width.map(|o| o.0),
@@ -78,8 +83,8 @@ fn make_scrollable(
         scrollbar_margin,
         scroller_width,
         // on_scroll,
-    }
-    .into()
+    };
+    Ok(el.into())
 }
 
 impl ToNative for ScrollableBuilder {
@@ -90,7 +95,7 @@ impl ToNative for ScrollableBuilder {
             //     false => el.on_scroll(to_msg_fn(&self.on_scroll)),
             //     true => el,
             // };
-            let el = self.contents.iter().fold(el, |el, c| el.push(c.to_native(py)));
+            let el = self.children.iter().fold(el, |el, c| el.push(c.to_native(py)));
             let el = assign!(
                 el,
                 self,

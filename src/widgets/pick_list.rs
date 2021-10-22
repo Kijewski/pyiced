@@ -2,7 +2,6 @@ use std::borrow::Cow;
 
 use iced::{Element, PickList};
 use pyo3::prelude::*;
-use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
@@ -33,27 +32,34 @@ impl GCProtocol for PickListBuilder {
 fn make_pick_list(
     py: Python,
     state: &WrappedPickListState,
-    options: &PyList,
+    options: &PyAny,
     selected: Option<String>,
     on_selected: Py<PyAny>,
-) -> WrappedWidgetBuilder {
+) -> PyResult<WrappedWidgetBuilder> {
     let options = options
-        .iter()
-        .filter_map(|child| match child.str() {
-            Ok(s) => Some(s.to_string()),
+        .iter()?
+        .filter_map(|child| match child {
+            Ok(child) if !child.is_none() => match child.str() {
+                Ok(s) => Some(s.to_string()),
+                Err(err) => {
+                    err.print(py);
+                    None
+                },
+            },
+            Ok(_) => None,
             Err(err) => {
                 err.print(py);
                 None
-            },
+            }
         })
         .collect();
-    PickListBuilder {
+    let el = PickListBuilder {
         state: state.0.clone(),
         options,
         selected,
         on_selected,
-    }
-    .into()
+    };
+    Ok(el.into())
 }
 
 impl ToNative for PickListBuilder {

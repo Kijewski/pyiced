@@ -23,7 +23,7 @@ from contextlib import contextmanager
 from asyncio import Event, get_event_loop, run as _run
 from queue import Queue
 from threading import Thread
-from typing import Awaitable, List, NoReturn, Optional, Tuple
+from typing import Awaitable, Iterable, NoReturn, Optional, Tuple
 
 from . import _pyiced
 
@@ -55,7 +55,7 @@ __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
 
 Command = Awaitable[Optional[Message]]
-Commands = List[Command]
+Commands = Iterable[Command]
 
 
 class WindowSettings:
@@ -143,7 +143,7 @@ class IcedApp(metaclass=ABCMeta):
     def update(self, msg: Message) -> Optional[Commands]:
         return None
 
-    def subscriptions(self) -> Optional[List[Subscription]]:
+    def subscriptions(self) -> Optional[Iterable[Subscription]]:
         return None
 
     def background_color(self) -> Optional[Color]:

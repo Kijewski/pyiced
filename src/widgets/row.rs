@@ -1,6 +1,5 @@
 use iced::{Align, Element, Length, Row};
 use pyo3::prelude::*;
-use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
@@ -37,7 +36,7 @@ impl GCProtocol for RowBuilder {
 #[pyfunction(name = "row")]
 fn make_row(
     py: Python,
-    children: &PyList,
+    children: &PyAny,
     spacing: Option<u16>,
     padding: Option<u16>,
     width: Option<&WrappedLength>,
@@ -45,21 +44,27 @@ fn make_row(
     max_width: Option<u32>,
     max_height: Option<u32>,
     align_items: Option<&WrappedAlign>,
-) -> WrappedWidgetBuilder {
+) -> PyResult<WrappedWidgetBuilder> {
     let children = children
-        .iter()
-        .filter_map(|child| match child.is_none() {
-            false => match child.extract() {
-                Ok(WrappedWidgetBuilder(widget)) => Some(widget),
-                Err(err) => {
-                    err.print(py);
-                    None
+        .iter()?
+        .filter_map(|child| match child {
+            Ok(child) => match child.is_none() {
+                false => match child.extract() {
+                    Ok(WrappedWidgetBuilder(widget)) => Some(widget),
+                    Err(err) => {
+                        err.print(py);
+                        None
+                    },
                 },
+                true => None,
             },
-            true => None,
+            Err(err) => {
+                err.print(py);
+                None
+            },
         })
         .collect();
-    RowBuilder {
+    let el = RowBuilder {
         children,
         spacing,
         padding,
@@ -68,8 +73,8 @@ fn make_row(
         max_width,
         max_height,
         align_items: align_items.map(|o| o.0),
-    }
-    .into()
+    };
+    Ok(el.into())
 }
 
 impl ToNative for RowBuilder {

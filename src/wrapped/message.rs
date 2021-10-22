@@ -29,8 +29,8 @@ impl PyGCProtocol for WrappedMessage {
 #[pymethods]
 impl WrappedMessage {
     #[new]
-    fn new(value: Py<PyAny>) -> Self {
-        WrappedMessage(Message::Python(value))
+    fn new(python: Py<PyAny>) -> Self {
+        WrappedMessage(Message::Python(python))
     }
 
     #[getter]

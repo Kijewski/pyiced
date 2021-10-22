@@ -119,6 +119,9 @@ class Settings:
 
 
 class IcedApp(metaclass=ABCMeta):
+    def run(self, *, run=_run) -> NoReturn:
+        return run_iced(self, run=run)
+
     def settings(self) -> Optional[Settings]:
         return None
 

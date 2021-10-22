@@ -19,23 +19,25 @@ pub(crate) struct WrappedLength(pub Length, Private);
 #[pymethods]
 impl WrappedLength {
     #[staticmethod]
-    fn fill() -> Self {
-        Self(Length::Fill, Private)
-    }
-
-    #[staticmethod]
     fn fill_portion(i: u16) -> Self {
         Self(Length::FillPortion(i), Private)
     }
 
     #[staticmethod]
-    fn shrink() -> Self {
-        Self(Length::Shrink, Private)
-    }
-
-    #[staticmethod]
     fn units(i: u16) -> Self {
         Self(Length::Units(i), Private)
+    }
+
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn FILL() -> Self {
+        Self(Length::Fill, Private)
+    }
+
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn SHRINK() -> Self {
+        Self(Length::Shrink, Private)
     }
 }
 

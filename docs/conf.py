@@ -3,6 +3,7 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 
 import pyiced
+import pyiced.css_color
 
 
 # -- General configuration ------------------------------------------------
@@ -23,11 +24,6 @@ extensions = [
 ]
 
 napoleon_google_docstring = False
-napoleon_type_aliases = {
-    "Awaitable": "typing.Awaitable",
-    "Callable": "typing.Callable",
-    "Optional": "typing.Optional",
-}
 
 autosectionlabel_prefix_document = True
 

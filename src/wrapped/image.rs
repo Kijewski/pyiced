@@ -13,21 +13,23 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
-
+/// TODO
 #[pyclass(name = "ImageHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedImageHandle(pub Handle, Private);
 
 #[pymethods]
 impl WrappedImageHandle {
+    /// TODO
     #[staticmethod]
     fn from_path(path: PathBuf) -> Self {
         Self(Handle::from_path(path), Private)
     }
 
+    /// TODO
     #[staticmethod]
-    fn from_memory(path: Vec<u8>) -> Self {
-        Self(Handle::from_memory(path), Private)
+    fn from_memory(bytes: Vec<u8>) -> Self {
+        Self(Handle::from_memory(bytes), Private)
     }
 }
 

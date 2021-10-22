@@ -15,6 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type SliderState = Arc<Mutex<State>>;
 
+/// TODO
 #[pyclass(name = "SliderState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedSliderState(pub SliderState);
@@ -28,6 +29,7 @@ impl PyObjectProtocol for WrappedSliderState {
 
 #[pymethods]
 impl WrappedSliderState {
+    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))

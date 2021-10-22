@@ -1,7 +1,11 @@
 crate::wrap_rust_enum!(
+    /// TODO
     "HorizontalAlignment" -> WrappedHorizontalAlignment(iced::HorizontalAlignment) {
-        LEFT -> iced::HorizontalAlignment::Left,
-        CENTER -> iced::HorizontalAlignment::Center,
-        RIGHT -> iced::HorizontalAlignment::Right,
+        /// TODO
+        LEFT -> Left,
+        /// TODO
+        CENTER -> Center,
+        /// TODO
+        RIGHT -> Right,
     }
 );

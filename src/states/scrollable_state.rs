@@ -16,6 +16,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type ScrollableState = Arc<Mutex<State>>;
 
+/// TODO
 #[pyclass(name = "ScrollableState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedScrollableState(pub ScrollableState);
@@ -29,6 +30,7 @@ impl PyObjectProtocol for WrappedScrollableState {
 
 #[pymethods]
 impl WrappedScrollableState {
+    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))
@@ -38,6 +40,7 @@ impl WrappedScrollableState {
     // TODO: scroll_to
     // TODO: offset
 
+    /// TODO
     fn is_scroller_grabbed(&self) -> PyResult<bool> {
         match self.0.try_lock() {
             Some(guard) => Ok(guard.is_scroller_grabbed()),
@@ -45,6 +48,7 @@ impl WrappedScrollableState {
         }
     }
 
+    /// TODO
     fn is_scroll_box_touched(&self) -> PyResult<bool> {
         match self.0.try_lock() {
             Some(guard) => Ok(guard.is_scroll_box_touched()),

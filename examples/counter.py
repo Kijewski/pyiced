@@ -13,24 +13,17 @@ class App(IcedApp):
     def title(self):
         return 'Counter'
 
-    def update(self, message):
-        match message:
-            case Message(python='increment'):
-                self.__value += 1
-            case Message(python='decrement'):
-                self.__value -= 1
-
     def view(self):
         increment_button = button(
-            self.__incr_button_state,
-            text('Increment'),
-            on_press=Message('increment'),
+            self.__incr_button_state,  # To track the state across redraws.
+            text('Increment'),         # This is the in the button.
+            on_press=Message('incr'),  # This value is received update().
         )
         value_label = text(f'{self.__value}', size=50)
         decerement_button = button(
             self.__decr_button_state,
             text('Decrement'),
-            on_press=Message('decrement'),
+            on_press=Message('decr'),
         )
         return container(
             column([
@@ -42,6 +35,16 @@ class App(IcedApp):
             width=Length.FILL, height=Length.FILL,
         )
 
+    def update(self, message):
+        # When an event occures, this method is called.
+        match message:
+            case Message(python='incr'):
+                self.__value += 1
+            case Message(python='decr'):
+                self.__value -= 1
+
 
 if __name__ == '__main__':
+    # This function only returns if there is an error on start-up.
+    # Otherwise the program gets terminated when the window is closed.
     App().run()

@@ -217,9 +217,14 @@ macro_rules! make_with_state {
 #[macro_export]
 macro_rules! wrap_rust_enum {
     (
+        $( #[doc = $class_doc:expr] )*
         $Name:literal -> $WrappedName:ident($RustType:ty)
         {
-            $($UpperCase:ident -> $Value:expr),* $(,)?
+            $(
+                $( #[doc = $value_doc:expr] )*
+                $UpperCase:ident -> $Value:ident
+            ),*
+            $(,)?
         }
     ) => {
         use pyo3::prelude::*;
@@ -235,6 +240,7 @@ macro_rules! wrap_rust_enum {
         #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
         struct Private;
 
+        $( #[doc = $class_doc] )*
         #[pyclass(
             name = $Name,
             module = "pyiced",
@@ -246,10 +252,11 @@ macro_rules! wrap_rust_enum {
         #[pymethods]
         impl $WrappedName {
             $(
+                $( #[doc = $value_doc] )*
                 #[classattr]
                 #[allow(non_snake_case)]
                 fn $UpperCase() -> Self {
-                    Self($Value, Private)
+                    Self(<$RustType>::$Value, Private)
                 }
             )*
         }
@@ -258,6 +265,14 @@ macro_rules! wrap_rust_enum {
         impl PyObjectProtocol for $WrappedName {
             fn __str__(&self) -> PyResult<String> {
                 debug_str(&self.0)
+            }
+
+            fn __repr__(&self) -> &'static str {
+                match self.0 {
+                    $(
+                        <$RustType>::$Value => concat!($Name, ".", stringify!($UpperCase))
+                    ),*
+                }
             }
         }
     };

@@ -49,7 +49,7 @@ __all__ = [
 for name in __all__:
     exec(f'{name} = _pyiced.{name}')
 
-__all__ += ['run_iced', 'IcedApp']
+__all__ += ['IcedApp', 'run_iced', 'Settings', 'WindowSettings']
 
 __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
@@ -233,9 +233,6 @@ def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
 
 
 async def thread_code(put_task):
-    '''
-    TODO
-    '''
     def done():
         loop.call_soon_threadsafe(done_event.set)
 
@@ -247,9 +244,6 @@ async def thread_code(put_task):
 
 @contextmanager
 def in_async_loop(run):
-    '''
-    TODO
-    '''
     put_task = Queue(1)
     thread = Thread(None, run, args=(thread_code(put_task),))
     thread.start()

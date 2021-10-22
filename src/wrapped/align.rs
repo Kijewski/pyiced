@@ -1,7 +1,11 @@
 crate::wrap_rust_enum!(
+    /// TODO
     "Align" -> WrappedAlign(iced::Align) {
-        START -> iced::Align::Start,
-        CENTER -> iced::Align::Center,
-        END -> iced::Align::End,
+        /// TODO
+        START -> Start,
+        /// TODO
+        CENTER -> Center,
+        /// TODO
+        END -> End,
     }
 );

@@ -8,6 +8,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// TODO
 #[pyclass(name = "Message", module = "pyiced", gc)]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedMessage(pub Message);
@@ -28,11 +29,13 @@ impl PyGCProtocol for WrappedMessage {
 
 #[pymethods]
 impl WrappedMessage {
+    /// TODO
     #[new]
     fn new(python: Py<PyAny>) -> Self {
         WrappedMessage(Message::Python(python))
     }
 
+    /// TODO
     #[getter]
     fn r#type(&self) -> &'static str {
         match &self.0 {
@@ -42,6 +45,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn python(&self, py: Python) -> Py<PyAny> {
         match &self.0 {
@@ -50,6 +54,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn native(&self, py: Python) -> Py<PyAny> {
         let v = match get_native(self) {
@@ -67,6 +72,7 @@ impl WrappedMessage {
 
     // keyboard
 
+    /// TODO
     #[getter]
     fn keyboard(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -82,6 +88,7 @@ impl WrappedMessage {
         .into_py(py)
     }
 
+    /// TODO
     #[getter]
     fn key_code(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -97,6 +104,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn shift(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -110,6 +118,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn alt(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -123,6 +132,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn logo(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -137,6 +147,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn control(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -151,6 +162,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn characterreceived(&self, py: Python) -> Py<PyAny> {
         let v = match get_keyboard(self) {
@@ -165,6 +177,7 @@ impl WrappedMessage {
 
     // mouse
 
+    /// TODO
     #[getter]
     fn mouse(&self, py: Python) -> Py<PyAny> {
         let v = match get_mouse(self) {
@@ -182,6 +195,7 @@ impl WrappedMessage {
         .into_py(py)
     }
 
+    /// TODO
     #[getter]
     fn cursormoved(&self, py: Python) -> Py<PyAny> {
         let v = match get_mouse(self) {
@@ -194,6 +208,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn button(&self, py: Python) -> Py<PyAny> {
         let v = match get_mouse(self) {
@@ -212,6 +227,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn wheelscrolled(&self, py: Python) -> Py<PyAny> {
         let v = match get_mouse(self) {
@@ -228,6 +244,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn amount(&self, py: Python) -> Py<PyAny> {
         let v = match get_mouse(self) {
@@ -245,6 +262,7 @@ impl WrappedMessage {
 
     // touch
 
+    /// TODO
     #[getter]
     fn touch(&self, py: Python) -> Py<PyAny> {
         let v = match get_touch(self) {
@@ -260,6 +278,7 @@ impl WrappedMessage {
         .into_py(py)
     }
 
+    /// TODO
     #[getter]
     fn finger(&self, py: Python) -> Py<PyAny> {
         let v = match get_touch(self) {
@@ -292,6 +311,7 @@ impl WrappedMessage {
 
     // window
 
+    /// TODO
     #[getter]
     fn window(&self, py: Python) -> Py<PyAny> {
         let v = match get_window(self) {
@@ -310,6 +330,7 @@ impl WrappedMessage {
         .into_py(py)
     }
 
+    /// TODO
     #[getter]
     fn resized(&self, py: Python) -> Py<PyAny> {
         let v = match get_window(self) {
@@ -322,6 +343,7 @@ impl WrappedMessage {
         }
     }
 
+    /// TODO
     #[getter]
     fn file(&self, py: Python) -> Py<PyAny> {
         let v = match get_window(self) {

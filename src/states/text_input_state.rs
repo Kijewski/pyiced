@@ -16,6 +16,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type TextInputState = Arc<Mutex<State>>;
 
+/// TODO
 #[pyclass(name = "TextInputState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedTextInputState(pub TextInputState);
@@ -29,6 +30,7 @@ impl PyObjectProtocol for WrappedTextInputState {
 
 #[pymethods]
 impl WrappedTextInputState {
+    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))
@@ -36,6 +38,7 @@ impl WrappedTextInputState {
 
     // TODO: cursor
 
+    /// TODO
     fn is_focused(&self) -> PyResult<bool> {
         match self.0.try_lock() {
             Some(guard) => Ok(guard.is_focused()),
@@ -43,6 +46,7 @@ impl WrappedTextInputState {
         }
     }
 
+    /// TODO
     fn focus(&self) -> PyResult<()> {
         match self.0.try_lock() {
             Some(mut guard) => {
@@ -53,6 +57,7 @@ impl WrappedTextInputState {
         }
     }
 
+    /// TODO
     fn unfocus(&self) -> PyResult<()> {
         match self.0.try_lock() {
             Some(mut guard) => {
@@ -63,6 +68,7 @@ impl WrappedTextInputState {
         }
     }
 
+    /// TODO
     fn move_cursor_to_front(&self) -> PyResult<()> {
         match self.0.try_lock() {
             Some(mut guard) => {
@@ -73,6 +79,7 @@ impl WrappedTextInputState {
         }
     }
 
+    /// TODO
     fn move_cursor_to_end(&self) -> PyResult<()> {
         match self.0.try_lock() {
             Some(mut guard) => {
@@ -83,6 +90,7 @@ impl WrappedTextInputState {
         }
     }
 
+    /// TODO
     fn move_cursor_to(&self, position: usize) -> PyResult<()> {
         match self.0.try_lock() {
             Some(mut guard) => {

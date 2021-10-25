@@ -1,8 +1,9 @@
 crate::wrap_rust_enum!(
     /// The position of the tooltip.
     ///
-    /// .. seealso::
-    ///     * `iced::widget::tooltip::Position <https://docs.rs/iced/0.3.0/iced/widget/tooltip/enum.Position.html>`_
+    /// See also
+    /// --------
+    /// * `iced::widget::tooltip::Position <https://docs.rs/iced/0.3.0/iced/widget/tooltip/enum.Position.html>`_
     "TooltipPosition" -> WrappedTooltipPosition(iced::tooltip::Position) {
         /// The tooltip will follow the cursor.
         FOLLOW_CURSOR -> FollowCursor,

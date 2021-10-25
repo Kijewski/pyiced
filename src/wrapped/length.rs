@@ -14,8 +14,9 @@ struct Private;
 
 /// The strategy used to fill space in a specific dimension.
 ///
-/// .. seealso::
-///     * `iced::Length <https://docs.rs/iced/0.3.0/iced/enum.Length.html>`_
+/// See also
+/// --------
+/// * `iced::Length <https://docs.rs/iced/0.3.0/iced/enum.Length.html>`_
 #[pyclass(name = "Length", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedLength(pub Length, Private);

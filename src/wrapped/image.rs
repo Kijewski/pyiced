@@ -16,8 +16,9 @@ struct Private;
 
 /// An :func:`pyiced.image` handle.
 ///
-/// .. seealso::
-///     * `iced_native::widget::image::Handle <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Handle.html>`_
+/// See also
+/// --------
+/// * `iced_native::widget::image::Handle <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Handle.html>`_
 #[pyclass(name = "ImageHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedImageHandle(pub Handle, Private);

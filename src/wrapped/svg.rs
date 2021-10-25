@@ -16,8 +16,9 @@ struct Private;
 
 /// An :func:`~pyiced.svg` handle.
 ///
-/// .. seealso::
-///     * `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
+/// See also
+/// --------
+/// * `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
 #[pyclass(name = "SvgHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedSvgHandle(pub Handle, Private);

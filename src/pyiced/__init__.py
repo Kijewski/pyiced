@@ -43,7 +43,7 @@ __all__ = [
     'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
-    'ButtonStyle', "ContainerStyle", "PaneGridStyle", "ProgressBarStyle",
+    'ButtonStyle', 'CheckboxStyle', 'ContainerStyle', 'PaneGridStyle', 'ProgressBarStyle',
 
     # subscription
     'Subscription',

@@ -4,6 +4,7 @@ use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
+use crate::styles::{CheckboxStyles, WrappedCheckboxStyle};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength};
 
@@ -22,7 +23,7 @@ pub(crate) struct CheckboxBuilder {
     pub spacing: Option<u16>,
     pub text_size: Option<u16>,
     pub font: Option<Font>,
-    // style: TODO,
+    pub style: Option<CheckboxStyles>,
 }
 
 impl GCProtocol for CheckboxBuilder {
@@ -33,7 +34,7 @@ impl GCProtocol for CheckboxBuilder {
 }
 
 #[pyfunction(name = "checkbox")]
-/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None)
+/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None, hovered=None)
 /// --
 ///
 /// A box that can be checked.
@@ -57,11 +58,16 @@ impl GCProtocol for CheckboxBuilder {
 ///     Font size of the text.
 /// font : Optional[Font]
 ///     Font of the text.
+/// style : Optional[CheckboxStyle]
+///     Style of an checkbox.
+/// hovered : Optional[CheckboxStyle]
+///     Style of an checkbox while hovering.
 ///
 /// Returns
 /// -------
 /// Element
 ///     Newly created checkbox.
+///
 /// See also
 /// --------
 /// * `iced_native::widget::checkbox::Checkbox <https://docs.rs/iced_native/0.4.0/iced_native/widget/checkbox/struct.Checkbox.html>`_
@@ -74,7 +80,24 @@ fn make_checkbox(
     spacing: Option<u16>,
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
+    style: Option<&WrappedCheckboxStyle>,
+    hovered: Option<&WrappedCheckboxStyle>,
 ) -> WrappedWidgetBuilder {
+    let style = match (style, hovered) {
+        (Some(active), Some(hovered)) => Some(CheckboxStyles {
+            active: active.0,
+            hovered: hovered.0,
+        }),
+        (Some(active), None) => Some(CheckboxStyles {
+            active: active.0,
+            ..Default::default()
+        }),
+        (None, Some(hovered)) => Some(CheckboxStyles {
+            hovered: hovered.0,
+            ..Default::default()
+        }),
+        (None, None) => None,
+    };
     let el = CheckboxBuilder {
         is_checked,
         label,
@@ -84,6 +107,7 @@ fn make_checkbox(
         spacing,
         text_size,
         font: font.map(|o| o.0),
+        style,
     };
     el.into()
 }
@@ -93,6 +117,10 @@ impl ToNative for CheckboxBuilder {
         let f = to_msg_fn(&self.f);
         let el = Checkbox::new(self.is_checked, &self.label, f);
         let el = assign!(el, self, size, width, spacing, text_size, font);
+        let el = match self.style.clone() {
+            Some(style) => el.style(style),
+            None => el,
+        };
         el.into()
     }
 }

@@ -18,7 +18,7 @@ macro_rules! init_mod {
 
 init_mod! {
     button -> { ButtonStyle, WrappedButtonStyle },
-    // checkbox -> pedCheckboxStyle, WrappedCheckboxStyle },
+    checkbox -> { CheckboxStyle, CheckboxStyles, WrappedCheckboxStyle },
     container -> { ContainerStyle, WrappedContainerStyle },
     pane_grid -> { PaneGridStyle, WrappedPaneGridStyle },
     // pick_list -> { PickListStyle, WrappedPickListStyle },

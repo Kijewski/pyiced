@@ -8,6 +8,7 @@ Overview
 
 .. autosummary::
    ~pyiced.ButtonStyle
+   ~pyiced.CheckboxStyle
    ~pyiced.ContainerStyle
    ~pyiced.PaneGridStyle
    ~pyiced.ProgressBarStyle
@@ -28,6 +29,10 @@ Details
 -------
 
 .. autoclass:: pyiced.ButtonStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.CheckboxStyle
    :members:
    :undoc-members:
 

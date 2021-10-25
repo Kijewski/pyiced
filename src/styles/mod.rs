@@ -18,4 +18,5 @@ macro_rules! init_mod {
 
 init_mod! {
     button -> WrappedButtonStyle,
+    container -> WrappedContainerStyle,
 }

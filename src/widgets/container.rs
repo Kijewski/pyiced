@@ -1,3 +1,4 @@
+use crate::styles::WrappedContainerStyle;
 use iced::{Align, Container, Element, Length};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -22,7 +23,7 @@ pub(crate) struct ContainerBuilder {
     pub max_height: Option<u32>,
     pub align_x: Option<Align>,
     pub align_y: Option<Align>,
-    // style: TODO,
+    pub style: Option<WrappedContainerStyle>,
 }
 
 impl GCProtocol for ContainerBuilder {
@@ -57,6 +58,7 @@ fn make_container(
     max_height: Option<u32>,
     align_x: Option<&WrappedAlign>,
     align_y: Option<&WrappedAlign>,
+    style: Option<&WrappedContainerStyle>,
 ) -> WrappedWidgetBuilder {
     let el = ContainerBuilder {
         content: Box::new(content.0.clone()),
@@ -67,6 +69,7 @@ fn make_container(
         max_height,
         align_x: align_x.map(|o| o.0),
         align_y: align_y.map(|o| o.0),
+        style: style.map(|o| o.clone()),
     };
     el.into()
 }
@@ -78,6 +81,10 @@ impl ToNative for ContainerBuilder {
         let el = assign!(
             el, self, padding, width, height, max_width, max_height, align_x, align_y
         );
+        let el = match &self.style {
+            Some(style) => el.style(style.clone()),
+            None => el,
+        };
         el.into()
     }
 }

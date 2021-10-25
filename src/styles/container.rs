@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use iced::button::{Style, StyleSheet};
-use iced::{Background, Vector};
+use iced::container::{Style, StyleSheet};
+use iced::Background;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
@@ -9,38 +9,36 @@ use pyo3::types::PyDict;
 use crate::wrapped::WrappedColor;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<WrappedButtonStyle>()?;
+    m.add_class::<WrappedContainerStyle>()?;
     Ok(())
 }
 
-/// The appearance of a button.
+/// The appearance of a container.
 /// 
 /// All parameters are named parameters and optional.
 /// 
 /// Parameters
 /// ----------
-/// shadow_offset : Tuple[float, float]
-///     The button's shadow offset.
-/// background : Option[Color]
-///     The button's background color.
-/// border_radius : float
-///     The button's border radius.
-/// border_width : float
-///     The button's border width. 
-/// border_color : Color
-///     The button's border color.
 /// text_color : Color
-///     The button's text color.
+///     The container's text color.
+/// background : Option[Color]
+///     The container's background color.
+/// border_radius : float
+///     The container's border radius.
+/// border_width : float
+///     The container's border width.
+/// border_color : Color
+///     The container's border color.
 ///
 /// See also
 /// --------
-/// * `iced::widget::button::Style <https://docs.rs/iced/0.3.0/iced/widget/button/struct.Style.html>`_
-#[pyclass(name = "ButtonStyle", module = "pyiced")]
+/// * `iced::widget::container::Style <https://docs.rs/iced/0.3.0/iced/widget/container/struct.Style.html>`_
+#[pyclass(name = "ContainerStyle", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedButtonStyle(pub Arc<Style>);
+pub(crate) struct WrappedContainerStyle(pub Arc<Style>);
 
 #[pymethods]
-impl WrappedButtonStyle {
+impl WrappedContainerStyle {
     #[args(kwargs="**")]
     #[new]
     fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
@@ -50,12 +48,8 @@ impl WrappedButtonStyle {
             None => return Ok(Self(Arc::new(result))),
         };
 
-        if let Some(value) = kwargs.get_item("shadow_offset") {
-            let (x, y) = value.extract::<(f32, f32)>()?;
-            if !x.is_finite() || !y.is_finite() {
-                return Err(PyErr::new::<PyValueError, _>("shadow_offset x and y must be finite"));
-            }
-            result.shadow_offset = Vector { x, y };
+        if let Some(value) = kwargs.get_item("text_color") {
+            result.text_color = value.extract::<Option<WrappedColor>>()?.map(|c| c.0);
         }
 
         if let Some(value) = kwargs.get_item("background") {
@@ -82,16 +76,12 @@ impl WrappedButtonStyle {
             result.border_color = value.extract::<WrappedColor>()?.0;
         }
 
-        if let Some(value) = kwargs.get_item("text_color") {
-            result.text_color = value.extract::<WrappedColor>()?.0;
-        }
-
         Ok(Self(Arc::new(result)))
     }
 }
 
-impl StyleSheet for WrappedButtonStyle {
-    fn active(&self) -> Style {
+impl StyleSheet for WrappedContainerStyle {
+    fn style(&self) -> Style {
         *self.0
     }
 }

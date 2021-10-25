@@ -37,7 +37,7 @@ impl WrappedSvgHandle {
     /// Returns
     /// -------
     /// SvgHandle
-    ///     An SVG handle unsable in :func:`~pyiced.svg`.
+    ///     An SVG handle usable in :func:`~pyiced.svg`.
     #[staticmethod]
     fn from_path(path: PathBuf) -> Self {
         Self(Handle::from_path(path), Private)
@@ -58,7 +58,7 @@ impl WrappedSvgHandle {
     /// Returns
     /// -------
     /// SvgHandle
-    ///     An SVG handle unsable in :func:`~pyiced.svg`.
+    ///     An SVG handle usable in :func:`~pyiced.svg`.
     #[staticmethod]
     fn from_memory(bytes: Vec<u8>) -> Self {
         Self(Handle::from_memory(bytes), Private)

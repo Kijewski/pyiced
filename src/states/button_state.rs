@@ -15,6 +15,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type ButtonState = Arc<Mutex<State>>;
 
+/// ButtonState()
+/// --
+///
 /// TODO
 #[pyclass(name = "ButtonState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]

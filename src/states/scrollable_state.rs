@@ -16,6 +16,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type ScrollableState = Arc<Mutex<State>>;
 
+/// ScrollableState()
+/// --
+///
 /// TODO
 #[pyclass(name = "ScrollableState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]

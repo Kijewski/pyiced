@@ -16,6 +16,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type TextInputState = Arc<Mutex<State>>;
 
+/// TextInputState()
+/// --
+///
 /// TODO
 #[pyclass(name = "TextInputState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]

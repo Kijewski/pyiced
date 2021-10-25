@@ -15,6 +15,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 pub(crate) type SliderState = Arc<Mutex<State>>;
 
+/// SliderState()
+/// --
+///
 /// TODO
 #[pyclass(name = "SliderState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]

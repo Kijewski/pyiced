@@ -3,7 +3,7 @@ use iced::{Background, Color, Vector};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use crate::wrapped::{WrappedColor, WrappedLine};
+use crate::wrapped::{WrappedColor, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape};
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
@@ -84,5 +84,32 @@ impl<'p> TryFrom<Extractor<'p>> for Option<Color> {
             .0
             .extract::<Option<WrappedColor>>()
             .map(|c| c.map(|c| c.0))
+    }
+}
+
+impl<'p> TryFrom<Extractor<'p>> for iced::slider::Handle {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
+        value.0.extract::<WrappedSliderHandle>().map(|c| c.0)
+    }
+}
+
+impl<'p> TryFrom<Extractor<'p>> for iced::slider::HandleShape {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
+        value.0.extract::<WrappedSliderHandleShape>().map(|c| c.0)
+    }
+}
+
+impl<'p> TryFrom<Extractor<'p>> for (Color, Color) {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
+        value
+            .0
+            .extract::<(WrappedColor, WrappedColor)>()
+            .map(|(a, b)| (a.0, b.0))
     }
 }

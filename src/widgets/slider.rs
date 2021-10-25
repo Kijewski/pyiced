@@ -6,6 +6,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
+use crate::styles::{SliderStyles, WrappedSliderStyle};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedLength, WrappedMessage};
 
@@ -25,7 +26,7 @@ pub(crate) struct SliderBuilder {
     pub width: Option<Length>,
     pub height: Option<u16>,
     pub step: Option<f32>,
-    // style: TODO,
+    pub style: Option<SliderStyles>,
 }
 
 impl GCProtocol for SliderBuilder {
@@ -36,7 +37,7 @@ impl GCProtocol for SliderBuilder {
 }
 
 #[pyfunction(name = "slider")]
-/// slider($module, /, state, start, end, value, on_change, *, on_release=None, width=None, height=None, step=1.0)
+/// slider($module, /, state, start, end, value, on_change, *, on_release=None, width=None, height=None, step=1.0, style=None, style_hoverer=None, style_dragging=None)
 /// --
 ///
 /// An horizontal bar and a handle that selects a single value from a range of values.
@@ -64,6 +65,12 @@ impl GCProtocol for SliderBuilder {
 ///     Height of the slider.
 /// step : float
 ///     Step size of the slider.
+/// style : SliderStyle
+///     The normal style of the slider.
+/// style_hoverer : SliderStyle
+///     The style of the slider while hovering.
+/// style_dragging : SliderStyle
+///     The style of the slider while dragging.
 ///
 /// Returns
 /// -------
@@ -83,6 +90,9 @@ fn make_slider(
     width: Option<&WrappedLength>,
     height: Option<u16>,
     step: Option<f32>,
+    style: Option<&WrappedSliderStyle>,
+    style_hoverer: Option<&WrappedSliderStyle>,
+    style_dragging: Option<&WrappedSliderStyle>,
 ) -> PyResult<WrappedWidgetBuilder> {
     if !start.is_finite()
         || !end.is_finite()
@@ -98,6 +108,8 @@ fn make_slider(
             "The following comparison must be true: start <= value <= end",
         ));
     }
+
+
     let el = SliderBuilder {
         state: state.0.clone(),
         start,
@@ -108,6 +120,7 @@ fn make_slider(
         width: width.map(|o| o.0),
         height,
         step,
+        style: SliderStyles::new(style, style_hoverer, style_dragging),
     };
     Ok(el.into())
 }
@@ -118,7 +131,7 @@ impl ToNative for SliderBuilder {
         slider_with_state(&self.state, |state| {
             let range = self.start..=self.end;
             let el = Slider::new(state, range, self.value, on_change);
-            let el = assign!(el, self, width, height, step);
+            let el = assign!(el, self, width, height, step, style);
             let el = match &self.on_release {
                 Some(on_release) => el.on_release(on_release.clone()),
                 None => el,

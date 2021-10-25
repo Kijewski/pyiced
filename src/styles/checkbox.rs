@@ -85,3 +85,26 @@ impl StyleSheet for CheckboxStyles {
         self.hovered.0
     }
 }
+
+impl CheckboxStyles {
+    pub(crate) fn new(
+        style: Option<&WrappedCheckboxStyle>,
+        style_hovered: Option<&WrappedCheckboxStyle>,
+    ) -> Option<Self> {
+        match (style, style_hovered) {
+            (None, None) => None,
+            (Some(active), None) => Some(CheckboxStyles {
+                active: active.0,
+                ..Default::default()
+            }),
+            (None, Some(hovered)) => Some(CheckboxStyles {
+                hovered: hovered.0,
+                ..Default::default()
+            }),
+            (Some(active), Some(hovered)) => Some(CheckboxStyles {
+                active: active.0,
+                hovered: hovered.0,
+            }),
+        }
+    }
+}

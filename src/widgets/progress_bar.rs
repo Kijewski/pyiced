@@ -88,11 +88,7 @@ impl ToNative for ProgressBarBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         let range = self.start..=self.end;
         let el = ProgressBar::new(range, self.value);
-        let el = assign!(el, self, width, height);
-        let el = match self.style.clone() {
-            Some(style) => el.style(style),
-            None => el,
-        };
+        let el = assign!(el, self, width, height, style);
         el.into()
     }
 }

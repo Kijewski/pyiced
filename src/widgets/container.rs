@@ -79,12 +79,8 @@ impl ToNative for ContainerBuilder {
         let content = self.content.to_native(py);
         let el = Container::new(content);
         let el = assign!(
-            el, self, padding, width, height, max_width, max_height, align_x, align_y
+            el, self, padding, width, height, max_width, max_height, align_x, align_y, style,
         );
-        let el = match self.style.clone() {
-            Some(style) => el.style(style),
-            None => el,
-        };
         el.into()
     }
 }

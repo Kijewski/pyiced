@@ -12,6 +12,7 @@ Overview
    ~pyiced.ContainerStyle
    ~pyiced.PaneGridStyle
    ~pyiced.ProgressBarStyle
+   ~pyiced.SliderStyle
 
 Quick Example
 -------------
@@ -45,5 +46,9 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.ProgressBarStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.SliderStyle
    :members:
    :undoc-members:

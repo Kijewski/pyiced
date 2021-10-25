@@ -26,6 +26,6 @@ init_mod! {
     // radio -> { RadioStyle, WrappedRadioStyle },
     // rule -> { RuleStyle, WrappedRuleStyle },
     // scrollable -> { ScrollableStyle, WrappedScrollableStyle },
-    // slider -> { SliderStyle, WrappedSliderStyle },
+    slider -> { SliderStyle, SliderStyles, WrappedSliderStyle },
     // text_input -> { TextInputStyle, WrappedTextInputStyle },
 }

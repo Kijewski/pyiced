@@ -14,6 +14,8 @@ Overview
    ~pyiced.ImageHandle
    ~pyiced.Length
    ~pyiced.Line
+   ~pyiced.SliderHandle
+   ~pyiced.SliderHandleShape
    ~pyiced.SvgHandle
    ~pyiced.TooltipPosition
    ~pyiced.VerticalAlignment
@@ -46,6 +48,14 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.Line
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.SliderHandle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.SliderHandleShape
    :members:
    :undoc-members:
 

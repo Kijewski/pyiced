@@ -34,7 +34,7 @@ impl GCProtocol for CheckboxBuilder {
 }
 
 #[pyfunction(name = "checkbox")]
-/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None, hovered=None)
+/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None, style_hovered=None)
 /// --
 ///
 /// A box that can be checked.
@@ -60,7 +60,7 @@ impl GCProtocol for CheckboxBuilder {
 ///     Font of the text.
 /// style : Optional[CheckboxStyle]
 ///     Style of an checkbox.
-/// hovered : Optional[CheckboxStyle]
+/// style_hovered : Optional[CheckboxStyle]
 ///     Style of an checkbox while hovering.
 ///
 /// Returns
@@ -81,23 +81,8 @@ fn make_checkbox(
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
     style: Option<&WrappedCheckboxStyle>,
-    hovered: Option<&WrappedCheckboxStyle>,
+    style_hovered: Option<&WrappedCheckboxStyle>,
 ) -> WrappedWidgetBuilder {
-    let style = match (style, hovered) {
-        (Some(active), Some(hovered)) => Some(CheckboxStyles {
-            active: active.0,
-            hovered: hovered.0,
-        }),
-        (Some(active), None) => Some(CheckboxStyles {
-            active: active.0,
-            ..Default::default()
-        }),
-        (None, Some(hovered)) => Some(CheckboxStyles {
-            hovered: hovered.0,
-            ..Default::default()
-        }),
-        (None, None) => None,
-    };
     let el = CheckboxBuilder {
         is_checked,
         label,
@@ -107,7 +92,7 @@ fn make_checkbox(
         spacing,
         text_size,
         font: font.map(|o| o.0),
-        style,
+        style: CheckboxStyles::new(style, style_hovered),
     };
     el.into()
 }
@@ -116,11 +101,7 @@ impl ToNative for CheckboxBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         let f = to_msg_fn(&self.f);
         let el = Checkbox::new(self.is_checked, &self.label, f);
-        let el = assign!(el, self, size, width, spacing, text_size, font);
-        let el = match self.style.clone() {
-            Some(style) => el.style(style),
-            None => el,
-        };
+        let el = assign!(el, self, size, width, spacing, text_size, font, style);
         el.into()
     }
 }

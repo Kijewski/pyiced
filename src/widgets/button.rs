@@ -100,11 +100,7 @@ impl ToNative for ButtonBuilder {
         button_with_state(&self.state, |state| {
             let content = self.content.to_native(py);
             let el = Button::new(state, content);
-            let el = assign!(el, self, width, height, min_width, min_height, padding);
-            let el = match self.style.clone() {
-                Some(style) => el.style(style),
-                None => el,
-            };
+            let el = assign!(el, self, width, height, min_width, min_height, padding, style,);
             let el = match &self.on_press {
                 Some(on_press) => el.on_press(on_press.clone()),
                 None => el,

@@ -40,10 +40,11 @@ __all__ = [
 
     # wrapped
     'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Line', 'Message',
-    'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
+    'SliderHandle', 'SliderHandleShape', 'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
     'ButtonStyle', 'CheckboxStyle', 'ContainerStyle', 'PaneGridStyle', 'ProgressBarStyle',
+    'SliderStyle',
 
     # subscription
     'Subscription',

@@ -14,9 +14,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 /// The appearance of a button.
-/// 
+///
 /// All parameters are named parameters and optional.
-/// 
+///
 /// Parameters
 /// ----------
 /// shadow_offset : Tuple[float, float]
@@ -26,7 +26,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// border_radius : float
 ///     The button's border radius.
 /// border_width : float
-///     The button's border width. 
+///     The button's border width.
 /// border_color : Color
 ///     The button's border color.
 /// text_color : Color
@@ -41,7 +41,7 @@ pub(crate) struct WrappedButtonStyle(pub Arc<Style>);
 
 #[pymethods]
 impl WrappedButtonStyle {
-    #[args(kwargs="**")]
+    #[args(kwargs = "**")]
     #[new]
     fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
         let mut result = Style::default();
@@ -50,40 +50,52 @@ impl WrappedButtonStyle {
             None => return Ok(Self(Arc::new(result))),
         };
 
-        if let Some(value) = kwargs.get_item("shadow_offset") {
-            let (x, y) = value.extract::<(f32, f32)>()?;
-            if !x.is_finite() || !y.is_finite() {
-                return Err(PyErr::new::<PyValueError, _>("shadow_offset x and y must be finite"));
+        for (key, value) in kwargs.iter() {
+            let key = key.str()?;
+            match key.to_str()? {
+                "shadow_offset" => {
+                    let (x, y) = value.extract::<(f32, f32)>()?;
+                    if !x.is_finite() || !y.is_finite() {
+                        return Err(PyErr::new::<PyValueError, _>(
+                            "shadow_offset x and y must be finite",
+                        ));
+                    }
+                    result.shadow_offset = Vector { x, y };
+                },
+                "background" => {
+                    result.background = value
+                        .extract::<Option<WrappedColor>>()?
+                        .map(|c| Background::Color(c.0));
+                },
+                "border_radius" => {
+                    let value = value.extract::<f32>()?;
+                    if !value.is_finite() {
+                        return Err(PyErr::new::<PyValueError, _>(
+                            "border_radius must be finite",
+                        ));
+                    }
+                    result.border_radius = value;
+                },
+                "border_width" => {
+                    let value = value.extract::<f32>()?;
+                    if !value.is_finite() {
+                        return Err(PyErr::new::<PyValueError, _>("border_width must be finite"));
+                    }
+                    result.border_width = value;
+                },
+                "border_color" => {
+                    result.border_color = value.extract::<WrappedColor>()?.0;
+                },
+                "text_color" => {
+                    result.text_color = value.extract::<WrappedColor>()?.0;
+                },
+                key => {
+                    return Err(PyErr::new::<PyValueError, _>(format!(
+                        "Unknown keyword argument: {:#?}",
+                        key,
+                    )));
+                },
             }
-            result.shadow_offset = Vector { x, y };
-        }
-
-        if let Some(value) = kwargs.get_item("background") {
-            result.background = value.extract::<Option<WrappedColor>>()?.map(|c| Background::Color(c.0));
-        }
-
-        if let Some(value) = kwargs.get_item("border_radius") {
-            let value = value.extract::<f32>()?;
-            if !value.is_finite() {
-                return Err(PyErr::new::<PyValueError, _>("border_radius must be finite"));
-            }
-            result.border_radius = value;
-        }
-
-        if let Some(value) = kwargs.get_item("border_width") {
-            let value = value.extract::<f32>()?;
-            if !value.is_finite() {
-                return Err(PyErr::new::<PyValueError, _>("border_width must be finite"));
-            }
-            result.border_width = value;
-        }
-
-        if let Some(value) = kwargs.get_item("border_color") {
-            result.border_color = value.extract::<WrappedColor>()?.0;
-        }
-
-        if let Some(value) = kwargs.get_item("text_color") {
-            result.text_color = value.extract::<WrappedColor>()?.0;
         }
 
         Ok(Self(Arc::new(result)))

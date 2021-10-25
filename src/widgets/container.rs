@@ -1,10 +1,10 @@
-use crate::styles::WrappedContainerStyle;
 use iced::{Align, Container, Element, Length};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
+use crate::styles::WrappedContainerStyle;
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedAlign, WrappedLength};
 

@@ -356,6 +356,13 @@ impl WrappedMessage {
             _ => ().into_py(py),
         }
     }
+
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn __match_args__() -> (&'static str,) {
+        // Structural Pattern Matching: https://www.python.org/dev/peps/pep-0634/
+        ("python",)
+    }
 }
 
 fn get_native(v: &WrappedMessage) -> Result<&iced_native::Event, ()> {

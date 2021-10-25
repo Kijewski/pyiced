@@ -23,14 +23,16 @@ impl GCProtocol for SpaceBuilder {}
 /// space($module, *, width=None, height=None)
 /// --
 ///
-/// Make a .
+/// An amount of empty space.
+/// 
+/// It can be useful if you want to fill some space with nothing.
 ///
 /// Parameters
 /// ----------
 /// width : Optional[Length]
-///     TODO
+///     Creates an amount of horizontal space.
 /// height : Optional[Length]
-///     TODO
+///     Creates an amount of vertical space.
 ///
 /// Returns
 /// -------

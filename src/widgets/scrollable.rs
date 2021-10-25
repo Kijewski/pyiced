@@ -37,39 +37,39 @@ impl GCProtocol for ScrollableBuilder {}
 /// scrollable($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None)
 /// --
 ///
-/// Make a .
+/// A widget that can vertically display an infinite amount of content with a scrollbar.
 ///
 /// Parameters
 /// ----------
 /// state : ScrollableState
-///     TODO
+///     Current state of the scroll container. The same object must be given between calls.
 /// children : Iterator[Optional[Element]]
-///     TODO
+///     Elements of the scrollable :func:`~pyiced.column`.
 /// spacing : Optional[int]
-///     TODO
+///     Vertical spacing between elements.
 /// padding : Optional[int]
-///     TODO
+///     Padding of the Scrollable.
 /// width : Optional[Length]
-///     TODO
+///     Width of the scrollable.
 /// height : Optional[Length]
-///     TODO
+///     Height of the scrollable.
 /// max_width : Optional[int]
-///     TODO
+///     Maximum width of the scrollable.
 /// max_height : Optional[int]
-///     TODO
+///     Maximum height of the scrollable in pixels.
 /// align_items : Optional[Align]
-///     TODO
+///     Horizontal alignment of the contents of the scrollable.
 /// scrollbar_width : Optional[int]
-///     TODO
+///     Scrollbar width of the Scrollable. Silently enforces a minimum value of 1.
 /// scrollbar_margin : Optional[int]
-///     TODO
+///     Scrollbar margin of the scrollable.
 /// scroller_width : Optional[int]
-///     TODO
+///     Scroller width of the scrollable. Silently enforces a minimum value of 1.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created scrollable widget.
 ///
 /// See also
 /// --------

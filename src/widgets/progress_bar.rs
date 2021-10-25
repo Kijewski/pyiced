@@ -1,4 +1,5 @@
 use iced::{Element, Length, ProgressBar};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
@@ -28,25 +29,25 @@ impl GCProtocol for ProgressBarBuilder {}
 /// progress_bar($module, /, start, end, value, *, width=None, height=None)
 /// --
 ///
-/// Make a .
+/// A bar that displays progress.
 ///
 /// Parameters
 /// ----------
 /// start : f32
-///     TODO
+///     Minimum value inside the value range.
 /// end : f32
-///     TODO
+///     Maximum value inside the value range.
 /// value : f32
-///     TODO
+///     Current value of the progress bar.
 /// width : Optional[Length]
-///     TODO
+///     Width of the progress bar.
 /// height : Optional[Length]
-///     TODO
+///     Height of the progress bar.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created progress bar.
 ///
 /// See also
 /// --------
@@ -57,15 +58,21 @@ fn make_progress_bar(
     value: f32,
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
-) -> WrappedWidgetBuilder {
-    ProgressBarBuilder {
+) -> PyResult<WrappedWidgetBuilder> {
+    if !start.is_finite() || !end.is_finite() || !value.is_finite() {
+        return Err(PyErr::new::<PyValueError, _>("The arguments start, end and value need to be finite."));
+    }
+    if start > end || start > value || value > end {
+        return Err(PyErr::new::<PyValueError, _>("The following comparison must be true: start <= value <= end"));
+    }
+    let el = ProgressBarBuilder {
         start,
         end,
         value,
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
-    }
-    .into()
+    };
+    Ok(el.into())
 }
 
 impl ToNative for ProgressBarBuilder {

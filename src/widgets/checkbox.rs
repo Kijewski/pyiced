@@ -36,7 +36,7 @@ impl GCProtocol for CheckboxBuilder {
 /// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None)
 /// --
 ///
-/// Make a checkbox.
+/// A box that can be checked.
 ///
 /// Parameters
 /// ----------

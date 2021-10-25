@@ -35,29 +35,28 @@ impl GCProtocol for TooltipBuilder {
 /// tooltip($module, /, content, tooltip, position, *, font, gap, padding)
 /// --
 ///
-/// Make a .
+/// Make a tooltip.
 ///
 /// Parameters
 /// ----------
 /// content : Element
-///     TODO
-/// tooltip : String
-///     TODO
+///     Contained element that has a tooltip.
+/// tooltip : str
+///     Tooltip text to display.
 /// position : TooltipPosition
-///     TODO
+///     The position of the tooltip.
 /// size : Optional[int]
-///     TODO
+///     The size of the text of the tooltip.
 /// font : Optional[Font]
-///     TODO
+///     The font of the tooltip.
 /// gap : Optional[int]
-///     TODO
+///     The gap between the content and its tooltip.
 /// padding : Optional[int]
-///     TODO
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created tooltip.
 ///
 /// See also
 /// --------

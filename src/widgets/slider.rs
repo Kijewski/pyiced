@@ -1,4 +1,5 @@
 use iced::{Element, Length, Slider};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
@@ -35,31 +36,34 @@ impl GCProtocol for SliderBuilder {
 }
 
 #[pyfunction(name = "slider")]
-/// slider($module, /, state, start, end, value, on_change, *, on_release=None, width=None, height=None, step=None)
+/// slider($module, /, state, start, end, value, on_change, *, on_release=None, width=None, height=None, step=1.0)
 /// --
 ///
-/// Make a .
+/// An horizontal bar and a handle that selects a single value from a range of values.
 ///
 /// Parameters
 /// ----------
 /// state : SliderState
-///     TODO
+///     Current state of the slider. The same object must be given between calls.
 /// start : float
-///     TODO
+///     Smallest value inside the range.
 /// end : float
-///     TODO
+///     Biggest value inside the range.
 /// value : float
-///     TODO
+///     Current value.
 /// on_change : Callable[[float], Optional[Message]]
-///     TODO
+///     Function to call with the new value.
 /// on_release : Optional[Message]
-///     TODO
+///     Sets the release message of the Slider. This is called when the mouse is released from the slider.
+///
+///     Typically, the user’s interaction with the slider is finished when this message is produced.
+///     This is useful if you need to spawn a long-running task from the slider’s result, where the default on_change message could create too many events.
 /// width : Optional[Length]
-///     TODO
+///     Width of the slider.
 /// height : Optional[int]
-///     TODO
-/// step : Optiona[float]
-///     TODO
+///     Height of the slider.
+/// step : float
+///     Step size of the slider.
 ///
 /// Returns
 /// -------
@@ -79,8 +83,14 @@ fn make_slider(
     width: Option<&WrappedLength>,
     height: Option<u16>,
     step: Option<f32>,
-) -> WrappedWidgetBuilder {
-    SliderBuilder {
+) -> PyResult<WrappedWidgetBuilder> {
+    if !start.is_finite() || !end.is_finite() || !value.is_finite() || !step.map_or(true, |o| o.is_finite()) {
+        return Err(PyErr::new::<PyValueError, _>("The arguments start, end, value and step need to be finite."));
+    }
+    if start > end || start > value || value > end {
+        return Err(PyErr::new::<PyValueError, _>("The following comparison must be true: start <= value <= end"));
+    }
+    let el = SliderBuilder {
         state: state.0.clone(),
         start,
         end,
@@ -90,8 +100,8 @@ fn make_slider(
         width: width.map(|o| o.0),
         height,
         step,
-    }
-    .into()
+    };
+    Ok(el.into())
 }
 
 impl ToNative for SliderBuilder {

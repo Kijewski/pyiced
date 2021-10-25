@@ -32,31 +32,31 @@ impl GCProtocol for TextBuilder {}
 /// text($module, /, label, *, size=None, color=None, font=None, width=None, height=None, horizontal_alignment=None, vertical_alignment=None)
 /// --
 ///
-/// Make a .
+/// A paragraph of text.
 ///
 /// Parameters
 /// ----------
 /// label : str
-///     TODO
+///     The text to display.
 /// size : Optional[int]
-///     TODO
+///     The size of the text.
 /// color : Optional[Color]
-///     TODO
+///     The color of the text.
 /// font : Optional[Font]
-///     TODO
+///     The Font of the text.
 /// width : Optional[Length]
-///     TODO
+///     The width of the text boundaries
 /// height : Optional[Length]
-///     TODO
+///     The height of the text boundaries
 /// horizontal_alignment : Optional[HorizontalAlignment]
-///     TODO
+///     The horizontal alignment of the text.
 /// vertical_alignment : Optional[VerticalAlignment]
-///     TODO
+///     The vertical alignment of the Text
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created text label.
 ///
 /// See also
 /// --------

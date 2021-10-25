@@ -1,12 +1,15 @@
 use std::borrow::Cow;
 
+use iced::Font;
 use iced::{Element, PickList};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
+use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{pick_list_with_state, PickListState, WrappedPickListState};
 use crate::widgets::WrappedWidgetBuilder;
+use crate::wrapped::WrappedFont;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_pick_list, m)?)?;
@@ -19,6 +22,8 @@ pub(crate) struct PickListBuilder {
     pub options: Vec<String>,
     pub selected: Option<String>,
     pub on_selected: Py<PyAny>, // fn on_selected(value: String) -> crate::Message
+    pub text_size: Option<u16>,
+    pub font: Option<Font>,
 }
 
 impl GCProtocol for PickListBuilder {
@@ -29,26 +34,30 @@ impl GCProtocol for PickListBuilder {
 }
 
 #[pyfunction(name = "pick_list")]
-/// pick_list($module, /, state, options, selected, on_selected)
+/// pick_list($module, /, state, options, selected, on_selected, *, text_size=None, font=None)
 /// --
 ///
-/// Make a .
+/// A widget for selecting a single value from a list of options.
 ///
 /// Parameters
 /// ----------
 /// state : PickListState
-///     TODO
+///     Current state of the pick list. The same object must be given between calls.
 /// options : Iterable[Optional[str]]
-///     TODO
+///     Values to select from.
 /// selected : Optional[str]
-///     TODO
+///     The currently selected value.
 /// on_selected : Callable[[str], Optional[Message]]
-///     TODO
+///     Function to call when a new value was selected.
+/// text_size : Option[int]
+///     The text size of the pick list.
+/// font : Option[Font]
+///     Font of the pick list.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created pick list.
 ///
 /// See also
 /// --------
@@ -59,6 +68,8 @@ fn make_pick_list(
     options: &PyAny,
     selected: Option<String>,
     on_selected: Py<PyAny>,
+    text_size: Option<u16>,
+    font: Option<&WrappedFont>,
 ) -> PyResult<WrappedWidgetBuilder> {
     let options = options
         .iter()?
@@ -82,6 +93,8 @@ fn make_pick_list(
         options,
         selected,
         on_selected,
+        text_size,
+        font: font.map(|o| o.0),
     };
     Ok(el.into())
 }
@@ -92,6 +105,7 @@ impl ToNative for PickListBuilder {
             let on_selected = to_msg_fn(&self.on_selected);
             let options = Cow::Owned(self.options.clone());
             let el = PickList::new(state, options, self.selected.clone(), on_selected);
+            let el = assign!(el, self, text_size, font);
             Ok(el)
         })
     }

@@ -26,21 +26,25 @@ impl GCProtocol for SvgBuilder {}
 /// svg($module, /, handle, *, width=None, height=None)
 /// --
 ///
-/// Make a .
+/// A vector graphics image.
+///
+/// An SVG image resizes smoothly without losing any quality.
+///
+/// SVG images can have a considerable rendering cost when resized, specially when they are complex.
 ///
 /// Parameters
 /// ----------
 /// handle : SvgHandle
-///     TODO
+///     The handle of the image.
 /// width : Optional[Length]
-///     TODO
+///     The width of the image.
 /// heigth : Optional[Length]
-///     TODO
+///     The height of the image.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created SVG image.
 ///
 /// See also
 /// --------

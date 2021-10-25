@@ -24,19 +24,19 @@ impl GCProtocol for RuleBuilder {}
 /// rule($module, *, horizontal=0, vertical=0)
 /// --
 ///
-/// Make a .
+/// Display a horizontal or vertical rule for dividing content.
 ///
 /// Parameters
 /// ----------
 /// horizontal : int
-///     TODO
+///     Creates a horizontal rule for dividing content by the given vertical spacing.
 /// vertical : int
-///     TODO
+///     Creates a vertical rule for dividing content by the given horizontal spacing.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created divider.
 ///
 /// See also
 /// --------

@@ -26,21 +26,21 @@ impl GCProtocol for ImageBuilder {}
 /// image($module, /, handle, *, width=None, height=None)
 /// --
 ///
-/// Make a .
+/// A frame that displays an image while keeping aspect ratio.
 ///
 /// Parameters
 /// ----------
 /// handle : ImageHandle
-///     TODO
+///     The handle of the image.
 /// width : Optional[Length]
-///     TODO
-/// height : Optional[Length]
-///     TODO
+///     The width of the image.
+/// heigth : Optional[Length]
+///     The height of the image.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created image element.
 ///
 /// See also
 /// --------

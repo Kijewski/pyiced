@@ -36,7 +36,7 @@ impl GCProtocol for ButtonBuilder {
 /// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None)
 /// --
 ///
-/// Make a button.
+/// A generic widget that produces a message when pressed.
 ///
 /// Parameters
 /// ----------

@@ -40,37 +40,38 @@ impl GCProtocol for TextInputBuilder {
 /// text_input($module, /, state, placeholder, value, on_change, *, font=None, width=None, max_width=None, padding=None, size=None, on_submit=None, password=False)
 /// --
 ///
-/// Make a .
+/// A field that can be filled with text.
 ///
 /// Parameters
 /// ----------
 /// state : TextInputState
-///     TODO
+///     Current state of the input element. The same object must be given between calls.
 /// placeholder : str
-///     TODO
+///     Placeholder text for an element input.
 /// value : str
-///     TODO
+///     Current value of the input element.
 /// on_change : Callable[[str], Optional[Message]] 
-///     TODO
+///     Function to call when the text was changed. The new text is the argument of the callback function.
+///     The new text should be value for argument "value", but you may reject the new text if it does not fit some criteria defined by you.
 /// font : Optional[Font]
-///     TODO
+///     The font of the text.
 /// width : Optional[Length]
-///     TODO
+///     The width of the input element.
 /// max_width : Optional[int]
-///     TODO
+///     The maximum width of the input element.
 /// padding : Optional[int]
-///     TODO
+///     The padding of the input element.
 /// size : Optional[int]
-///     TODO
+///      The text size of the input element.
 /// on_submit : Optional[Message]
-///     TODO
+///     Message to send to :meth:`pyiced.IcedApp.update` if :kbd:`Enter` was pressed.
 /// password : bool
-///     TODO
+///     If set to True, the input element becomes a secure password input.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created text input element.
 ///
 /// See also
 /// --------

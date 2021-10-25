@@ -37,31 +37,31 @@ impl GCProtocol for RowBuilder {
 /// row($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_height=None, align_items=None)
 /// --
 ///
-/// Make a .
+/// A container that distributes its contents horizontally.
 ///
 /// Parameters
 /// ----------
 /// children : Iterable[Optional[Element]]
-///     TODO
+///     Create the row with the given elements.
 /// spacing : Optional[int]
-///     TODO
+///     Sets the horizontal spacing between elements.
 /// padding : Optional[int]
-///     TODO
+///     Padding of the row.
 /// width : Optional[Length]
-///     TODO
+///     Width of the row.
 /// height : Optional[Length]
-///     TODO
+///     Height of the row.
 /// max_width : Optional[int]
-///     TODO
+///     Maximum width of the row.
 /// max_height : Optional[int]
-///     TODO
+///     Maximum height of the row.
 /// align_items : Optional[Align]
-///     TODO
+///     Vertical alignment of the contents of the row.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created row.
 ///
 /// See also
 /// --------

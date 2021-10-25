@@ -37,31 +37,31 @@ impl GCProtocol for ColumnBuilder {
 /// column($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_height=None, align_items=None)
 /// --
 ///
-/// Make a .
+/// A container that distributes its contents vertically.
 ///
 /// Parameters
 /// ----------
 /// children : Iterable[Optional[Element]]
-///     TODO
+///     Create the column with the given elements.
 /// spacing : Optional[int]
-///     TODO
+///     Vertical spacing between elements.
 /// padding : Optional[int]
-///     TODO
+///     Padding of the column.
 /// width : Optional[Length]
-///     TODO
+///     Width of the column.
 /// height : Optional[Length]
-///     TODO
+///     Height of the column.
 /// max_width : Optional[int]
-///     TODO
+///     Maximum width of the column.
 /// max_height : Optional[int]
-///     TODO
+///     Maximum height of the column in pixels.
 /// align_items : Optional[Align]
-///     TODO
+///     Horizontal alignment of the contents of the column.
 ///
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created column.
 ///
 /// See also
 /// --------

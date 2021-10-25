@@ -12,6 +12,18 @@ Overview
    ~pyiced.PaneGridStyle
    ~pyiced.ProgressBarStyle
 
+Quick Example
+-------------
+
+.. image:: _static/images/examples/Styling.png
+    :width: 622
+    :height: 444
+    :align: center
+    :alt: 
+
+.. literalinclude :: ../examples/styling.py
+   :language: python
+
 Details
 -------
 

@@ -40,9 +40,9 @@ class App(IcedApp):
         # It can optionally return a list of async functions,
         # to handle the event.
         match message:
-            case Message(python='incr'):
+            case Message('incr'):
                 self.__value += 1
-            case Message(python='decr'):
+            case Message('decr'):
                 self.__value -= 1
 
 

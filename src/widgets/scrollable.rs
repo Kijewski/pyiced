@@ -135,7 +135,10 @@ impl ToNative for ScrollableBuilder {
             //     false => el.on_scroll(to_msg_fn(&self.on_scroll)),
             //     true => el,
             // };
-            let el = self.children.iter().fold(el, |el, c| el.push(c.to_native(py)));
+            let el = self
+                .children
+                .iter()
+                .fold(el, |el, c| el.push(c.to_native(py)));
             let el = assign!(
                 el,
                 self,

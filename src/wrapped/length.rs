@@ -12,33 +12,36 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
-/// TODO
+/// The strategy used to fill space in a specific dimension.
+///
+/// .. seealso::
+///     * `iced::Length <https://docs.rs/iced/0.3.0/iced/enum.Length.html>`_
 #[pyclass(name = "Length", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedLength(pub Length, Private);
 
 #[pymethods]
 impl WrappedLength {
-    /// TODO
+    /// Fill a portion of the remaining space relative to other elements.
     #[staticmethod]
     fn fill_portion(i: u16) -> Self {
         Self(Length::FillPortion(i), Private)
     }
 
-    /// TODO
+    /// Fill a fixed amount of space.
     #[staticmethod]
     fn units(i: u16) -> Self {
         Self(Length::Units(i), Private)
     }
 
-    /// TODO
+    /// Fill all the remaining space.
     #[classattr]
     #[allow(non_snake_case)]
     fn FILL() -> Self {
         Self(Length::Fill, Private)
     }
 
-    /// TODO
+    /// Fill the least amount of space.
     #[classattr]
     #[allow(non_snake_case)]
     fn SHRINK() -> Self {

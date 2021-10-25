@@ -88,50 +88,48 @@ pub(crate) fn py_to_command(
         Err(err) => {
             err.print(py);
             return Command::none();
-        }
+        },
     };
     let vec = match vec.as_ref(py).iter() {
         Ok(vec) => vec,
         Err(err) => {
             err.print(py);
             return Command::none();
-        }
+        },
     };
 
-    let vec = vec
-        .into_iter()
-        .filter_map(|command| {
-            let command = match command {
-                Ok(command) => command,
-                Err(err) => {
-                    err.print(py);
-                    return None;
-                },
-            };
-            let fut = match into_future_with_loop(pyloop.as_ref(py), command) {
-                Ok(fut) => fut,
-                Err(err) => {
-                    err.print(py);
-                    return None;
-                },
-            };
-            Some(Command::from(fut.map(|result| {
-                Python::with_gil(|py| match result {
-                    Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
-                        Ok(WrappedMessage(msg)) => msg,
-                        Err(err) => {
-                            err.print(py);
-                            Message::None
-                        },
-                    },
-                    Ok(_) => Message::None,
+    let vec = vec.into_iter().filter_map(|command| {
+        let command = match command {
+            Ok(command) => command,
+            Err(err) => {
+                err.print(py);
+                return None;
+            },
+        };
+        let fut = match into_future_with_loop(pyloop.as_ref(py), command) {
+            Ok(fut) => fut,
+            Err(err) => {
+                err.print(py);
+                return None;
+            },
+        };
+        Some(Command::from(fut.map(|result| {
+            Python::with_gil(|py| match result {
+                Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
+                    Ok(WrappedMessage(msg)) => msg,
                     Err(err) => {
                         err.print(py);
                         Message::None
                     },
-                })
-            })))
-        });
+                },
+                Ok(_) => Message::None,
+                Err(err) => {
+                    err.print(py);
+                    Message::None
+                },
+            })
+        })))
+    });
     Command::batch(vec)
 }
 

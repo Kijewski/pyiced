@@ -15,9 +15,9 @@ struct Private;
 
 /// Color(/, r, g, b, a=1.0)
 /// --
-/// 
+///
 /// A color in the sRGB color space.
-/// 
+///
 /// Parameters
 /// ----------
 /// r : float

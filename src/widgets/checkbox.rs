@@ -75,7 +75,7 @@ fn make_checkbox(
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
 ) -> WrappedWidgetBuilder {
-    CheckboxBuilder {
+    let el = CheckboxBuilder {
         is_checked,
         label,
         f,
@@ -84,8 +84,8 @@ fn make_checkbox(
         spacing,
         text_size,
         font: font.map(|o| o.0),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for CheckboxBuilder {

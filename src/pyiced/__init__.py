@@ -49,7 +49,7 @@ __all__ = [
 for name in __all__:
     exec(f'{name} = _pyiced.{name}')
 
-__all__ += ['IcedApp', 'run_iced', 'Settings', 'WindowSettings']
+__all__ += ['IcedApp', 'Settings', 'WindowSettings']
 
 __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__

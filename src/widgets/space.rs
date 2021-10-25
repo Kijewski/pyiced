@@ -24,7 +24,7 @@ impl GCProtocol for SpaceBuilder {}
 /// --
 ///
 /// An amount of empty space.
-/// 
+///
 /// It can be useful if you want to fill some space with nothing.
 ///
 /// Parameters

@@ -50,12 +50,12 @@ fn make_image(
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
-    ImageBuilder {
+    let el = ImageBuilder {
         handle: handle.0.clone(),
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for ImageBuilder {

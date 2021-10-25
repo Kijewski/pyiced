@@ -1,7 +1,6 @@
 use std::borrow::Cow;
 
-use iced::Font;
-use iced::{Element, PickList};
+use iced::{Element, Font, PickList};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
@@ -85,7 +84,7 @@ fn make_pick_list(
             Err(err) => {
                 err.print(py);
                 None
-            }
+            },
         })
         .collect();
     let el = PickListBuilder {

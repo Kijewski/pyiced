@@ -12,7 +12,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
-/// TODO
+/// A font.
 #[pyclass(name = "Font", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedFont(pub Font, Private);
@@ -25,7 +25,7 @@ impl WrappedFont {
         todo!() // needs 'static lifetime
     }
 
-    /// TODO
+    /// The default font. This is normally a font configured in a renderer or loaded from the system.
     #[classattr]
     #[allow(non_snake_case)]
     fn DEFAULT() -> Self {

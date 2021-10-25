@@ -76,7 +76,7 @@ fn make_button(
     padding: Option<u16>,
     on_press: Option<&WrappedMessage>,
 ) -> WrappedWidgetBuilder {
-    ButtonBuilder {
+    let el = ButtonBuilder {
         state: state.0.clone(),
         content: Box::new(content.0.clone()),
         width: width.map(|o| o.0),
@@ -85,8 +85,8 @@ fn make_button(
         min_height,
         padding,
         on_press: on_press.map(|o| o.0.clone()),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for ButtonBuilder {

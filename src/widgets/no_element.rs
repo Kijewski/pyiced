@@ -20,7 +20,7 @@ impl GCProtocol for NoElementBuilder {}
 /// --
 ///
 /// A :func:`~pyiced.space` with minimum width and height.
-/// 
+///
 /// You should never actually need to use this function is code.
 ///
 /// Returns

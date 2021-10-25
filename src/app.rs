@@ -65,14 +65,14 @@ impl<'a> Application for PythonApp {
                 Err(err) => {
                     err.print(py);
                     return Subscription::none();
-                }
+                },
             };
             let subscriptions = match subscriptions.as_ref(py).iter() {
                 Ok(subscriptions) => subscriptions,
                 Err(err) => {
                     err.print(py);
                     return Subscription::none();
-                }
+                },
             };
             let subscriptions = subscriptions.filter_map(|subscription| {
                 let subscription = match subscription {

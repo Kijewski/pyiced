@@ -50,7 +50,7 @@ impl GCProtocol for TextInputBuilder {
 ///     Placeholder text for an element input.
 /// value : str
 ///     Current value of the input element.
-/// on_change : Callable[[str], Optional[Message]] 
+/// on_change : Callable[[str], Optional[Message]]
 ///     Function to call when the text was changed. The new text is the argument of the callback function.
 ///     The new text should be value for argument "value", but you may reject the new text if it does not fit some criteria defined by you.
 /// font : Optional[Font]

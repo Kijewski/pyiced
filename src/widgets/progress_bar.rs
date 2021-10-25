@@ -60,10 +60,14 @@ fn make_progress_bar(
     height: Option<&WrappedLength>,
 ) -> PyResult<WrappedWidgetBuilder> {
     if !start.is_finite() || !end.is_finite() || !value.is_finite() {
-        return Err(PyErr::new::<PyValueError, _>("The arguments start, end and value need to be finite."));
+        return Err(PyErr::new::<PyValueError, _>(
+            "The arguments start, end and value need to be finite.",
+        ));
     }
     if start > end || start > value || value > end {
-        return Err(PyErr::new::<PyValueError, _>("The following comparison must be true: start <= value <= end"));
+        return Err(PyErr::new::<PyValueError, _>(
+            "The following comparison must be true: start <= value <= end",
+        ));
     }
     let el = ProgressBarBuilder {
         start,

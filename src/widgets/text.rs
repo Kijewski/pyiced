@@ -71,7 +71,7 @@ fn make_text(
     horizontal_alignment: Option<&WrappedHorizontalAlignment>,
     vertical_alignment: Option<&WrappedVerticalAlignment>,
 ) -> WrappedWidgetBuilder {
-    TextBuilder {
+    let el = TextBuilder {
         label,
         size,
         color: color.map(|o| o.0),
@@ -80,8 +80,8 @@ fn make_text(
         height: height.map(|o| o.0),
         horizontal_alignment: horizontal_alignment.map(|o| o.0),
         vertical_alignment: vertical_alignment.map(|o| o.0),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for TextBuilder {

@@ -84,11 +84,19 @@ fn make_slider(
     height: Option<u16>,
     step: Option<f32>,
 ) -> PyResult<WrappedWidgetBuilder> {
-    if !start.is_finite() || !end.is_finite() || !value.is_finite() || !step.map_or(true, |o| o.is_finite()) {
-        return Err(PyErr::new::<PyValueError, _>("The arguments start, end, value and step need to be finite."));
+    if !start.is_finite()
+        || !end.is_finite()
+        || !value.is_finite()
+        || !step.map_or(true, |o| o.is_finite())
+    {
+        return Err(PyErr::new::<PyValueError, _>(
+            "The arguments start, end, value and step need to be finite.",
+        ));
     }
     if start > end || start > value || value > end {
-        return Err(PyErr::new::<PyValueError, _>("The following comparison must be true: start <= value <= end"));
+        return Err(PyErr::new::<PyValueError, _>(
+            "The following comparison must be true: start <= value <= end",
+        ));
     }
     let el = SliderBuilder {
         state: state.0.clone(),

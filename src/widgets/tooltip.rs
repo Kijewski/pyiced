@@ -70,7 +70,7 @@ fn make_tooltip(
     gap: Option<u16>,
     padding: Option<u16>,
 ) -> WrappedWidgetBuilder {
-    TooltipBuilder {
+    let el = TooltipBuilder {
         content: Box::new(content.0.clone()),
         tooltip,
         position: position.0,
@@ -78,8 +78,8 @@ fn make_tooltip(
         font: font.map(|o| o.0),
         gap,
         padding,
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for TooltipBuilder {

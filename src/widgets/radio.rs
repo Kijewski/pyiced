@@ -75,7 +75,7 @@ fn make_radio(
     spacing: Option<u16>,
     text_size: Option<u16>,
 ) -> WrappedWidgetBuilder {
-    RadioBuilder {
+    let el = RadioBuilder {
         value,
         label,
         selected,
@@ -84,8 +84,8 @@ fn make_radio(
         width: width.map(|o| o.0),
         spacing,
         text_size,
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for RadioBuilder {

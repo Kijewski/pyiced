@@ -51,9 +51,14 @@ fn make_rule(horizontal: Option<u16>, vertical: Option<u16>) -> PyResult<Wrapped
         v => Some(v),
     });
     if horizontal.is_some() != vertical.is_some() {
-        return Err(PyErr::new::<PyValueError, _>("You need to specify EITHER 'horizontal' OR 'vertical' with a value > 0."));
+        return Err(PyErr::new::<PyValueError, _>(
+            "You need to specify EITHER 'horizontal' OR 'vertical' with a value > 0.",
+        ));
     }
-    let el = RuleBuilder { horizontal, vertical };
+    let el = RuleBuilder {
+        horizontal,
+        vertical,
+    };
     Ok(el.into())
 }
 

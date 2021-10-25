@@ -15,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 struct Private;
 
 /// An :func:`~pyiced.svg` handle.
-/// 
+///
 /// .. seealso::
 ///     * `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
 #[pyclass(name = "SvgHandle", module = "pyiced")]
@@ -33,7 +33,7 @@ impl WrappedSvgHandle {
     /// ----------
     /// path : path-like
     ///     Creates an SVG Handle pointing to the vector image of the given path.
-    /// 
+    ///
     /// Returns
     /// -------
     /// SvgHandle
@@ -52,9 +52,9 @@ impl WrappedSvgHandle {
     /// ----------
     /// bytes : bytes-like
     ///     Creates an SVG Handle from raw bytes containing either an SVG string or gzip compressed data.
-    /// 
+    ///
     ///     This is useful if you already have your SVG data in-memory, maybe because you downloaded or generated it procedurally.
-    /// 
+    ///
     /// Returns
     /// -------
     /// SvgHandle

@@ -1,11 +1,15 @@
 crate::wrap_rust_enum!(
-    /// TODO
+    /// The horizontal alignment of some resource.
+    ///
+    /// See also
+    /// --------
+    /// * `iced::HorizontalAlignment <https://docs.rs/iced/0.3.0/iced/enum.HorizontalAlignment.html>`_
     "HorizontalAlignment" -> WrappedHorizontalAlignment(iced::HorizontalAlignment) {
-        /// TODO
+        /// Align left
         LEFT -> Left,
-        /// TODO
+        /// Horizontally centered
         CENTER -> Center,
-        /// TODO
+        /// Align right
         RIGHT -> Right,
     }
 );

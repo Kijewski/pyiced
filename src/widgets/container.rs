@@ -58,7 +58,7 @@ fn make_container(
     align_x: Option<&WrappedAlign>,
     align_y: Option<&WrappedAlign>,
 ) -> WrappedWidgetBuilder {
-    ContainerBuilder {
+    let el = ContainerBuilder {
         content: Box::new(content.0.clone()),
         padding,
         width: width.map(|o| o.0),
@@ -67,8 +67,8 @@ fn make_container(
         max_height,
         align_x: align_x.map(|o| o.0),
         align_y: align_y.map(|o| o.0),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for ContainerBuilder {

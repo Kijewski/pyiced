@@ -7,7 +7,6 @@ Overview
 --------
 
 .. autosummary::
-    ~pyiced.run_iced
     ~pyiced.IcedApp
     ~pyiced.Element
     ~pyiced.Message
@@ -19,8 +18,6 @@ Overview
 
 Details
 -------
-
-.. autofunction:: pyiced.run_iced
 
 .. autoclass:: pyiced.IcedApp
    :members:

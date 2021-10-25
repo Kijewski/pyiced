@@ -54,12 +54,12 @@ fn make_svg(
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
 ) -> WrappedWidgetBuilder {
-    SvgBuilder {
+    let el = SvgBuilder {
         handle: handle.0.clone(),
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
-    }
-    .into()
+    };
+    el.into()
 }
 
 impl ToNative for SvgBuilder {

@@ -4,7 +4,10 @@ macro_rules! init_mod {
     ($($module:ident -> $typ:ident),+ $(,)?) => {
         $( mod $module; )*
 
-        $( pub(crate) use $module :: $typ; )*
+        #[allow(unused_imports)]
+        pub(crate) use {
+            $( $module :: $typ ),*
+        };
 
         pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
             $( $module::init_mod(py, m)?; )*
@@ -20,6 +23,7 @@ init_mod! {
     horizontal_alignment -> WrappedHorizontalAlignment,
     image -> WrappedImageHandle,
     length -> WrappedLength,
+    line -> WrappedLine,
     message -> WrappedMessage,
     svg -> WrappedSvgHandle,
     tooltip_position -> WrappedTooltipPosition,

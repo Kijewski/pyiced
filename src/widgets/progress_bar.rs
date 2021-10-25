@@ -5,6 +5,7 @@ use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
+use crate::styles::{ProgressBarStyle, WrappedProgressBarStyle};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
 
@@ -20,13 +21,13 @@ pub(crate) struct ProgressBarBuilder {
     pub value: f32,
     pub width: Option<Length>,
     pub height: Option<Length>,
-    // style: TODO,
+    pub style: Option<ProgressBarStyle>,
 }
 
 impl GCProtocol for ProgressBarBuilder {}
 
 #[pyfunction(name = "progress_bar")]
-/// progress_bar($module, /, start, end, value, *, width=None, height=None)
+/// progress_bar($module, /, start, end, value, *, width=None, height=None, style=None)
 /// --
 ///
 /// A bar that displays progress.
@@ -43,6 +44,8 @@ impl GCProtocol for ProgressBarBuilder {}
 ///     Width of the progress bar.
 /// height : Optional[Length]
 ///     Height of the progress bar.
+/// style : Optional[ProgressBarStyle]
+///     Style of the progress bar.
 ///
 /// Returns
 /// -------
@@ -58,6 +61,7 @@ fn make_progress_bar(
     value: f32,
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
+    style: Option<&WrappedProgressBarStyle>,
 ) -> PyResult<WrappedWidgetBuilder> {
     if !start.is_finite() || !end.is_finite() || !value.is_finite() {
         return Err(PyErr::new::<PyValueError, _>(
@@ -75,6 +79,7 @@ fn make_progress_bar(
         value,
         width: width.map(|o| o.0),
         height: height.map(|o| o.0),
+        style: style.map(|o| o.0),
     };
     Ok(el.into())
 }
@@ -84,6 +89,10 @@ impl ToNative for ProgressBarBuilder {
         let range = self.start..=self.end;
         let el = ProgressBar::new(range, self.value);
         let el = assign!(el, self, width, height);
+        let el = match self.style.clone() {
+            Some(style) => el.style(style),
+            None => el,
+        };
         el.into()
     }
 }

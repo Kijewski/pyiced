@@ -5,7 +5,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
-use crate::styles::WrappedButtonStyle;
+use crate::styles::{ButtonStyle, WrappedButtonStyle};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedLength, WrappedMessage};
 
@@ -24,7 +24,7 @@ pub(crate) struct ButtonBuilder {
     pub min_height: Option<u32>,
     pub padding: Option<u16>,
     pub on_press: Option<Message>,
-    pub style: Option<WrappedButtonStyle>,
+    pub style: Option<ButtonStyle>,
 }
 
 impl GCProtocol for ButtonBuilder {
@@ -90,7 +90,7 @@ fn make_button(
         min_height,
         padding,
         on_press: on_press.map(|o| o.0.clone()),
-        style: style.map(|o| o.clone()),
+        style: style.map(|o| o.0),
     };
     el.into()
 }
@@ -101,8 +101,8 @@ impl ToNative for ButtonBuilder {
             let content = self.content.to_native(py);
             let el = Button::new(state, content);
             let el = assign!(el, self, width, height, min_width, min_height, padding);
-            let el = match &self.style {
-                Some(style) => el.style(style.clone()),
+            let el = match self.style.clone() {
+                Some(style) => el.style(style),
                 None => el,
             };
             let el = match &self.on_press {

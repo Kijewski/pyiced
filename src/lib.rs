@@ -41,6 +41,7 @@ macro_rules! init_mod {
 init_mod! {
     mod app;
     mod common;
+    mod extractor;
     mod states;
     mod styles;
     mod subscriptions;
@@ -272,5 +273,32 @@ macro_rules! CountIdents {
     };
     ($ident:ident $($idents:ident)*) => {
         (1 + $crate::CountIdents!($($idents)*))
+    };
+}
+
+#[macro_export]
+macro_rules! extract_multiple {
+    ($kwargs:ident, $init:expr, $($name:ident),* $(,)?) => {
+        {
+            let mut result = $init;
+            let kwargs = match $kwargs {
+                Some(kwargs) => kwargs,
+                None => return Ok(Self(result)),
+            };
+            for (key, value) in kwargs.iter() {
+                let key = key.str()?;
+                let value = crate::extractor::Extractor(value);
+                match key.to_str()? {
+                    $(
+                        stringify!($name) => result.0.$name = value.try_into()?,
+                    )*
+                    key => return Err(PyErr::new::<PyValueError, _>(format!(
+                        "Unknown keyword argument: {:#?}",
+                        key,
+                    ))),
+                }
+            }
+            return Ok(Self(result));
+        }
     };
 }

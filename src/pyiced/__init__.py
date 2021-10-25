@@ -42,6 +42,9 @@ __all__ = [
     'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Message',
     'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
 
+    # styles
+    'ButtonStyle',
+
     # subscription
     'Subscription',
 ]

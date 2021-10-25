@@ -5,6 +5,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
+use crate::styles::WrappedButtonStyle;
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedLength, WrappedMessage};
 
@@ -23,17 +24,18 @@ pub(crate) struct ButtonBuilder {
     pub min_height: Option<u32>,
     pub padding: Option<u16>,
     pub on_press: Option<Message>,
-    // style: TODO,
+    pub style: Option<WrappedButtonStyle>,
 }
 
 impl GCProtocol for ButtonBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        self.content.traverse(visit)
+        self.content.traverse(visit)?;
+        Ok(())
     }
 }
 
 #[pyfunction(name = "button")]
-/// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None)
+/// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None, style=None)
 /// --
 ///
 /// A generic widget that produces a message when pressed.
@@ -57,6 +59,8 @@ impl GCProtocol for ButtonBuilder {
 /// on_press : Optional[Message]
 ///     Message to send to the app's :meth:`~pyiced.IcedApp.update` loop when the key was clicked.
 ///     Without this argument the button won't be clickable.
+/// style : Option[ButtonStyle]
+///     The style of the button.
 ///
 /// Returns
 /// -------
@@ -75,6 +79,7 @@ fn make_button(
     min_height: Option<u32>,
     padding: Option<u16>,
     on_press: Option<&WrappedMessage>,
+    style: Option<&WrappedButtonStyle>,
 ) -> WrappedWidgetBuilder {
     let el = ButtonBuilder {
         state: state.0.clone(),
@@ -85,6 +90,7 @@ fn make_button(
         min_height,
         padding,
         on_press: on_press.map(|o| o.0.clone()),
+        style: style.map(|o| o.clone()),
     };
     el.into()
 }
@@ -95,6 +101,10 @@ impl ToNative for ButtonBuilder {
             let content = self.content.to_native(py);
             let el = Button::new(state, content);
             let el = assign!(el, self, width, height, min_width, min_height, padding);
+            let el = match &self.style {
+                Some(style) => el.style(style.clone()),
+                None => el,
+            };
             let el = match &self.on_press {
                 Some(on_press) => el.on_press(on_press.clone()),
                 None => el,

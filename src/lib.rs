@@ -42,6 +42,7 @@ init_mod! {
     mod app;
     mod common;
     mod states;
+    mod styles;
     mod subscriptions;
     mod widgets;
     mod wrapped;

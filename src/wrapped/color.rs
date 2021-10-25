@@ -10,9 +10,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct Private;
-
 /// Color(/, r, g, b, a=1.0)
 /// --
 ///
@@ -30,7 +27,7 @@ struct Private;
 ///     Alpha channel, 0.0 – 1.0 (0.0 = transparent; 1.0 = opaque)
 #[pyclass(name = "Color", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedColor(pub Color, Private);
+pub(crate) struct WrappedColor(pub Color);
 
 #[pymethods]
 impl WrappedColor {
@@ -44,25 +41,25 @@ impl WrappedColor {
                 ));
             }
         }
-        Ok(Self(Color { r, g, b, a }, Private))
+        Ok(Self(Color { r, g, b, a }))
     }
 
     #[classattr]
     #[allow(non_snake_case)]
     fn BLACK() -> Self {
-        Self(Color::BLACK, Private)
+        Self(Color::BLACK)
     }
 
     #[classattr]
     #[allow(non_snake_case)]
     fn WHITE() -> Self {
-        Self(Color::WHITE, Private)
+        Self(Color::WHITE)
     }
 
     #[classattr]
     #[allow(non_snake_case)]
     fn TRANSPARENT() -> Self {
-        Self(Color::TRANSPARENT, Private)
+        Self(Color::TRANSPARENT)
     }
 
     /// Red component, 0.0 – 1.0

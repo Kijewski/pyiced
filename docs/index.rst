@@ -42,6 +42,7 @@ Table of Contents
     elements.rst
     state_objects.rst
     values.rst
+    styles.rst
 
 -------------------------------------------------------------------------------
 

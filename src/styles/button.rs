@@ -10,6 +10,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// ButtonStyle(**kwargs)
+/// --
+///
 /// The appearance of a button.
 ///
 /// All parameters are named parameters and optional.

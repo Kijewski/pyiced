@@ -10,15 +10,18 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// ProgressBarStyle(**kwargs)
+/// --
+///
 /// The appearance of a progress_bar.
 ///
 /// All parameters are named parameters and optional.
 ///
 /// Parameters
 /// ----------
-/// background : Option[Color]
+/// background : Optional[Color]
 ///     The progress bar's background color.
-/// bar : Option[Color]
+/// bar : Optional[Color]
 ///     The progress bar's foreground color.
 /// border_radius : float
 ///     The progress bar's border radius.

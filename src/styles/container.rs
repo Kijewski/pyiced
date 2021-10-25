@@ -10,6 +10,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// ContainerStyle(**kwargs)
+/// --
+///
 /// The appearance of a container.
 ///
 /// All parameters are named parameters and optional.

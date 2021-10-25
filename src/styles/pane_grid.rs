@@ -10,6 +10,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+/// PaneGridStyle(**kwargs)
+/// --
+///
 /// The appearance of a pane_grid.
 ///
 /// All parameters are named parameters and optional.

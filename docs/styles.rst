@@ -8,6 +8,9 @@ Overview
 
 .. autosummary::
    ~pyiced.ButtonStyle
+   ~pyiced.ContainerStyle
+   ~pyiced.PaneGridStyle
+   ~pyiced.ProgressBarStyle
 
 Details
 -------

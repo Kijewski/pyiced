@@ -39,11 +39,11 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Message',
+    'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Length', 'Line', 'Message',
     'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
-    'ButtonStyle',
+    'ButtonStyle', "ContainerStyle", "PaneGridStyle", "ProgressBarStyle",
 
     # subscription
     'Subscription',

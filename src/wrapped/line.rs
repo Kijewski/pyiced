@@ -11,7 +11,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-/// Line(/, color, width)
+/// Line(color, width)
 /// --
 ///
 /// A line.
@@ -24,6 +24,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     The color of the line.
 /// width : float
 ///     The width of the line.
+///
+/// .. seealso::
+///     * `iced::widget::pane_grid::Line <https://docs.rs/iced/0.3.0/iced/widget/pane_grid/struct.Line.html>`_
 #[pyclass(name = "Line", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedLine(pub Line);

@@ -13,6 +13,7 @@ Overview
    ~pyiced.HorizontalAlignment
    ~pyiced.ImageHandle
    ~pyiced.Length
+   ~pyiced.Line
    ~pyiced.SvgHandle
    ~pyiced.TooltipPosition
    ~pyiced.VerticalAlignment
@@ -41,6 +42,10 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.Length
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.Line
    :members:
    :undoc-members:
 

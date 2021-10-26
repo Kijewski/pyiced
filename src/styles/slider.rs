@@ -23,7 +23,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 ///
 ///     The valid string values are "active", "hovered", "dragging" and "hovered_checked",
-///     same as the argument for :class:`pyiced.CheckboxStyleSheet`.
+///     same as the argument for :class:`~pyiced.SliderStyleSheet`.
 ///
 ///     None is the same as "active".
 /// background : Color

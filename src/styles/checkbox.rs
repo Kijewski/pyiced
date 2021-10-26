@@ -106,7 +106,7 @@ impl WrappedCheckboxStyle {
 ///
 /// See also
 /// --------
-/// * `iced::widget::checkbox::Style <https://docs.rs/iced/0.3.0/iced/widget/checkbox/struct.Style.html>`_
+/// * `iced::widget::checkbox::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/checkbox/trait.StyleSheet.html>`_
 #[pyclass(name = "CheckboxStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WrappedCheckboxStyleSheet(pub CheckboxStyleSheet);

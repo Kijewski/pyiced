@@ -30,6 +30,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::pane_grid::Style <https://docs.rs/iced/0.3.0/iced/widget/pane_grid/trait.StyleSheet.html>`_
+/// * `iced::widget::pane_grid::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/pane_grid/trait.StyleSheet.html>`_
 #[pyclass(name = "PaneGridStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedPaneGridStyle(pub PaneGridStyle);

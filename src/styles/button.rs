@@ -38,6 +38,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::button::Style <https://docs.rs/iced/0.3.0/iced/widget/button/struct.Style.html>`_
+/// * `iced::widget::button::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/button/trait.StyleSheet.html>`_
 #[pyclass(name = "ButtonStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedButtonStyleSheet(pub ButtonStyle);

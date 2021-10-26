@@ -36,6 +36,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::container::Style <https://docs.rs/iced/0.3.0/iced/widget/container/struct.Style.html>`_
+/// * `iced::widget::container::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/container/trait.StyleSheet.html>`_
 #[pyclass(name = "ContainerStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedContainerStyle(pub ContainerStyle);

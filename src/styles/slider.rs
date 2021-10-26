@@ -73,7 +73,7 @@ impl WrappedSliderStyle {
 ///
 /// See also
 /// --------
-/// * `iced::widget::slider::Style <https://docs.rs/iced/0.3.0/iced/widget/slider/struct.Style.html>`_
+/// * `iced::widget::slider::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/slider/trait.StyleSheet.html>`_
 #[pyclass(name = "SliderStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WrappedSliderStyleSheet(pub SliderStyleSheet);

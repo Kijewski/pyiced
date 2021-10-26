@@ -15,8 +15,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// The appearance of a progress_bar.
 ///
-/// All parameters are named parameters and optional.
-///
 /// Parameters
 /// ----------
 /// background : Optional[Color]

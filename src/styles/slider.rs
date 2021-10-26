@@ -27,15 +27,15 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 ///     None is the same as "active".
 /// background : Color
-///     The slider' background color.
+///     The slider's background color.
 /// checkmark_color : Color
 ///     The color of the slider.
 /// border_radius : float
-///     The slider' border radius.
+///     The slider's border radius.
 /// border_width : float
-///     The slider' border width.
+///     The slider's border width.
 /// border_color : Color
-///     The slider' border color.
+///     The slider's border color.
 ///
 /// See also
 /// --------

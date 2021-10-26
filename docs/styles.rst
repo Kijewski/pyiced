@@ -15,6 +15,9 @@ Overview
    ~pyiced.ContainerStyleSheet
    ~pyiced.PaneGridStyle
    ~pyiced.PaneGridStyleSheet
+   ~pyiced.PickListMenu
+   ~pyiced.PickListStyle
+   ~pyiced.PickListStyleSheet
    ~pyiced.ProgressBarStyle
    ~pyiced.ProgressBarStyleSheet
    ~pyiced.SliderStyle
@@ -58,6 +61,18 @@ Details
 .. autoclass:: pyiced.PaneGridStyle
 
 .. autoclass:: pyiced.PaneGridStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.PickListMenu
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.PickListStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.PickListStyleSheet
    :members:
    :undoc-members:
 

@@ -15,8 +15,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// The appearance of a container.
 ///
-/// All parameters are named parameters and optional.
-///
 /// Parameters
 /// ----------
 /// proto : Optional[ContainerStyleSheet]

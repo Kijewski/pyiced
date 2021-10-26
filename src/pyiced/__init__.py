@@ -44,7 +44,8 @@ __all__ = [
 
     # styles
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
-    'PaneGridStyleSheet', 'ProgressBarStyleSheet', 'SliderStyle', 'SliderStyleSheet',
+    'PaneGridStyleSheet', 'PickListMenu', 'PickListStyle', 'PickListStyleSheet',
+    'ProgressBarStyleSheet', 'SliderStyle', 'SliderStyleSheet',
 
     # subscription
     'Subscription',

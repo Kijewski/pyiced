@@ -18,12 +18,10 @@ macro_rules! init_mod {
 
 init_mod! {
     button -> { ButtonStyle, WrappedButtonStyleSheet },
-    checkbox -> {
-        CheckboxStyle, CheckboxStyleSheet, WrappedCheckboxStyle, WrappedCheckboxStyleSheet,
-    },
+    checkbox -> { CheckboxStyleSheet, WrappedCheckboxStyleSheet },
     container -> { ContainerStyle, WrappedContainerStyle },
     pane_grid -> { PaneGridStyle, WrappedPaneGridStyle },
-    // pick_list -> { PickListStyle, WrappedPickListStyle },
+    pick_list -> { PickListStyleSheet, WrappedPickListStyleSheet },
     progress_bar -> { ProgressBarStyle, WrappedProgressBarStyle },
     // radio -> { RadioStyle, WrappedRadioStyle },
     // rule -> { RuleStyle, WrappedRuleStyle },

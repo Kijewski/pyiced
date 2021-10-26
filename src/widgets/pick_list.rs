@@ -7,6 +7,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{pick_list_with_state, PickListState, WrappedPickListState};
+use crate::styles::{PickListStyleSheet, WrappedPickListStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedFont;
 
@@ -23,6 +24,7 @@ pub(crate) struct PickListBuilder {
     pub on_selected: Py<PyAny>, // fn on_selected(value: String) -> crate::Message
     pub text_size: Option<u16>,
     pub font: Option<Font>,
+    pub style: Option<PickListStyleSheet>,
 }
 
 impl GCProtocol for PickListBuilder {
@@ -33,7 +35,7 @@ impl GCProtocol for PickListBuilder {
 }
 
 #[pyfunction(name = "pick_list")]
-/// pick_list($module, /, state, options, selected, on_selected, *, text_size=None, font=None)
+/// pick_list($module, /, state, options, selected, on_selected, *, text_size=None, font=None, style=None)
 /// --
 ///
 /// A widget for selecting a single value from a list of options.
@@ -52,6 +54,8 @@ impl GCProtocol for PickListBuilder {
 ///     The text size of the pick list.
 /// font : Option[Font]
 ///     Font of the pick list.
+/// style : Option[PickListStyle]
+///     Style of the pick list.
 ///
 /// Returns
 /// -------
@@ -69,6 +73,7 @@ fn make_pick_list(
     on_selected: Py<PyAny>,
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
+    style: Option<&WrappedPickListStyleSheet>,
 ) -> PyResult<WrappedWidgetBuilder> {
     let options = options
         .iter()?
@@ -94,6 +99,7 @@ fn make_pick_list(
         on_selected,
         text_size,
         font: font.map(|o| o.0),
+        style: style.map(|o| o.0),
     };
     Ok(el.into())
 }
@@ -104,7 +110,7 @@ impl ToNative for PickListBuilder {
             let on_selected = to_msg_fn(&self.on_selected);
             let options = Cow::Owned(self.options.clone());
             let el = PickList::new(state, options, self.selected.clone(), on_selected);
-            let el = assign!(el, self, text_size, font);
+            let el = assign!(el, self, text_size, font, style);
             Ok(el)
         })
     }

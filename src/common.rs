@@ -1,13 +1,11 @@
 use std::fmt::{Debug, Write};
 
-use futures_util::FutureExt;
-use iced::{Command, Element, Length, Space};
+use iced::{Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::PyException;
 use pyo3::prelude::*;
 use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyVisit};
-use pyo3_asyncio::into_future_with_loop;
 
 use crate::wrapped::WrappedMessage;
 
@@ -75,62 +73,6 @@ pub(crate) fn method_into_py(py: Python, method: &PyAny) -> Option<Py<PyAny>> {
         true => None,
         false => Some(method.into_py(py)),
     }
-}
-
-pub(crate) fn py_to_command(
-    py: Python,
-    pyloop: &Py<PyAny>,
-    vec: PyResult<Py<PyAny>>,
-) -> Command<Message> {
-    let vec = match vec {
-        Ok(vec) if !vec.is_none(py) => vec,
-        Ok(_) => return Command::none(),
-        Err(err) => {
-            err.print(py);
-            return Command::none();
-        },
-    };
-    let vec = match vec.as_ref(py).iter() {
-        Ok(vec) => vec,
-        Err(err) => {
-            err.print(py);
-            return Command::none();
-        },
-    };
-
-    let vec = vec.into_iter().filter_map(|command| {
-        let command = match command {
-            Ok(command) => command,
-            Err(err) => {
-                err.print(py);
-                return None;
-            },
-        };
-        let fut = match into_future_with_loop(pyloop.as_ref(py), command) {
-            Ok(fut) => fut,
-            Err(err) => {
-                err.print(py);
-                return None;
-            },
-        };
-        Some(Command::from(fut.map(|result| {
-            Python::with_gil(|py| match result {
-                Ok(msg) if !msg.is_none(py) => match msg.extract(py) {
-                    Ok(WrappedMessage(msg)) => msg,
-                    Err(err) => {
-                        err.print(py);
-                        Message::None
-                    },
-                },
-                Ok(_) => Message::None,
-                Err(err) => {
-                    err.print(py);
-                    Message::None
-                },
-            })
-        })))
-    });
-    Command::batch(vec)
 }
 
 #[allow(unused_variables)]

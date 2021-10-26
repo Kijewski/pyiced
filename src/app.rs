@@ -1,12 +1,17 @@
+use std::pin::Pin;
+use std::sync::atomic::AtomicUsize;
+
+use futures_util::Future;
 use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
-use pyo3::exceptions::{PyAttributeError, PyException};
+use pyo3::exceptions::{PyAttributeError, PyException, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
+use tokio::sync::oneshot::{self, Sender};
 
-use crate::common::{method_into_py, py_to_command, Message, ToNative};
+use crate::common::{method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedColor, WrappedMessage};
@@ -18,12 +23,11 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[derive(Debug, Clone)]
 struct PythonApp {
-    interop: Interop,
+    pub interop: Interop,
 }
 
 #[derive(Debug, Clone)]
 struct Interop {
-    pub pyloop: PyObject,
     pub new: Option<Py<PyAny>>,
     pub title: Option<Py<PyAny>>,
     pub update: Option<Py<PyAny>>,
@@ -33,22 +37,173 @@ struct Interop {
     pub view: Option<Py<PyAny>>,
     pub subscriptions: Option<Py<PyAny>>,
     pub background_color: Option<Py<PyAny>>,
+
+    pub pyloop: Py<PyAny>,
+    pub put_task: Py<PyAny>,
 }
 
-impl<'a> Application for PythonApp {
+enum MessageOrFuture {
+    Message(Message),
+    Future(Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>),
+    None,
+}
+
+static INDEX: AtomicUsize = AtomicUsize::new(0);
+
+#[pyclass]
+struct Task {
+    #[pyo3(get)]
+    pub task: Py<PyAny>,
+
+    #[pyo3(set)]
+    pub result: Py<PyAny>,
+    
+    pub done: Option<Sender<Py<PyAny>>>,
+}
+
+#[pymethods]
+impl Task {
+    #[call]
+    fn __call__(&mut self) {
+        if let Some(done) = self.done.take() {
+            done.send(self.result.clone()).expect("Channel broken: send");
+        }
+    }
+}
+
+fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> MessageOrFuture {
+    let result = match result {
+        Ok(result) => result,
+        Err(err) => {
+            err.print(py);
+            return MessageOrFuture::None;
+        }
+    };
+    if result.is_none() {
+        return MessageOrFuture::None;
+    }
+    if let Ok(WrappedMessage(msg)) = result.extract() {
+        return MessageOrFuture::Message(msg)
+    }
+
+    let index = INDEX.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+
+    eprintln!("A index={} thread={:?} line={} repr={:#}", index, std::thread::current().id(), line!(), result.repr().unwrap());
+
+    let (sender, receiver) = oneshot::channel();
+    let task = Task {
+        task: result.into_py(py),
+        result: py.None(),
+        done: Some(sender),
+    };
+    if let Err(err) = app.interop.put_task.call1(py, (task,)) {
+        err.print(py);
+        return MessageOrFuture::None;
+    }
+
+    MessageOrFuture::Future(Box::pin(async move {
+        eprintln!("B index={} thread={:?} line={}", index, std::thread::current().id(), line!());
+        let result = receiver.await.expect("Channel broken: recv");
+        eprintln!("C index={} thread={:?} line={}", index, std::thread::current().id(), line!());
+        return result;
+    }))
+}
+
+fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) -> Command<Message> {
+    Command::perform(future, |result| {
+        Python::with_gil(|py| {
+            let result = result.as_ref(py);
+            let result = match result.extract::<(Option<&PyAny>, Option<&PyAny>)>() {
+                Ok(result) => result,
+                Err(err) => {
+                    PyErr::new::<PyTypeError, _>(format!("{:?}", err)).print(py);
+                    return Message::None;
+                },
+            };
+            let result = match result {
+                (Some(err), _) => {
+                    PyErr::from_instance(err).print(py);
+                    return Message::None;
+                }
+                (None, None) => {
+                    return Message::None;
+                }
+                (None, Some(result)) => result,
+            };
+            match result.extract() {
+                Ok(WrappedMessage(msg)) => {
+                    msg
+                },
+                Err(err) => {
+                    err.print(py);
+                    Message::None
+                },
+            }
+        })
+    })
+}
+
+fn get_new_command(app: &PythonApp) -> Command<Message> {
+    let new = match &app.interop.new {
+        Some(new) => new,
+        None => return Command::none(),
+    };
+
+    let msg = Python::with_gil(|py| {
+        let datum = new.call0(py);
+        let datum = match datum {
+            Ok(ref datum) => Ok(datum.as_ref(py)),
+            Err(err) => Err(err),
+        };
+        message_or_future(py, datum, &app)
+    });
+
+    match msg {
+        MessageOrFuture::Message(msg) => Command::from(async { msg }),
+        MessageOrFuture::Future(future) => future_to_command(future),
+        MessageOrFuture::None => Command::none(),
+    }
+}
+
+/*
+fn start_loop(py: Python, sender: SyncSender<Result<Py<PyAny>, PyErr>>) {
+    let main = || -> PyResult<_> {
+        let asyncio = py.import("asyncio")?;
+        let new_event_loop = asyncio.getattr("new_event_loop")?;
+        let set_event_loop = asyncio.getattr("set_event_loop")?;
+        let event = asyncio.getattr("Event")?;
+
+        let pyloop = new_event_loop.call0()?;
+        set_event_loop.call1((pyloop,))?;
+
+        let done_event = event.call0()?;
+
+        let main = done_event.getattr("wait")?;
+        let run_until_complete = pyloop.getattr("run_until_complete")?;
+
+        sender.send(Ok(pyloop.into_py(py))).unwrap();
+
+        run_until_complete.call1((main,))?;
+
+        Ok(py.None().into_py(py))
+    };
+    let result = main();
+    sender.send(result).expect("Send channel failed");
+}
+*/
+
+impl Application for PythonApp {
     type Executor = executor::Default;
     type Flags = Interop;
     type Message = Message;
 
     fn new(interop: Self::Flags) -> (PythonApp, Command<Message>) {
-        let app = PythonApp { interop };
+        // let (sender, receiver) = sync_channel(1);
+        // spawn(move || Python::with_gil(|py| start_loop(py, sender)));
+        // let pyloop = receiver.recv().expect("Recv channel failed").unwrap();
 
-        let command = match &app.interop.new {
-            Some(new) => {
-                Python::with_gil(|py| py_to_command(py, &app.interop.pyloop, new.call0(py)))
-            },
-            None => Command::none(),
-        };
+        let app = PythonApp { interop };
+        let command = get_new_command(&app);
 
         (app, command)
     }
@@ -110,14 +265,55 @@ impl<'a> Application for PythonApp {
     }
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
-        match (message, &self.interop.update) {
-            (Message::None, _) | (_, None) => Command::none(),
-            (message, Some(update)) => Python::with_gil(|py| {
-                let vec = PyCell::new(py, WrappedMessage(message))
-                    .and_then(|message| update.call1(py, (message,)));
-                py_to_command(py, &self.interop.pyloop, vec)
-            }),
-        }
+        let (message, update) = match (message, &self.interop.update) {
+            (Message::None, _) | (_, None) => return Command::none(),
+            (message, Some(update)) => (message, update),
+        };
+
+        Python::with_gil(|py| {
+            let vec = PyCell::new(py, WrappedMessage(message))
+                .and_then(|message| update.call1(py, (message,)));
+            let vec = match vec {
+                Ok(vec) => vec,
+                Err(err) => {
+                    err.print(py);
+                    return Command::none();
+                },
+            };
+
+            let vec = vec.as_ref(py);
+            if vec.is_none() {
+                return Command::none();
+            }
+            if let Ok(WrappedMessage(msg)) = vec.extract() {
+                return Command::from(async { msg });
+            }
+
+            let iter = match vec.iter() {
+                Ok(iter) => iter,
+                Err(err) => {
+                    err.print(py);
+                    return Command::none();
+                }
+            };
+
+            let mut commands = Vec::new();
+            for datum in iter {
+                let datum = message_or_future(py, datum, &self);
+                let command = match datum {
+                    MessageOrFuture::Message(msg) => {
+                        Command::from(async move { msg })
+                    },
+                    MessageOrFuture::Future(future) => {
+                        future_to_command(future)
+                    }
+                    MessageOrFuture::None => continue,
+                };
+                commands.push(command)
+            }
+
+            Command::batch(commands)
+        })
     }
 
     fn should_exit(&self) -> bool {
@@ -233,22 +429,25 @@ macro_rules! assign_py_to_obj {
 }
 
 #[pyfunction]
-pub(crate) fn run_iced<'a>(
+pub(crate) fn run_iced(
     py: Python,
-    pyloop: &'a PyAny,
-    new: &'a PyAny,
-    title: &'a PyAny,
-    update: &'a PyAny,
-    should_exit: &'a PyAny,
-    scale_factor: &'a PyAny,
-    fullscreen: &'a PyAny,
-    view: &'a PyAny,
-    subscriptions: &'a PyAny,
-    settings: &'a PyAny,
-    background_color: &'a PyAny,
+    new: &PyAny,
+    title: &PyAny,
+    update: &PyAny,
+    should_exit: &PyAny,
+    scale_factor: &PyAny,
+    fullscreen: &PyAny,
+    view: &PyAny,
+    subscriptions: &PyAny,
+    settings: &PyAny,
+    background_color: &PyAny,
+    taskmanager: (&PyAny, &PyAny),
 ) -> PyResult<()> {
+    eprintln!("run_iced index={} thread={:?} line={}", 0, std::thread::current().id(), line!());
+
+    let (pyloop, put_task) = taskmanager;
+
     let methods = Interop {
-        pyloop: pyloop.into_py(py),
         new: method_into_py(py, new),
         title: method_into_py(py, title),
         update: method_into_py(py, update),
@@ -258,6 +457,8 @@ pub(crate) fn run_iced<'a>(
         view: method_into_py(py, view),
         subscriptions: method_into_py(py, subscriptions),
         background_color: method_into_py(py, background_color),
+        pyloop: pyloop.into_py(py),
+        put_task: put_task.into_py(py),
     };
 
     let mut settings_ = Settings {
@@ -291,5 +492,8 @@ pub(crate) fn run_iced<'a>(
         }
     }
 
-    PythonApp::run(settings_).map_err(|err| PyException::new_err(format!("{}", err)))
+    py.allow_threads(|| {
+        eprintln!("run_iced index={} thread={:?} line={}", 0, std::thread::current().id(), line!());
+        PythonApp::run(settings_).map_err(|err| PyException::new_err(format!("{}", err)))
+    })
 }

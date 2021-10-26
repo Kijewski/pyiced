@@ -4,7 +4,7 @@ from pyiced import (
 )
 
 
-class App(IcedApp):
+class ExampleApp(IcedApp):
     def __init__(self):
         self.__incr_button_state = ButtonState()
         self.__decr_button_state = ButtonState()
@@ -49,4 +49,4 @@ class App(IcedApp):
 if __name__ == '__main__':
     # This function only returns if there is an error on start-up.
     # Otherwise the program gets terminated when the window is closed.
-    App().run()
+    ExampleApp().run()

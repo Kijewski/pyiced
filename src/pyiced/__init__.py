@@ -20,10 +20,10 @@
 
 from abc import ABCMeta, abstractmethod
 from contextlib import contextmanager
-from asyncio import Event, get_event_loop, run as _run
-from queue import Queue
+from asyncio import Event, get_event_loop, Queue as AsyncQueue, run, run_coroutine_threadsafe
+from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Awaitable, Iterable, NoReturn, Optional, Tuple
+from typing import Awaitable, Iterable, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
 
@@ -66,7 +66,7 @@ __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
 __license__ = _pyiced.__license__
 
-Command = Awaitable[Optional[Message]]
+Command = Union[Message, Awaitable[Optional[Message]]]
 Commands = Iterable[Command]
 
 ButtonStyle = ButtonStyleSheet
@@ -161,7 +161,7 @@ class Settings:
 
 
 class IcedApp(metaclass=ABCMeta):
-    def run(self, *, run=_run) -> NoReturn:
+    def run(self, *, run=run) -> NoReturn:
         '''
         TODO
         '''
@@ -229,46 +229,46 @@ class IcedApp(metaclass=ABCMeta):
         ...
 
 
-def run_iced(app: IcedApp, *, run=_run) -> NoReturn:
+def run_iced(app: IcedApp, *, run=run) -> NoReturn:
     '''
     TODO
     '''
-    with in_async_loop(run) as loop:
-        return _pyiced.run_iced(
-            pyloop=loop,
-            new=app.new,
-            title=app.title,
-            update=app.update,
-            should_exit=app.should_exit,
-            scale_factor=app.scale_factor,
-            fullscreen=app.fullscreen,
-            view=app.view,
-            subscriptions=app.subscriptions,
-            settings=app.settings,
-            background_color=app.background_color,
-        )
+    return _pyiced.run_iced(
+        new=app.new,
+        title=app.title,
+        update=app.update,
+        should_exit=app.should_exit,
+        scale_factor=app.scale_factor,
+        fullscreen=app.fullscreen,
+        view=app.view,
+        subscriptions=app.subscriptions,
+        settings=app.settings,
+        background_color=app.background_color,
+        taskmanager=make_loop(run),
+    )
+
+
+def make_loop(run):
+    put_task = SyncQueue(1)
+    thread = Thread(None, run, args=(thread_code(put_task),))
+    thread.start()
+    return put_task.get()
 
 
 async def thread_code(put_task):
-    def done():
-        loop.call_soon_threadsafe(done_event.set)
-
-    done_event = Event()
     loop = get_event_loop()
-    put_task.put((loop, done))
-    await done_event.wait()
+    task_queue = AsyncQueue()
+    put_task.put((
+        loop,
+        lambda task: run_coroutine_threadsafe(task_queue.put(task), loop),
+    ))
+    while True:
+        taskobj = await task_queue.get()
+        if taskobj is None:
+            break
 
-
-@contextmanager
-def in_async_loop(run):
-    put_task = Queue(1)
-    thread = Thread(None, run, args=(thread_code(put_task),))
-    thread.start()
-    try:
-        (loop, done) = put_task.get()
         try:
-            yield loop
-        finally:
-            done()
-    finally:
-        thread.join()
+            taskobj.result = None, (await taskobj.task)
+        except Exception as ex:
+            taskobj.result = ex, None
+        taskobj()

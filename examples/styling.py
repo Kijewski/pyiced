@@ -4,7 +4,7 @@ from pyiced import (
 )
 
 
-class App(IcedApp):
+class StylingExample(IcedApp):
     def __init__(self):
         self.__button_state = ButtonState()
 
@@ -32,4 +32,4 @@ class App(IcedApp):
 
 
 if __name__ == '__main__':
-    App().run()
+    StylingExample().run()

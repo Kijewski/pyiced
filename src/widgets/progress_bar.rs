@@ -44,7 +44,7 @@ impl GCProtocol for ProgressBarBuilder {}
 ///     Width of the progress bar.
 /// height : Optional[Length]
 ///     Height of the progress bar.
-/// style : Optional[ProgressBarStyle]
+/// style : Optional[ProgressBarStyleSheet]
 ///     Style of the progress bar.
 ///
 /// Returns

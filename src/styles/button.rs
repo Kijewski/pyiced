@@ -6,11 +6,11 @@ use pyo3::types::PyDict;
 use crate::extract_multiple;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<WrappedButtonStyle>()?;
+    m.add_class::<WrappedButtonStyleSheet>()?;
     Ok(())
 }
 
-/// ButtonStyle(**kwargs)
+/// ButtonStyleSheet(proto=None, **kwargs)
 /// --
 ///
 /// The appearance of a button.
@@ -19,9 +19,12 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// Parameters
 /// ----------
+/// proto : Optional[ButtonStyleSheet]
+///     Source style sheet to clone and modify.
+///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 /// shadow_offset : Tuple[float, float]
 ///     The button's shadow offset.
-/// background : Option[Color]
+/// background : Optional[Color]
 ///     The button's background color.
 /// border_radius : float
 ///     The button's border radius.
@@ -35,21 +38,22 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::button::Style <https://docs.rs/iced/0.3.0/iced/widget/button/struct.Style.html>`_
-#[pyclass(name = "ButtonStyle", module = "pyiced")]
+#[pyclass(name = "ButtonStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
-pub(crate) struct WrappedButtonStyle(pub ButtonStyle);
+pub(crate) struct WrappedButtonStyleSheet(pub ButtonStyle);
 
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct ButtonStyle(pub Style);
 
 #[pymethods]
-impl WrappedButtonStyle {
-    #[args(kwargs = "**")]
+impl WrappedButtonStyleSheet {
+    #[args(proto = "None", kwargs = "**")]
     #[new]
-    fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
+    fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto = proto.map_or_else(ButtonStyle::default, |p| p.0);
         extract_multiple!(
             kwargs,
-            ButtonStyle::default(),
+            proto,
             shadow_offset,
             background,
             border_radius,

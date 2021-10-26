@@ -1,7 +1,7 @@
 use pyo3::prelude::*;
 
 macro_rules! init_mod {
-    ($($module:ident -> { $($types:ident),* }),* $(,)?) => {
+    ($($module:ident -> { $($types:ident),* $(,)? }),* $(,)?) => {
         $( mod $module; )*
 
         #[allow(unused_imports)]
@@ -17,8 +17,10 @@ macro_rules! init_mod {
 }
 
 init_mod! {
-    button -> { ButtonStyle, WrappedButtonStyle },
-    checkbox -> { CheckboxStyle, CheckboxStyles, WrappedCheckboxStyle },
+    button -> { ButtonStyle, WrappedButtonStyleSheet },
+    checkbox -> {
+        CheckboxStyle, CheckboxStyleSheet, WrappedCheckboxStyle, WrappedCheckboxStyleSheet,
+    },
     container -> { ContainerStyle, WrappedContainerStyle },
     pane_grid -> { PaneGridStyle, WrappedPaneGridStyle },
     // pick_list -> { PickListStyle, WrappedPickListStyle },
@@ -26,6 +28,6 @@ init_mod! {
     // radio -> { RadioStyle, WrappedRadioStyle },
     // rule -> { RuleStyle, WrappedRuleStyle },
     // scrollable -> { ScrollableStyle, WrappedScrollableStyle },
-    slider -> { SliderStyle, SliderStyles, WrappedSliderStyle },
+    slider -> { SliderStyle, SliderStyleSheet, WrappedSliderStyle, WrappedSliderStyleSheet },
     // text_input -> { TextInputStyle, WrappedTextInputStyle },
 }

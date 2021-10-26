@@ -10,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-/// ProgressBarStyle(**kwargs)
+/// ProgressBarStyleSheet(proto=None, **kwargs)
 /// --
 ///
 /// The appearance of a progress_bar.
@@ -29,7 +29,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::progress_bar::Style <https://docs.rs/iced/0.3.0/iced/widget/progress_bar/struct.Style.html>`_
-#[pyclass(name = "ProgressBarStyle", module = "pyiced")]
+#[pyclass(name = "ProgressBarStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedProgressBarStyle(pub ProgressBarStyle);
 
@@ -44,16 +44,11 @@ impl Default for ProgressBarStyle {
 
 #[pymethods]
 impl WrappedProgressBarStyle {
-    #[args(kwargs = "**")]
+    #[args(proto = "None", kwargs = "**")]
     #[new]
-    fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
-        extract_multiple!(
-            kwargs,
-            ProgressBarStyle::default(),
-            background,
-            bar,
-            border_radius,
-        )
+    fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto = proto.map_or_else(ProgressBarStyle::default, |p| p.0);
+        extract_multiple!(kwargs, proto, background, bar, border_radius,)
     }
 }
 

@@ -54,6 +54,7 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     init_mod(py, m)?;
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
+    m.add("__license__", env!("CARGO_PKG_LICENSE"))?;
     Ok(())
 }
 
@@ -299,6 +300,30 @@ macro_rules! extract_multiple {
                 }
             }
             return Ok(Self(result));
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! dyn_style_proto {
+    ( $proto:expr, $default:ident $(, $alt:ident)* $(,)? ) => {
+        match $proto {
+            Some(proto) => match proto.extract() {
+                Ok(Self(proto)) => proto.0,
+                Err(_) => match proto.downcast::<PyString>() {
+                    Ok(s) => match s.to_str()? {
+                        stringify!($default)  => Box::<dyn StyleSheet>::default().$default(),
+                        $( stringify!($alt)  => Box::<dyn StyleSheet>::default().$alt(), )*
+                        s => {
+                            return Err(PyErr::new::<PyValueError, _>(format!("Unknown proto value: {:#}", s)));
+                        }
+                    },
+                    Err(err) => {
+                        return Err(PyErr::new::<PyTypeError, _>(format!("{}", err)));
+                    }
+                }
+            },
+            None => Box::<dyn StyleSheet>::default().$default(),
         }
     };
 }

@@ -10,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-/// PaneGridStyle(**kwargs)
+/// PaneGridStyleSheet(proto=None, **kwargs)
 /// --
 ///
 /// The appearance of a pane_grid.
@@ -19,6 +19,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// Parameters
 /// ----------
+/// proto : Optional[PaneGridStyleSheet]
+///     Source style sheet to clone and modify.
+///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 /// picked_split : Optional[Line]
 ///     The line to draw when a split is picked.
 /// hovered_split : Optional[Line]
@@ -27,14 +30,14 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::pane_grid::Style <https://docs.rs/iced/0.3.0/iced/widget/pane_grid/trait.StyleSheet.html>`_
-#[pyclass(name = "PaneGridStyle", module = "pyiced")]
-#[derive(Debug, Clone, Default)]
+#[pyclass(name = "PaneGridStyleSheet", module = "pyiced")]
+#[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedPaneGridStyle(pub PaneGridStyle);
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct PaneGridStyle(pub PaneGridStyleInner);
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct PaneGridStyleInner {
     picked_split: Option<Line>,
     hovered_split: Option<Line>,
@@ -42,15 +45,11 @@ pub(crate) struct PaneGridStyleInner {
 
 #[pymethods]
 impl WrappedPaneGridStyle {
-    #[args(kwargs = "**")]
+    #[args(proto = "None", kwargs = "**")]
     #[new]
-    fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
-        extract_multiple!(
-            kwargs,
-            PaneGridStyle::default(),
-            picked_split,
-            hovered_split,
-        )
+    fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto = proto.map_or_else(PaneGridStyle::default, |p| p.0);
+        extract_multiple!(kwargs, proto, picked_split, hovered_split,)
     }
 }
 

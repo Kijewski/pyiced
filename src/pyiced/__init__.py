@@ -43,8 +43,8 @@ __all__ = [
     'SliderHandle', 'SliderHandleShape', 'SvgHandle', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
-    'ButtonStyle', 'CheckboxStyle', 'ContainerStyle', 'PaneGridStyle', 'ProgressBarStyle',
-    'SliderStyle',
+    'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
+    'PaneGridStyleSheet', 'ProgressBarStyleSheet', 'SliderStyle', 'SliderStyleSheet',
 
     # subscription
     'Subscription',
@@ -53,13 +53,25 @@ __all__ = [
 for name in __all__:
     exec(f'{name} = _pyiced.{name}')
 
-__all__ += ['IcedApp', 'Settings', 'WindowSettings']
+__all__ += [
+    # interfaces
+    'IcedApp', 'Settings', 'WindowSettings',
+
+    # aliases
+    'ButtonStyle', 'ContainerStyle', 'PaneGridStyle', 'ProgressBarStyle',
+]
 
 __author__ = _pyiced.__author__
 __version__ = _pyiced.__version__
+__license__ = _pyiced.__license__
 
 Command = Awaitable[Optional[Message]]
 Commands = Iterable[Command]
+
+ButtonStyle = ButtonStyleSheet
+ContainerStyle = ContainerStyleSheet
+PaneGridStyle = PaneGridStyleSheet
+ProgressBarStyle = ProgressBarStyleSheet
 
 
 class WindowSettings:

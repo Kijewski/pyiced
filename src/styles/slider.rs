@@ -1,24 +1,31 @@
 use iced::slider::{Style, StyleSheet};
-use pyo3::exceptions::PyValueError;
+use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::prelude::*;
-use pyo3::types::PyDict;
+use pyo3::types::{PyDict, PyString};
 
-use crate::extract_multiple;
+use crate::{dyn_style_proto, extract_multiple};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderStyle>()?;
+    m.add_class::<WrappedSliderStyleSheet>()?;
     Ok(())
 }
 
-/// SliderStyle(prototype=None, **kwargs)
+/// SliderStyle(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a slider.
+/// The appearance of a slider for some state.
 ///
 /// Parameters
 /// ----------
-/// prototype : Optional[str]
-///     None, "hovered" or "dragging"
+/// proto : Optional[Union[SliderStyle, str]]
+///     Source style sheet to clone and modify.
+///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
+///
+///     The valid string values are "active", "hovered", "dragging" and "hovered_checked",
+///     same as the argument for :class:`pyiced.CheckboxStyleSheet`.
+///
+///     None is the same as "active".
 /// background : Color
 ///     The slider' background color.
 /// checkmark_color : Color
@@ -40,98 +47,73 @@ pub(crate) struct WrappedSliderStyle(pub SliderStyle);
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct SliderStyle(pub Style);
 
-#[derive(Debug, Clone, Copy)]
-pub(crate) struct SliderStyles {
-    pub active: SliderStyle,
-    pub hovered: SliderStyle,
-    pub dragging: SliderStyle,
-}
-
-impl Default for SliderStyles {
-    fn default() -> Self {
-        let proto = Box::<dyn StyleSheet>::default();
-        Self {
-            active: SliderStyle(proto.active()),
-            hovered: SliderStyle(proto.hovered()),
-            dragging: SliderStyle(proto.dragging()),
-        }
-    }
-}
-
 #[pymethods]
 impl WrappedSliderStyle {
     #[args(prototype = "None", kwargs = "**")]
     #[new]
-    fn new(prototype: Option<&str>, kwargs: Option<&PyDict>) -> PyResult<Self> {
-        let proto = Box::<dyn StyleSheet>::default();
-        let proto = match prototype {
-            None => proto.active(),
-            Some("hovered") => proto.hovered(),
-            Some("dragging") => proto.dragging(),
-            _ => {
-                return Err(PyErr::new::<PyValueError, _>(
-                    "Valid prototypes are 'normal', 'hovered' and 'dragging'.",
-                ));
-            },
-        };
+    fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto = dyn_style_proto!(proto, active, hovered, dragging);
         extract_multiple!(kwargs, SliderStyle(proto), rail_colors, handle,)
     }
 }
 
-impl StyleSheet for SliderStyles {
-    fn active(&self) -> Style {
-        self.active.0
-    }
+/// SliderStyleSheet(active, hovered=None, dragging=None)
+/// --
+///
+/// The appearance of a slider.
+///
+/// Parameters
+/// ----------
+/// active : SliderStyle
+///     Normal style of the slider.
+/// hovered : Optional[SliderStyle]
+///     Style of the slider when the cursor is hovering over it. Defaults to "active".
+/// dragging : Optional[SliderStyle]
+///     Style of the slider is being dragged. Defaults to "hovered".
+///
+/// See also
+/// --------
+/// * `iced::widget::slider::Style <https://docs.rs/iced/0.3.0/iced/widget/slider/struct.Style.html>`_
+#[pyclass(name = "SliderStyleSheet", module = "pyiced")]
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct WrappedSliderStyleSheet(pub SliderStyleSheet);
 
-    fn hovered(&self) -> Style {
-        self.hovered.0
-    }
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct SliderStyleSheet {
+    active: Style,
+    hovered: Style,
+    dragging: Style,
+}
 
-    fn dragging(&self) -> Style {
-        self.dragging.0
+#[pymethods]
+impl WrappedSliderStyleSheet {
+    #[new]
+    fn new(
+        active: &WrappedSliderStyle,
+        hovered: Option<&WrappedSliderStyle>,
+        dragging: Option<&WrappedSliderStyle>,
+    ) -> Self {
+        let active = active.0.0;
+        let hovered = hovered.map_or(active, |s| s.0.0);
+        let dragging = dragging.map_or(hovered, |s| s.0.0);
+        Self(SliderStyleSheet {
+            active,
+            hovered,
+            dragging,
+        })
     }
 }
 
-impl SliderStyles {
-    pub(crate) fn new(
-        style: Option<&WrappedSliderStyle>,
-        style_hoverer: Option<&WrappedSliderStyle>,
-        style_dragging: Option<&WrappedSliderStyle>,
-    ) -> Option<Self> {
-        match (style, style_hoverer, style_dragging) {
-            (None, None, None) => None,
-            (Some(active), None, None) => Some(SliderStyles {
-                active: active.0,
-                ..Default::default()
-            }),
-            (None, Some(hovered), None) => Some(SliderStyles {
-                hovered: hovered.0,
-                ..Default::default()
-            }),
-            (Some(active), Some(hovered), None) => Some(SliderStyles {
-                active: active.0,
-                hovered: hovered.0,
-                ..Default::default()
-            }),
-            (None, None, Some(dragging)) => Some(SliderStyles {
-                dragging: dragging.0,
-                ..Default::default()
-            }),
-            (Some(active), None, Some(dragging)) => Some(SliderStyles {
-                active: active.0,
-                dragging: dragging.0,
-                ..Default::default()
-            }),
-            (None, Some(hovered), Some(dragging)) => Some(SliderStyles {
-                hovered: hovered.0,
-                dragging: dragging.0,
-                ..Default::default()
-            }),
-            (Some(active), Some(hovered), Some(dragging)) => Some(SliderStyles {
-                active: active.0,
-                hovered: hovered.0,
-                dragging: dragging.0,
-            }),
-        }
+impl StyleSheet for SliderStyleSheet {
+    fn active(&self) -> Style {
+        self.active
+    }
+
+    fn hovered(&self) -> Style {
+        self.hovered
+    }
+
+    fn dragging(&self) -> Style {
+        self.dragging
     }
 }

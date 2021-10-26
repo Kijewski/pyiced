@@ -4,7 +4,7 @@ use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
-use crate::styles::{CheckboxStyles, WrappedCheckboxStyle};
+use crate::styles::{CheckboxStyleSheet, WrappedCheckboxStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedFont, WrappedLength};
 
@@ -23,7 +23,7 @@ pub(crate) struct CheckboxBuilder {
     pub spacing: Option<u16>,
     pub text_size: Option<u16>,
     pub font: Option<Font>,
-    pub style: Option<CheckboxStyles>,
+    pub style: Option<CheckboxStyleSheet>,
 }
 
 impl GCProtocol for CheckboxBuilder {
@@ -34,7 +34,7 @@ impl GCProtocol for CheckboxBuilder {
 }
 
 #[pyfunction(name = "checkbox")]
-/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None, style_hovered=None)
+/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None)
 /// --
 ///
 /// A box that can be checked.
@@ -58,10 +58,8 @@ impl GCProtocol for CheckboxBuilder {
 ///     Font size of the text.
 /// font : Optional[Font]
 ///     Font of the text.
-/// style : Optional[CheckboxStyle]
-///     Style of an checkbox.
-/// style_hovered : Optional[CheckboxStyle]
-///     Style of an checkbox while hovering.
+/// style : Optional[CheckboxStyleSheet]
+///     Style of the checkbox.
 ///
 /// Returns
 /// -------
@@ -80,8 +78,7 @@ fn make_checkbox(
     spacing: Option<u16>,
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
-    style: Option<&WrappedCheckboxStyle>,
-    style_hovered: Option<&WrappedCheckboxStyle>,
+    style: Option<&WrappedCheckboxStyleSheet>,
 ) -> WrappedWidgetBuilder {
     let el = CheckboxBuilder {
         is_checked,
@@ -92,7 +89,7 @@ fn make_checkbox(
         spacing,
         text_size,
         font: font.map(|o| o.0),
-        style: CheckboxStyles::new(style, style_hovered),
+        style: style.map(|o| o.0),
     };
     el.into()
 }

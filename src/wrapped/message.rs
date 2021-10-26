@@ -278,7 +278,12 @@ impl WrappedMessage {
         .into_py(py)
     }
 
-    /// TODO
+    /// A unique identifier representing a finger on a touch interaction.
+    ///
+    /// Returns
+    /// -------
+    /// int
+    ///     Identifier of the finger.
     #[getter]
     fn finger(&self, py: Python) -> Py<PyAny> {
         let v = match get_touch(self) {
@@ -293,6 +298,12 @@ impl WrappedMessage {
         }
     }
 
+    /// A 2D point for the touch interaction.
+    ///
+    /// Returns
+    /// -------
+    /// Tuple[float, float]
+    ///     A 2D point
     #[getter]
     fn position(&self, py: Python) -> Py<PyAny> {
         let v = match get_touch(self) {

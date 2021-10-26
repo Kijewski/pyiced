@@ -8,11 +8,17 @@ Overview
 
 .. autosummary::
    ~pyiced.ButtonStyle
+   ~pyiced.ButtonStyleSheet
    ~pyiced.CheckboxStyle
+   ~pyiced.CheckboxStyleSheet
    ~pyiced.ContainerStyle
+   ~pyiced.ContainerStyleSheet
    ~pyiced.PaneGridStyle
+   ~pyiced.PaneGridStyleSheet
    ~pyiced.ProgressBarStyle
+   ~pyiced.ProgressBarStyleSheet
    ~pyiced.SliderStyle
+   ~pyiced.SliderStyleSheet
 
 Quick Example
 -------------
@@ -30,6 +36,8 @@ Details
 -------
 
 .. autoclass:: pyiced.ButtonStyle
+
+.. autoclass:: pyiced.ButtonStyleSheet
    :members:
    :undoc-members:
 
@@ -37,18 +45,32 @@ Details
    :members:
    :undoc-members:
 
+.. autoclass:: pyiced.CheckboxStyleSheet
+   :members:
+   :undoc-members:
+
 .. autoclass:: pyiced.ContainerStyle
+
+.. autoclass:: pyiced.ContainerStyleSheet
    :members:
    :undoc-members:
 
 .. autoclass:: pyiced.PaneGridStyle
+
+.. autoclass:: pyiced.PaneGridStyleSheet
    :members:
    :undoc-members:
 
 .. autoclass:: pyiced.ProgressBarStyle
+
+.. autoclass:: pyiced.ProgressBarStyleSheet
    :members:
    :undoc-members:
 
 .. autoclass:: pyiced.SliderStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.SliderStyleSheet
    :members:
    :undoc-members:

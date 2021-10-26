@@ -10,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-/// ContainerStyle(**kwargs)
+/// ContainerStyleSheet(proto=None, **kwargs)
 /// --
 ///
 /// The appearance of a container.
@@ -19,6 +19,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// Parameters
 /// ----------
+/// proto : Optional[ContainerStyleSheet]
+///     Source style sheet to clone and modify.
+///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 /// text_color : Color
 ///     The container's text color.
 /// background : Option[Color]
@@ -33,7 +36,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// See also
 /// --------
 /// * `iced::widget::container::Style <https://docs.rs/iced/0.3.0/iced/widget/container/struct.Style.html>`_
-#[pyclass(name = "ContainerStyle", module = "pyiced")]
+#[pyclass(name = "ContainerStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Default, Copy)]
 pub(crate) struct WrappedContainerStyle(pub ContainerStyle);
 
@@ -42,12 +45,13 @@ pub(crate) struct ContainerStyle(pub Style);
 
 #[pymethods]
 impl WrappedContainerStyle {
-    #[args(kwargs = "**")]
+    #[args(proto = "None", kwargs = "**")]
     #[new]
-    fn new(kwargs: Option<&PyDict>) -> PyResult<Self> {
+    fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto = proto.map_or_else(ContainerStyle::default, |p| p.0);
         extract_multiple!(
             kwargs,
-            ContainerStyle::default(),
+            proto,
             text_color,
             background,
             border_radius,

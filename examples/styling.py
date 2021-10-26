@@ -1,6 +1,6 @@
 from pyiced import (
-    Align, button, ButtonState, ButtonStyle, Color, container, ContainerStyle,
-    Message, IcedApp, Length, text,
+    Align, button, ButtonState, ButtonStyle, Color, container,
+    ContainerStyle, Message, IcedApp, Length, text,
 )
 
 

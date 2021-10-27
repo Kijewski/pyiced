@@ -1,7 +1,11 @@
+use std::fmt::Debug;
+use std::fmt::Write;
+
+use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 use pyo3::{PyGCProtocol, PyObjectProtocol, PyTraverseError, PyVisit};
 
-use crate::common::{debug_str, Message};
+use crate::common::Message;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedMessage>()?;
@@ -10,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 /// TODO
 #[pyclass(name = "Message", module = "pyiced", gc)]
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub(crate) struct WrappedMessage(pub Message);
 
 #[pyproto]
@@ -414,10 +418,188 @@ fn get_window(v: &WrappedMessage) -> Result<&iced_native::window::Event, ()> {
 #[pyproto]
 impl PyObjectProtocol for WrappedMessage {
     fn __str__(&self) -> PyResult<String> {
-        match &self.0 {
-            v @ Message::None => debug_str(v),
-            Message::Native(v) => debug_str(v),
-            Message::Python(v) => debug_str(v),
+        Python::with_gil(|py| {
+            let dorepr = DoRepr { msg: self, py };
+            let mut result = String::new();
+            match write!(result, "{:#?}", dorepr) {
+                Ok(()) => Ok(result),
+                Err(_) => Err(PyErr::new::<PyRuntimeError, _>("Could not stringify Message.")),
+            }
+        })
+    }
+    
+    fn __repr__(&self) -> PyResult<String> {
+        Python::with_gil(|py| {
+            let dorepr = DoRepr { msg: self, py };
+            let mut result = String::new();
+            match write!(result, "{:?}", dorepr) {
+                Ok(()) => Ok(result),
+                Err(_) => Err(PyErr::new::<PyRuntimeError, _>("Could not stringify Message.")),
+            }
+        })
+    }
+}
+
+struct DoRepr<'m, 'p> {
+    msg: &'m WrappedMessage,
+    py: Python<'p>,
+}
+
+impl<'m, 'p> Debug for DoRepr<'m, 'p> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let native = match &self.msg.0 {
+            Message::None => {
+                return f.debug_struct("Message").finish();
+            },
+            Message::Python(python) => {
+                let mut f = f.debug_tuple("Message");
+                let f = match python.as_ref(self.py).repr() {
+                    Ok(value) => f.field(&value.to_string()),
+                    Err(err) => f.field(&err.to_string()),
+                };
+                return f.finish();
+            },
+            Message::Native(native) => native,
+        };
+
+        let mut f = f.debug_struct("Message");
+        let f = f.field("type", &"native");
+        match native {
+            iced_native::Event::Keyboard(keyboard) => {
+                let f = f
+                    .field("native", &"keyboard")
+                    .field("keyboard", &match keyboard {
+                        iced::keyboard::Event::KeyPressed { .. } => "keyreleased",
+                        iced::keyboard::Event::KeyReleased { .. } => "keyreleased",
+                        iced::keyboard::Event::CharacterReceived(_) => "characterreceived",
+                        iced::keyboard::Event::ModifiersChanged(_) => "modifierschanged",
+                    });
+                let f = match keyboard {
+                    iced::keyboard::Event::KeyPressed { key_code, .. }
+                    | iced::keyboard::Event::KeyReleased { key_code, .. } => {
+                        f.field("key_code", key_code)
+                    },
+                    _ => f,
+                };
+                let f = match keyboard {
+                    iced::keyboard::Event::KeyPressed { modifiers, .. }
+                    | iced::keyboard::Event::KeyReleased { modifiers, .. }
+                    | iced::keyboard::Event::ModifiersChanged(modifiers) => {
+                        f
+                            .field("alt", &modifiers.alt)
+                            .field("control", &modifiers.control)
+                            .field("logo", &modifiers.logo)
+                            .field("shift", &modifiers.shift)
+                    }
+                    iced::keyboard::Event::CharacterReceived(c) => {
+                        f
+                            .field("characterreceived", c)
+                    },
+                };
+                f.finish()
+            },
+
+            iced_native::Event::Mouse(mouse) => {
+                let f = f.field("native", &"mouse");
+                let f = match mouse {
+                    iced::mouse::Event::CursorEntered => {
+                        f.field("mouse", &"cursorentered")
+                    }
+                    iced::mouse::Event::CursorLeft => {
+                        f.field("mouse", &"cursorleft")
+                    }
+                    iced::mouse::Event::CursorMoved { position } => {
+                        f
+                            .field("mouse", &"cursormoved")
+                            .field("cursormoved", &(position.x, position.y))
+                    }
+                    iced::mouse::Event::ButtonPressed(b) => {
+                        let f = f.field("mouse", &"buttonpressed");
+                        match b {
+                            iced::mouse::Button::Left => f.field("button", &"left"),
+                            iced::mouse::Button::Right => f.field("button", &"right"),
+                            iced::mouse::Button::Middle => f.field("button", &"middle"),
+                            iced::mouse::Button::Other(i) => f.field("button", i),
+                        }
+                    }
+                    iced::mouse::Event::ButtonReleased(_) => {
+                        f.field("mouse", &"buttonreleased")
+                    }
+                    iced::mouse::Event::WheelScrolled { delta } => {
+                        let f = f
+                            .field("mouse", &"wheelscrolled")
+                            .field("wheelscrolled", &match delta {
+                                iced::mouse::ScrollDelta::Lines { .. } => "lines",
+                                iced::mouse::ScrollDelta::Pixels { .. } => "pixels",
+                            });
+                        let f = match *delta {
+                            iced::mouse::ScrollDelta::Lines { x, y }
+                            | iced::mouse::ScrollDelta::Pixels { x, y } => {
+                                f.field("amount", &(x, y))
+                            }
+                        };
+                        f
+                    }
+                };
+                f.finish()
+            },
+
+            iced_native::Event::Window(window) => {
+                let f = f.field("native", &"window");
+                let f = match window {
+                    iced_native::window::Event::Resized { width, height } => {
+                        f
+                            .field("window", &"resized")
+                            .field("resized", &(width, height))
+                    }
+                    iced_native::window::Event::CloseRequested => {
+                        f.field("window", &"closerequested")
+                    }
+                    iced_native::window::Event::Focused => {
+                        f.field("window", &"focused")
+                    }
+                    iced_native::window::Event::Unfocused => {
+                        f.field("window", &"unfocused")
+                    }
+                    iced_native::window::Event::FileHovered(path) => {
+                        f
+                            .field("window", &"fileshovered")
+                            .field("file", path)
+                    }
+                    iced_native::window::Event::FileDropped(path) => {
+                        f
+                            .field("window", &"filesdropped")
+                            .field("file", path)
+                    }
+                    iced_native::window::Event::FilesHoveredLeft => {
+                        f.field("window", &"fileshoveredleft")
+                    }
+                };
+                f.finish()
+            },
+
+            iced_native::Event::Touch(touch) => {
+                let (position, id, name) = match touch {
+                    iced_native::touch::Event::FingerPressed { id, position } => {
+                        (position, id, "fingerpressed")
+                    },
+                    iced_native::touch::Event::FingerMoved { id, position } => {
+                        (position, id, "fingermoved")
+                    },
+                    iced_native::touch::Event::FingerLifted { id, position } => {
+                        (position, id, "fingerlifted")
+                    },
+                    iced_native::touch::Event::FingerLost { id, position } => {
+                        (position, id, "fingerlost")
+                    },
+                };
+                f
+                    .field("native", &"touch")
+                    .field("touch", &name)
+                    .field("finger", &id.0)
+                    .field("position", &(position.x, position.y))
+                    .finish()
+            },
         }
     }
 }

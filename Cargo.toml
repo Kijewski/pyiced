@@ -26,9 +26,8 @@ iced_wgpu = { version = "0.4", features = ["image", "svg"] }
 mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
 ouroboros = "0.13"
 parking_lot = { version = "0.11", features = ["arc_lock"] }
-pyo3 = { version = "0.14", default-features = false, features = ["extension-module", "abi3", "abi3-py37"] }
-pyo3-asyncio = { version = "0.14", features = ["attributes", "tokio-runtime"] }
-tokio = { version = "1", default-features = false, features = ["parking_lot"] }
+pyo3 = { version = "0.14", default-features = false, features = ["abi3", "abi3-py37", "extension-module", "macros"] }
+tokio = { version = "1", default-features = false, features = ["parking_lot", "sync"] }
 
 [profile.release]
 opt-level = "s"

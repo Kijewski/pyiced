@@ -14,8 +14,6 @@ Overview
     ~pyiced.Settings
     ~pyiced.WindowSettings
 
-.. _app-details:
-
 Details
 -------
 

@@ -1,15 +1,14 @@
 use std::pin::Pin;
-use std::sync::atomic::AtomicUsize;
 
 use futures_util::Future;
 use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
-use pyo3::exceptions::{PyAttributeError, PyException, PyTypeError};
+use pyo3::exceptions::{PyAttributeError, PyException, PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
-use tokio::sync::oneshot::{self, Sender};
+use tokio::sync::oneshot::{channel, Sender};
 
 use crate::common::{method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
@@ -38,8 +37,8 @@ struct Interop {
     pub subscriptions: Option<Py<PyAny>>,
     pub background_color: Option<Py<PyAny>>,
 
-    pub pyloop: Py<PyAny>,
     pub put_task: Py<PyAny>,
+    pub _pyloop: Py<PyAny>,
 }
 
 enum MessageOrFuture {
@@ -48,8 +47,6 @@ enum MessageOrFuture {
     None,
 }
 
-static INDEX: AtomicUsize = AtomicUsize::new(0);
-
 #[pyclass]
 struct Task {
     #[pyo3(get)]
@@ -57,7 +54,7 @@ struct Task {
 
     #[pyo3(set)]
     pub result: Py<PyAny>,
-    
+
     pub done: Option<Sender<Py<PyAny>>>,
 }
 
@@ -66,7 +63,8 @@ impl Task {
     #[call]
     fn __call__(&mut self) {
         if let Some(done) = self.done.take() {
-            done.send(self.result.clone()).expect("Channel broken: send");
+            done.send(self.result.clone())
+                .expect("Channel broken: send");
         }
     }
 }
@@ -77,20 +75,16 @@ fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> M
         Err(err) => {
             err.print(py);
             return MessageOrFuture::None;
-        }
+        },
     };
     if result.is_none() {
         return MessageOrFuture::None;
     }
     if let Ok(WrappedMessage(msg)) = result.extract() {
-        return MessageOrFuture::Message(msg)
+        return MessageOrFuture::Message(msg);
     }
 
-    let index = INDEX.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
-
-    eprintln!("A index={} thread={:?} line={} repr={:#}", index, std::thread::current().id(), line!(), result.repr().unwrap());
-
-    let (sender, receiver) = oneshot::channel();
+    let (sender, receiver) = channel();
     let task = Task {
         task: result.into_py(py),
         result: py.None(),
@@ -102,10 +96,7 @@ fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> M
     }
 
     MessageOrFuture::Future(Box::pin(async move {
-        eprintln!("B index={} thread={:?} line={}", index, std::thread::current().id(), line!());
-        let result = receiver.await.expect("Channel broken: recv");
-        eprintln!("C index={} thread={:?} line={}", index, std::thread::current().id(), line!());
-        return result;
+        receiver.await.expect("Channel broken: recv")
     }))
 }
 
@@ -124,16 +115,14 @@ fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) ->
                 (Some(err), _) => {
                     PyErr::from_instance(err).print(py);
                     return Message::None;
-                }
+                },
                 (None, None) => {
                     return Message::None;
-                }
+                },
                 (None, Some(result)) => result,
             };
             match result.extract() {
-                Ok(WrappedMessage(msg)) => {
-                    msg
-                },
+                Ok(WrappedMessage(msg)) => msg,
                 Err(err) => {
                     err.print(py);
                     Message::None
@@ -165,46 +154,14 @@ fn get_new_command(app: &PythonApp) -> Command<Message> {
     }
 }
 
-/*
-fn start_loop(py: Python, sender: SyncSender<Result<Py<PyAny>, PyErr>>) {
-    let main = || -> PyResult<_> {
-        let asyncio = py.import("asyncio")?;
-        let new_event_loop = asyncio.getattr("new_event_loop")?;
-        let set_event_loop = asyncio.getattr("set_event_loop")?;
-        let event = asyncio.getattr("Event")?;
-
-        let pyloop = new_event_loop.call0()?;
-        set_event_loop.call1((pyloop,))?;
-
-        let done_event = event.call0()?;
-
-        let main = done_event.getattr("wait")?;
-        let run_until_complete = pyloop.getattr("run_until_complete")?;
-
-        sender.send(Ok(pyloop.into_py(py))).unwrap();
-
-        run_until_complete.call1((main,))?;
-
-        Ok(py.None().into_py(py))
-    };
-    let result = main();
-    sender.send(result).expect("Send channel failed");
-}
-*/
-
 impl Application for PythonApp {
     type Executor = executor::Default;
     type Flags = Interop;
     type Message = Message;
 
     fn new(interop: Self::Flags) -> (PythonApp, Command<Message>) {
-        // let (sender, receiver) = sync_channel(1);
-        // spawn(move || Python::with_gil(|py| start_loop(py, sender)));
-        // let pyloop = receiver.recv().expect("Recv channel failed").unwrap();
-
         let app = PythonApp { interop };
         let command = get_new_command(&app);
-
         (app, command)
     }
 
@@ -294,19 +251,15 @@ impl Application for PythonApp {
                 Err(err) => {
                     err.print(py);
                     return Command::none();
-                }
+                },
             };
 
             let mut commands = Vec::new();
             for datum in iter {
                 let datum = message_or_future(py, datum, &self);
                 let command = match datum {
-                    MessageOrFuture::Message(msg) => {
-                        Command::from(async move { msg })
-                    },
-                    MessageOrFuture::Future(future) => {
-                        future_to_command(future)
-                    }
+                    MessageOrFuture::Message(msg) => Command::from(async move { msg }),
+                    MessageOrFuture::Future(future) => future_to_command(future),
                     MessageOrFuture::None => continue,
                 };
                 commands.push(command)
@@ -443,8 +396,6 @@ pub(crate) fn run_iced(
     background_color: &PyAny,
     taskmanager: (&PyAny, &PyAny),
 ) -> PyResult<()> {
-    eprintln!("run_iced index={} thread={:?} line={}", 0, std::thread::current().id(), line!());
-
     let (pyloop, put_task) = taskmanager;
 
     let methods = Interop {
@@ -457,7 +408,7 @@ pub(crate) fn run_iced(
         view: method_into_py(py, view),
         subscriptions: method_into_py(py, subscriptions),
         background_color: method_into_py(py, background_color),
-        pyloop: pyloop.into_py(py),
+        _pyloop: pyloop.into_py(py),
         put_task: put_task.into_py(py),
     };
 
@@ -492,8 +443,16 @@ pub(crate) fn run_iced(
         }
     }
 
-    py.allow_threads(|| {
-        eprintln!("run_iced index={} thread={:?} line={}", 0, std::thread::current().id(), line!());
+    let result = py.allow_threads(|| {
         PythonApp::run(settings_).map_err(|err| PyException::new_err(format!("{}", err)))
-    })
+    });
+    if let Err(err) = put_task.call0() {
+        err.print(py);
+    }
+    result?;
+
+    // Impossible: iced::Application::run only returns on error.
+    Err(PyErr::new::<PyRuntimeError, _>(
+        "Could not start application.",
+    ))
 }

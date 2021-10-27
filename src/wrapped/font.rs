@@ -1,6 +1,5 @@
 use iced::Font;
-use parking_lot::Mutex;
-use parking_lot::const_mutex;
+use parking_lot::{const_mutex, Mutex};
 use pyo3::prelude::*;
 use pyo3::PyObjectProtocol;
 
@@ -23,23 +22,23 @@ struct Private;
 
 /// Font(name, data)
 /// --
-/// 
+///
 /// A font.
-/// 
+///
 /// The font does not get loaded multiple times, but instead the name is used to tell fonts apart.
 /// So you should use the same name for the same data in subsequent Font instance creations.
-/// 
+///
 /// Parameters
 /// ----------
 /// name : str
 ///     The name of the external font
 /// data : bytes-like
 ///     The bytes of the external font
-/// 
+///
 /// See also
 /// --------
 /// * `iced::Font <https://docs.rs/iced/0.3.0/iced/enum.Font.html>`_
-/// 
+///
 /// Warning
 /// -------
 /// The font data gets interned!

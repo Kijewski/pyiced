@@ -38,6 +38,7 @@ Table of Contents
 .. toctree::
     :maxdepth: 1
 
+    examples.rst
     app.rst
     elements.rst
     state_objects.rst

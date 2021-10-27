@@ -260,7 +260,7 @@ async def thread_code(put_task):
     task_queue = AsyncQueue()
     put_task.put((
         loop,
-        lambda task: run_coroutine_threadsafe(task_queue.put(task), loop),
+        lambda task=None: run_coroutine_threadsafe(task_queue.put(task), loop),
     ))
     while True:
         taskobj = await task_queue.get()
@@ -272,3 +272,4 @@ async def thread_code(put_task):
         except Exception as ex:
             taskobj.result = ex, None
         taskobj()
+    print('DONE')

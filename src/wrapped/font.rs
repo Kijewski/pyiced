@@ -50,11 +50,12 @@ pub(crate) struct WrappedFont(pub Font, Private);
 fn font_from_list(font: &NameAndData) -> WrappedFont {
     let name = font.name.as_str();
     let bytes = font.bytes.as_slice();
-    let font = Font::External {
-        // Safety: once inserted, the value is never released.
-        name: unsafe { std::mem::transmute(name) },
-        bytes: unsafe { std::mem::transmute(bytes) },
-    };
+
+    // Safety: once inserted, the value is never released.
+    let name: &'static _ = unsafe { std::mem::transmute(name) };
+    let bytes: &'static _ = unsafe { std::mem::transmute(bytes) };
+
+    let font = Font::External { name, bytes };
     WrappedFont(font, Private)
 }
 

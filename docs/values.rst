@@ -76,7 +76,6 @@ Named Colors
 
 .. automodule:: pyiced.css_color
 
-
     .. py:data:: ALICEBLUE
 
     .. py:data:: ANTIQUEWHITE

@@ -29,10 +29,6 @@ Details
    :members:
    :undoc-members:
 
-.. autoclass:: pyiced.Subscription
-   :members:
-   :undoc-members:
-
 .. autoclass:: pyiced.Settings
    :members:
    :undoc-members:

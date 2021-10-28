@@ -44,6 +44,7 @@ Table of Contents
     state_objects.rst
     values.rst
     styles.rst
+    subscriptions.rst
 
 -------------------------------------------------------------------------------
 

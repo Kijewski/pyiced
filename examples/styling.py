@@ -1,6 +1,6 @@
 from pyiced import (
     Align, button, ButtonState, ButtonStyle, Color, container,
-    ContainerStyle, Message, IcedApp, Length, text, Subscription,
+    ContainerStyle, Message, IcedApp, Length, text,
 )
 
 
@@ -29,9 +29,6 @@ class StylingExample(IcedApp):
             padding=20, align_x=Align.CENTER, align_y=Align.CENTER,
             width=Length.FILL, height=Length.FILL,
         )
-
-    def subscriptions(self):
-        return [Subscription.UNCAPTURED]
 
     def update(self, msg):
         print(repr(msg))

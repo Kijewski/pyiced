@@ -1,5 +1,5 @@
 use pyo3::prelude::*;
-use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
+use pyo3::PyGCProtocol;
 
 use crate::common::{GCProtocol, Message};
 
@@ -9,17 +9,20 @@ macro_rules! init_mod {
 
         $( pub(crate) use $module::$typ; )*
 
+        pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
+            m.add_class::<WrappedSubscription>()?;
+            $(
+                {
+                    use $module::init_mod;
+                    init_mod(py, m)?;
+                }
+            )*
+            Ok(())
+        }
+
         #[derive(Debug, Clone)]
         pub(crate) enum Subscription {
             $( $typ($typ) ),*
-        }
-
-        impl GCProtocol for Subscription {
-            fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
-                match self {
-                    $( Subscription::$typ(value) => value.traverse(visit) ),*
-                }
-            }
         }
 
         impl ToSubscription for Subscription {
@@ -39,16 +42,30 @@ macro_rules! init_mod {
 
             impl From<$typ> for WrappedSubscription {
                 fn from(value: $typ) -> WrappedSubscription {
-                    WrappedSubscription(Subscription::$typ(value), Private)
+                    Self(Subscription::$typ(value), Private)
                 }
             }
         )*
+
+        #[pyproto]
+        impl PyGCProtocol for WrappedSubscription {
+            fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
+                match &self.0 {
+                    $( Subscription::$typ(value) => value.traverse(&visit) ),*
+                }
+            }
+
+            fn __clear__(&mut self) {
+                self.0 = Default::default();
+            }
+        }
     };
 }
 
 init_mod! {
     no_subscription -> NoSubscription,
     uncaptured -> Uncaptured,
+    every -> Every,
 }
 
 pub(crate) trait ToSubscription {
@@ -61,38 +78,24 @@ impl Default for Subscription {
     }
 }
 
-pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_class::<WrappedSubscription>()?;
-    Ok(())
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Private;
 
+/// TODO
 #[pyclass(name = "Subscription", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedSubscription(pub Subscription, Private);
 
-#[pyproto]
-impl PyGCProtocol for WrappedSubscription {
-    fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        self.0.traverse(&visit)?;
-        Ok(())
-    }
-
-    fn __clear__(&mut self) {
-        self.0 = Default::default();
-    }
-}
-
 #[allow(non_snake_case)]
 #[pymethods]
 impl WrappedSubscription {
+    /// TODO
     #[classattr]
     fn NONE() -> Self {
         NoSubscription.into()
     }
 
+    /// TODO
     #[classattr]
     fn UNCAPTURED() -> Self {
         Uncaptured.into()

@@ -81,3 +81,12 @@ pub(crate) trait GCProtocol {
         Ok(())
     }
 }
+
+impl GCProtocol for Message {
+    fn traverse(&self, visit: &PyVisit) -> Result<(), PyTraverseError> {
+        match self {
+            Message::Python(python) => visit.call(python),
+            _ => Ok(()),
+        }
+    }
+}

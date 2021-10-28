@@ -48,7 +48,7 @@ __all__ = [
     'ProgressBarStyleSheet', 'SliderStyle', 'SliderStyleSheet',
 
     # subscription
-    'Subscription',
+    'every', 'Subscription',
 ]
 
 for name in __all__:

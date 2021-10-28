@@ -144,7 +144,7 @@ fn get_new_command(app: &PythonApp) -> Command<Message> {
             Ok(ref datum) => Ok(datum.as_ref(py)),
             Err(err) => Err(err),
         };
-        message_or_future(py, datum, &app)
+        message_or_future(py, datum, app)
     });
 
     match msg {
@@ -256,7 +256,7 @@ impl Application for PythonApp {
 
             let mut commands = Vec::new();
             for datum in iter {
-                let datum = message_or_future(py, datum, &self);
+                let datum = message_or_future(py, datum, self);
                 let command = match datum {
                     MessageOrFuture::Message(msg) => Command::from(async move { msg }),
                     MessageOrFuture::Future(future) => future_to_command(future),

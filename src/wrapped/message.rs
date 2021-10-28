@@ -1,5 +1,4 @@
-use std::fmt::Debug;
-use std::fmt::Write;
+use std::fmt::{Debug, Write};
 
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
@@ -423,18 +422,22 @@ impl PyObjectProtocol for WrappedMessage {
             let mut result = String::new();
             match write!(result, "{:#?}", dorepr) {
                 Ok(()) => Ok(result),
-                Err(_) => Err(PyErr::new::<PyRuntimeError, _>("Could not stringify Message.")),
+                Err(_) => Err(PyErr::new::<PyRuntimeError, _>(
+                    "Could not stringify Message.",
+                )),
             }
         })
     }
-    
+
     fn __repr__(&self) -> PyResult<String> {
         Python::with_gil(|py| {
             let dorepr = DoRepr { msg: self, py };
             let mut result = String::new();
             match write!(result, "{:?}", dorepr) {
                 Ok(()) => Ok(result),
-                Err(_) => Err(PyErr::new::<PyRuntimeError, _>("Could not stringify Message.")),
+                Err(_) => Err(PyErr::new::<PyRuntimeError, _>(
+                    "Could not stringify Message.",
+                )),
             }
         })
     }
@@ -445,6 +448,14 @@ struct DoRepr<'m, 'p> {
     py: Python<'p>,
 }
 
+struct Verbatim(String);
+
+impl Debug for Verbatim {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.0)
+    }
+}
+
 impl<'m, 'p> Debug for DoRepr<'m, 'p> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let native = match &self.msg.0 {
@@ -452,12 +463,11 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
                 return f.debug_struct("Message").finish();
             },
             Message::Python(python) => {
-                let mut f = f.debug_tuple("Message");
-                let f = match python.as_ref(self.py).repr() {
-                    Ok(value) => f.field(&value.to_string()),
-                    Err(err) => f.field(&err.to_string()),
+                let s = match python.as_ref(self.py).repr() {
+                    Ok(value) => value.to_string(),
+                    Err(err) => err.to_string(),
                 };
-                return f.finish();
+                return f.debug_tuple("Message").field(&Verbatim(s)).finish();
             },
             Message::Native(native) => native,
         };
@@ -484,17 +494,12 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
                 let f = match keyboard {
                     iced::keyboard::Event::KeyPressed { modifiers, .. }
                     | iced::keyboard::Event::KeyReleased { modifiers, .. }
-                    | iced::keyboard::Event::ModifiersChanged(modifiers) => {
-                        f
-                            .field("alt", &modifiers.alt)
-                            .field("control", &modifiers.control)
-                            .field("logo", &modifiers.logo)
-                            .field("shift", &modifiers.shift)
-                    }
-                    iced::keyboard::Event::CharacterReceived(c) => {
-                        f
-                            .field("characterreceived", c)
-                    },
+                    | iced::keyboard::Event::ModifiersChanged(modifiers) => f
+                        .field("alt", &modifiers.alt)
+                        .field("control", &modifiers.control)
+                        .field("logo", &modifiers.logo)
+                        .field("shift", &modifiers.shift),
+                    iced::keyboard::Event::CharacterReceived(c) => f.field("characterreceived", c),
                 };
                 f.finish()
             },
@@ -502,17 +507,11 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
             iced_native::Event::Mouse(mouse) => {
                 let f = f.field("native", &"mouse");
                 let f = match mouse {
-                    iced::mouse::Event::CursorEntered => {
-                        f.field("mouse", &"cursorentered")
-                    }
-                    iced::mouse::Event::CursorLeft => {
-                        f.field("mouse", &"cursorleft")
-                    }
-                    iced::mouse::Event::CursorMoved { position } => {
-                        f
-                            .field("mouse", &"cursormoved")
-                            .field("cursormoved", &(position.x, position.y))
-                    }
+                    iced::mouse::Event::CursorEntered => f.field("mouse", &"cursorentered"),
+                    iced::mouse::Event::CursorLeft => f.field("mouse", &"cursorleft"),
+                    iced::mouse::Event::CursorMoved { position } => f
+                        .field("mouse", &"cursormoved")
+                        .field("cursormoved", &(position.x, position.y)),
                     iced::mouse::Event::ButtonPressed(b) => {
                         let f = f.field("mouse", &"buttonpressed");
                         match b {
@@ -521,25 +520,24 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
                             iced::mouse::Button::Middle => f.field("button", &"middle"),
                             iced::mouse::Button::Other(i) => f.field("button", i),
                         }
-                    }
-                    iced::mouse::Event::ButtonReleased(_) => {
-                        f.field("mouse", &"buttonreleased")
-                    }
+                    },
+                    iced::mouse::Event::ButtonReleased(_) => f.field("mouse", &"buttonreleased"),
                     iced::mouse::Event::WheelScrolled { delta } => {
-                        let f = f
-                            .field("mouse", &"wheelscrolled")
-                            .field("wheelscrolled", &match delta {
+                        let f = f.field("mouse", &"wheelscrolled").field(
+                            "wheelscrolled",
+                            &match delta {
                                 iced::mouse::ScrollDelta::Lines { .. } => "lines",
                                 iced::mouse::ScrollDelta::Pixels { .. } => "pixels",
-                            });
+                            },
+                        );
                         let f = match *delta {
                             iced::mouse::ScrollDelta::Lines { x, y }
                             | iced::mouse::ScrollDelta::Pixels { x, y } => {
                                 f.field("amount", &(x, y))
-                            }
+                            },
                         };
                         f
-                    }
+                    },
                 };
                 f.finish()
             },
@@ -547,33 +545,23 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
             iced_native::Event::Window(window) => {
                 let f = f.field("native", &"window");
                 let f = match window {
-                    iced_native::window::Event::Resized { width, height } => {
-                        f
-                            .field("window", &"resized")
-                            .field("resized", &(width, height))
-                    }
+                    iced_native::window::Event::Resized { width, height } => f
+                        .field("window", &"resized")
+                        .field("resized", &(width, height)),
                     iced_native::window::Event::CloseRequested => {
                         f.field("window", &"closerequested")
-                    }
-                    iced_native::window::Event::Focused => {
-                        f.field("window", &"focused")
-                    }
-                    iced_native::window::Event::Unfocused => {
-                        f.field("window", &"unfocused")
-                    }
+                    },
+                    iced_native::window::Event::Focused => f.field("window", &"focused"),
+                    iced_native::window::Event::Unfocused => f.field("window", &"unfocused"),
                     iced_native::window::Event::FileHovered(path) => {
-                        f
-                            .field("window", &"fileshovered")
-                            .field("file", path)
-                    }
+                        f.field("window", &"fileshovered").field("file", path)
+                    },
                     iced_native::window::Event::FileDropped(path) => {
-                        f
-                            .field("window", &"filesdropped")
-                            .field("file", path)
-                    }
+                        f.field("window", &"filesdropped").field("file", path)
+                    },
                     iced_native::window::Event::FilesHoveredLeft => {
                         f.field("window", &"fileshoveredleft")
-                    }
+                    },
                 };
                 f.finish()
             },
@@ -593,8 +581,7 @@ impl<'m, 'p> Debug for DoRepr<'m, 'p> {
                         (position, id, "fingerlost")
                     },
                 };
-                f
-                    .field("native", &"touch")
+                f.field("native", &"touch")
                     .field("touch", &name)
                     .field("finger", &id.0)
                     .field("position", &(position.x, position.y))

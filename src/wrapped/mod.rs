@@ -22,6 +22,7 @@ init_mod! {
     font -> WrappedFont,
     horizontal_alignment -> WrappedHorizontalAlignment,
     image -> WrappedImageHandle,
+    instant -> WrappedInstant,
     length -> WrappedLength,
     line -> WrappedLine,
     message -> WrappedMessage,

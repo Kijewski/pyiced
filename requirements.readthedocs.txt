@@ -2,3 +2,4 @@ pyiced == 0.3.0
 
 sphinx == 4.*, >= 4.2.0
 cloud-sptheme == 1.*, >= 1.10.1.post20200504175005
+sphinxprettysearchresults == 0.*, >= 0.3.5

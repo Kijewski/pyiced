@@ -2,7 +2,7 @@ use std::fmt::{Debug, Write};
 
 use iced::{Element, Length, Space};
 use iced_native::Event;
-use pyo3::exceptions::PyException;
+use pyo3::exceptions::{PyException, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyVisit};
@@ -87,6 +87,60 @@ impl GCProtocol for Message {
         match self {
             Message::Python(python) => visit.call(python),
             _ => Ok(()),
+        }
+    }
+}
+
+pub(crate) enum EitherPy<L, R> {
+    Left(L),
+    Right(R),
+}
+
+impl<L, R> ToPyObject for EitherPy<L, R>
+where
+    L: ToPyObject,
+    R: ToPyObject,
+{
+    fn to_object(&self, py: Python) -> Py<PyAny> {
+        match self {
+            EitherPy::Left(left) => left.to_object(py),
+            EitherPy::Right(right) => right.to_object(py),
+        }
+    }
+}
+
+impl<'source, L, R> FromPyObject<'source> for EitherPy<L, R>
+where
+    L: FromPyObject<'source>,
+    R: FromPyObject<'source>,
+{
+    fn extract(src: &'source PyAny) -> PyResult<Self> {
+        if let Ok(result) = L::extract(src) {
+            Ok(Self::Left(result))
+        } else if let Ok(result) = R::extract(src) {
+            Ok(Self::Right(result))
+        } else {
+            match src.get_type().name() {
+                Ok(name) => Err(PyErr::new::<PyTypeError, _>(format!(
+                    "Unexpected type: {:?}",
+                    name
+                ))),
+                Err(_) => Err(PyErr::new::<PyTypeError, _>("Unexpected type")),
+            }
+        }
+    }
+}
+
+impl<T, L, R> IntoPy<T> for EitherPy<L, R>
+where
+    Self: Sized,
+    L: IntoPy<T>,
+    R: IntoPy<T>,
+{
+    fn into_py(self, py: Python<'_>) -> T {
+        match self {
+            EitherPy::Left(left) => left.into_py(py),
+            EitherPy::Right(right) => right.into_py(py),
         }
     }
 }

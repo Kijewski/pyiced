@@ -12,6 +12,7 @@ Overview
    ~pyiced.Font
    ~pyiced.HorizontalAlignment
    ~pyiced.ImageHandle
+   ~pyiced.Instant
    ~pyiced.Length
    ~pyiced.Line
    ~pyiced.SliderHandle
@@ -40,6 +41,10 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.ImageHandle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.Instant
    :members:
    :undoc-members:
 

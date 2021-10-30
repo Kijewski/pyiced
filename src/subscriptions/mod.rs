@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::PyGCProtocol;
 
+use crate::app::Interop;
 use crate::common::{GCProtocol, Message};
 
 macro_rules! init_mod {
@@ -26,9 +27,9 @@ macro_rules! init_mod {
         }
 
         impl ToSubscription for Subscription {
-            fn to_subscription(&self) -> iced_native::Subscription<Message> {
+            fn to_subscription(&self, interop: &Interop) -> iced_native::Subscription<Message> {
                 match self {
-                    $( Subscription::$typ(value) => value.to_subscription() ),*
+                    $( Subscription::$typ(value) => <$typ as ToSubscription>::to_subscription(value, interop) ),*
                 }
             }
         }
@@ -66,10 +67,11 @@ init_mod! {
     no_subscription -> NoSubscription,
     uncaptured -> Uncaptured,
     every -> Every,
+    stream -> Stream,
 }
 
 pub(crate) trait ToSubscription {
-    fn to_subscription(&self) -> iced::Subscription<Message>;
+    fn to_subscription(&self, interop: &Interop) -> iced::Subscription<Message>;
 }
 
 impl Default for Subscription {

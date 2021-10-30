@@ -26,7 +26,7 @@ struct PythonApp {
 }
 
 #[derive(Debug, Clone)]
-struct Interop {
+pub(crate) struct Interop {
     pub new: Option<Py<PyAny>>,
     pub title: Option<Py<PyAny>>,
     pub update: Option<Py<PyAny>>,
@@ -48,7 +48,7 @@ enum MessageOrFuture {
 }
 
 #[pyclass]
-struct Task {
+pub(crate) struct Task {
     #[pyo3(get)]
     pub task: Py<PyAny>,
 
@@ -70,23 +70,23 @@ impl Task {
 }
 
 fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> MessageOrFuture {
-    let result = match result {
-        Ok(result) => result,
+    let task = match result {
+        Ok(task) => task,
         Err(err) => {
             err.print(py);
             return MessageOrFuture::None;
         },
     };
-    if result.is_none() {
+    if task.is_none() {
         return MessageOrFuture::None;
     }
-    if let Ok(WrappedMessage(msg)) = result.extract() {
+    if let Ok(WrappedMessage(msg)) = task.extract() {
         return MessageOrFuture::Message(msg);
     }
 
     let (sender, receiver) = channel();
     let task = Task {
-        task: result.into_py(py),
+        task: task.into_py(py),
         result: py.None(),
         done: Some(sender),
     };
@@ -202,7 +202,7 @@ impl Application for PythonApp {
                         return None;
                     },
                 };
-                Some(subscription.to_subscription())
+                Some(subscription.to_subscription(&self.interop))
             });
             Subscription::batch(subscriptions)
         })

@@ -49,7 +49,7 @@ __all__ = [
     'ProgressBarStyleSheet', 'SliderStyle', 'SliderStyleSheet',
 
     # subscription
-    'every', 'Subscription',
+    'every', 'stream', 'Subscription',
 ]
 
 for name in __all__:
@@ -273,4 +273,9 @@ async def thread_code(put_task):
         except Exception as ex:
             taskobj.result = ex, None
         taskobj()
-    print('DONE')
+
+
+async def async_generator_await_once(async_generator):
+    async for elem in async_generator:
+        return (elem,)
+

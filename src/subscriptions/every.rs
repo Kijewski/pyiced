@@ -1,3 +1,4 @@
+use std::any::TypeId;
 use std::convert::TryFrom;
 use std::hash::{Hash, Hasher};
 use std::time::Duration;
@@ -9,6 +10,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyTuple;
 
 use super::{ToSubscription, WrappedSubscription};
+use crate::app::Interop;
 use crate::common::{GCProtocol, Message};
 use crate::wrapped::WrappedInstant;
 
@@ -67,7 +69,7 @@ impl<'p> TryFrom<(Python<'p>, &'p PyAny, Py<PyAny>)> for Every {
 }
 
 impl ToSubscription for Every {
-    fn to_subscription(&self) -> Subscription<Message> {
+    fn to_subscription(&self, _interop: &Interop) -> Subscription<Message> {
         every(self.duration).with(self.clone()).map(|(m, instant)| {
             Python::with_gil(|py| {
                 Message::Python(
@@ -80,6 +82,8 @@ impl ToSubscription for Every {
 
 impl Hash for Every {
     fn hash<H: Hasher>(&self, state: &mut H) {
+        struct Marker;
+        TypeId::of::<Marker>().hash(state);
         self.duration.hash(state);
         self.hash.hash(state);
     }
@@ -105,7 +109,7 @@ impl Hash for Every {
 ///     The new subscription.
 ///
 ///     Every "duration" a message ``Message((token, instant))`` is sent to :meth:`pyiced.IcedApp.update`.
-/// 
+///
 ///     .. seealso::
 ///         :class:`~pyiced.Instant`.
 ///

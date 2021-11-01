@@ -113,7 +113,6 @@ impl Hash for Every {
 ///     .. seealso::
 ///         :class:`~pyiced.Instant`.
 ///
-///
 /// See also
 /// --------
 /// * `iced_futures::time::every <https://docs.rs/iced_futures/0.3.0/iced_futures/time/fn.every.html>`_

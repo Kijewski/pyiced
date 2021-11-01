@@ -24,12 +24,6 @@ pub(crate) struct Stream {
     id: usize,
 }
 
-/// TODO
-#[pyfunction(name = "stream")]
-fn make_stream(py: Python, async_generator: Py<PyAny>) -> PyResult<WrappedSubscription> {
-    Ok(Stream::try_from((py, async_generator))?.into())
-}
-
 #[derive(Debug, Clone)]
 struct AppStream {
     stream: Stream,
@@ -162,4 +156,10 @@ where
             },
         ))
     }
+}
+
+/// TODO
+#[pyfunction(name = "stream")]
+fn make_stream(py: Python, async_generator: Py<PyAny>) -> PyResult<WrappedSubscription> {
+    Ok(Stream::try_from((py, async_generator))?.into())
 }

@@ -60,17 +60,18 @@ fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
 
 #[macro_export]
 macro_rules! assign {
-    ($input:expr, $self:ident, $name:ident $(,)?) => {
-        match ($input, $self.$name) {
-            (input, ::std::option::Option::Some(value)) => input.$name(value),
-            (input, ::std::option::Option::None) => input,
+    ($input:expr, $self:ident, $($name:ident),* $(,)?) => {
+        {
+            let el = $input;
+            let this = $self;
+            $(
+                let el = match this.$name {
+                    ::std::option::Option::Some(value) => el.$name(value),
+                    ::std::option::Option::None => el,
+                };
+            )*
+            el
         }
-    };
-    ($input:expr, $self:ident, $name:ident, $($names:ident),+ $(,)?) => {
-        assign!(
-            assign!($input, $self, $name),
-            $self, $($names),+
-        )
     };
 }
 

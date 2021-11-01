@@ -29,8 +29,8 @@ impl<'p> TryFrom<Extractor<'p>> for Background {
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         value
             .0
-            .extract::<WrappedColor>()
-            .map(|c| Background::Color(c.0))
+            .extract()
+            .map(|WrappedColor(c)| Background::Color(c))
     }
 }
 
@@ -40,8 +40,8 @@ impl<'p> TryFrom<Extractor<'p>> for Option<Background> {
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         value
             .0
-            .extract::<Option<WrappedColor>>()
-            .map(|c| c.map(|c| Background::Color(c.0)))
+            .extract::<Option<_>>()
+            .map(|c| c.map(|WrappedColor(c)| Background::Color(c)))
     }
 }
 
@@ -49,7 +49,7 @@ impl<'p> TryFrom<Extractor<'p>> for Color {
     type Error = PyErr;
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        value.0.extract::<WrappedColor>().map(|c| c.0)
+        value.0.extract().map(|WrappedColor(c)| c)
     }
 }
 
@@ -71,8 +71,8 @@ impl<'p> TryFrom<Extractor<'p>> for Option<Line> {
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         value
             .0
-            .extract::<Option<WrappedLine>>()
-            .map(|c| c.map(|c| c.0))
+            .extract::<Option<_>>()
+            .map(|c| c.map(|WrappedLine(c)| c))
     }
 }
 
@@ -82,8 +82,8 @@ impl<'p> TryFrom<Extractor<'p>> for Option<Color> {
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         value
             .0
-            .extract::<Option<WrappedColor>>()
-            .map(|c| c.map(|c| c.0))
+            .extract::<Option<_>>()
+            .map(|c| c.map(|WrappedColor(c)| c))
     }
 }
 
@@ -91,7 +91,7 @@ impl<'p> TryFrom<Extractor<'p>> for iced::slider::Handle {
     type Error = PyErr;
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        value.0.extract::<WrappedSliderHandle>().map(|c| c.0)
+        value.0.extract().map(|WrappedSliderHandle(c)| c)
     }
 }
 
@@ -99,7 +99,7 @@ impl<'p> TryFrom<Extractor<'p>> for iced::slider::HandleShape {
     type Error = PyErr;
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        value.0.extract::<WrappedSliderHandleShape>().map(|c| c.0)
+        value.0.extract().map(|WrappedSliderHandleShape(c)| c)
     }
 }
 
@@ -109,7 +109,7 @@ impl<'p> TryFrom<Extractor<'p>> for (Color, Color) {
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         value
             .0
-            .extract::<(WrappedColor, WrappedColor)>()
-            .map(|(a, b)| (a.0, b.0))
+            .extract()
+            .map(|(WrappedColor(a), WrappedColor(b))| (a, b))
     }
 }

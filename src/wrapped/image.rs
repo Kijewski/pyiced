@@ -11,9 +11,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct Private;
-
 /// An :func:`pyiced.image` handle.
 ///
 /// See also
@@ -21,20 +18,20 @@ struct Private;
 /// * `iced_native::widget::image::Handle <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Handle.html>`_
 #[pyclass(name = "ImageHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedImageHandle(pub Handle, Private);
+pub(crate) struct WrappedImageHandle(pub Handle);
 
 #[pymethods]
 impl WrappedImageHandle {
     /// Creates an image handle pointing to the image of the given path.
     #[staticmethod]
     fn from_path(path: PathBuf) -> Self {
-        Self(Handle::from_path(path), Private)
+        Self(Handle::from_path(path))
     }
 
     /// Creates an image handle containing the image data directly.
     #[staticmethod]
     fn from_memory(bytes: Vec<u8>) -> Self {
-        Self(Handle::from_memory(bytes), Private)
+        Self(Handle::from_memory(bytes))
     }
 }
 

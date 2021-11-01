@@ -43,7 +43,7 @@ macro_rules! init_mod {
 
             impl From<$typ> for WrappedSubscription {
                 fn from(value: $typ) -> WrappedSubscription {
-                    Self(Subscription::$typ(value), Private)
+                    Self(Subscription::$typ(value))
                 }
             }
         )*
@@ -80,13 +80,10 @@ impl Default for Subscription {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct Private;
-
 /// TODO
 #[pyclass(name = "Subscription", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedSubscription(pub Subscription, Private);
+pub(crate) struct WrappedSubscription(pub Subscription);
 
 #[allow(non_snake_case)]
 #[pymethods]

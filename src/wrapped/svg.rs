@@ -11,9 +11,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct Private;
-
 /// An :func:`~pyiced.svg` handle.
 ///
 /// See also
@@ -21,7 +18,7 @@ struct Private;
 /// * `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
 #[pyclass(name = "SvgHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedSvgHandle(pub Handle, Private);
+pub(crate) struct WrappedSvgHandle(pub Handle);
 
 #[pymethods]
 impl WrappedSvgHandle {
@@ -41,7 +38,7 @@ impl WrappedSvgHandle {
     ///     An SVG handle usable in :func:`~pyiced.svg`.
     #[staticmethod]
     fn from_path(path: PathBuf) -> Self {
-        Self(Handle::from_path(path), Private)
+        Self(Handle::from_path(path))
     }
 
     /// from_memory(bytes)
@@ -62,7 +59,7 @@ impl WrappedSvgHandle {
     ///     An SVG handle usable in :func:`~pyiced.svg`.
     #[staticmethod]
     fn from_memory(bytes: Vec<u8>) -> Self {
-        Self(Handle::from_memory(bytes), Private)
+        Self(Handle::from_memory(bytes))
     }
 }
 

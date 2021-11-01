@@ -17,9 +17,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct Private;
-
 /// Font(name, data)
 /// --
 ///
@@ -45,7 +42,7 @@ struct Private;
 /// Even of the module is unloaded / reloaded, some memory is lost until the interpreter is restated.
 #[pyclass(name = "Font", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedFont(pub Font, Private);
+pub(crate) struct WrappedFont(pub Font);
 
 fn font_from_list(font: &NameAndData) -> WrappedFont {
     let name = font.name.as_str();
@@ -56,7 +53,7 @@ fn font_from_list(font: &NameAndData) -> WrappedFont {
     let bytes: &'static _ = unsafe { std::mem::transmute(bytes) };
 
     let font = Font::External { name, bytes };
-    WrappedFont(font, Private)
+    WrappedFont(font)
 }
 
 #[pymethods]
@@ -83,7 +80,7 @@ impl WrappedFont {
     #[classattr]
     #[allow(non_snake_case)]
     fn DEFAULT() -> Self {
-        Self(Font::Default, Private)
+        Self(Font::Default)
     }
 }
 

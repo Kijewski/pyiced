@@ -85,14 +85,13 @@ macro_rules! make_with_state {
             use iced::{Element, Length, Point, Rectangle};
             use iced_native::layout::{Limits, Node};
             use iced_native::Widget;
+            #[cfg(feature = "wgpu")]
+            use iced_wgpu::Renderer;
             use ouroboros::self_referencing;
             use parking_lot::lock_api::ArcMutexGuard;
             use parking_lot::{Mutex, RawMutex};
 
             use crate::common::{empty_space, Message};
-
-            #[cfg(feature = "wgpu")]
-            use iced_wgpu::Renderer;
 
             #[self_referencing]
             struct WidgetWithState {
@@ -229,9 +228,6 @@ macro_rules! wrap_rust_enum {
             Ok(())
         }
 
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-        struct Private;
-
         $( #[doc = $class_doc] )*
         #[pyclass(
             name = $Name,
@@ -239,7 +235,7 @@ macro_rules! wrap_rust_enum {
             freelist = $crate::CountIdents!($($UpperCase)*),
         )]
         #[derive(Debug, Clone)]
-        pub(crate) struct $WrappedName(pub $RustType, Private);
+        pub(crate) struct $WrappedName(pub $RustType);
 
         #[pymethods]
         impl $WrappedName {
@@ -248,7 +244,7 @@ macro_rules! wrap_rust_enum {
                 #[classattr]
                 #[allow(non_snake_case)]
                 fn $UpperCase() -> Self {
-                    Self(<$RustType>::$Value, Private)
+                    Self(<$RustType>::$Value)
                 }
             )*
         }

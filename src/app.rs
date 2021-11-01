@@ -195,8 +195,8 @@ impl Application for PythonApp {
                         return None;
                     },
                 };
-                let subscription = match subscription.extract::<WrappedSubscription>() {
-                    Ok(subscription) => subscription.0,
+                let subscription = match subscription.extract() {
+                    Ok(WrappedSubscription(subscription)) => subscription,
                     Err(err) => {
                         err.print(py);
                         return None;
@@ -308,8 +308,8 @@ impl Application for PythonApp {
     fn background_color(&self) -> Color {
         match &self.interop.background_color {
             Some(background_color) => Python::with_gil(|py| match background_color.call0(py) {
-                Ok(s) => match s.extract::<WrappedColor>(py) {
-                    Ok(color) => color.0,
+                Ok(s) => match s.extract(py) {
+                    Ok(WrappedColor(color)) => color,
                     Err(err) => {
                         err.print(py);
                         Color::WHITE

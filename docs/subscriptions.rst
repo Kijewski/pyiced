@@ -1,4 +1,4 @@
-Event listining
+Event Listening
 ===============
 
 TODO
@@ -16,7 +16,13 @@ Details
 
 .. autofunction:: pyiced.every
 
+   .. literalinclude :: ../examples/async_messages.py
+      :language: python
+
 .. autofunction:: pyiced.stream
+
+   .. literalinclude :: ../examples/stream.py
+      :language: python
 
 .. autoclass:: pyiced.Subscription
    :members:

@@ -98,7 +98,7 @@ html_sidebars = {
     '**': [
         'globaltoc.html',
         'localtoc.html',
-        'sourcelink.html',
+        # 'sourcelink.html',
         'searchbox.html',
     ]
 }

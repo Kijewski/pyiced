@@ -1,10 +1,10 @@
+from asyncio import open_connection
+from contextlib import closing
+
 from pyiced import (
     Align, Color, container, ContainerStyle, Font, IcedApp,
     Message, Length, text,
 )
-
-from asyncio import open_connection
-from contextlib import closing
 
 
 class AsyncMessageExample(IcedApp):
@@ -16,7 +16,7 @@ class AsyncMessageExample(IcedApp):
             size = (640, 320)
 
     def title(self):
-        return 'Styling'
+        return 'Asynchronous Messages'
 
     def new(self):
         return load_font()

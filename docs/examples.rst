@@ -30,7 +30,8 @@ Custom Styles
 Asychronous Messages
 --------------------
 
-:meth:`pyiced.IcedApp.new` and :meth:`pyiced.IcedApp.update` can either return a :class:`pyiced.Message` (or a sequence of messages in the latter case), or
+:meth:`~pyiced.IcedApp.new` and :meth:`~pyiced.IcedApp.update` can either return a :class:`~pyiced.Message`
+(or a sequence of messages in the latter case), or
 `a coroutine / coroutines <https://docs.python.org/3/library/asyncio-task.html>`_
 to asynchronously generate a messages.
 
@@ -46,11 +47,12 @@ to asynchronously generate a messages.
 AsyncGenerator Generating Messages
 ----------------------------------
 
-TODO
+An application can :meth:`subscribe <pyiced.IcedApp.subscriptions>` to :class:`~typing.AsyncGenerator`\ s
+to receive :class:`~pyiced.Message`\ s about asynchronously generated information, e.g. a pending web download.
 
-.. image:: _static/images/examples/TODO.png
+.. image:: _static/images/examples/StreamExample.png
     :width: 688
-    :height: 405
+    :height: 125
     :align: center
     :alt: 
 

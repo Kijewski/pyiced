@@ -8,11 +8,15 @@ class StreamExample(IcedApp):
         self.__stream = stream(self.__generator_func())
         self.__index = 0
 
+    class settings:
+        class window:
+            size = (640, 40)
+
     def title(self):
         return 'Stream Example'
 
     def view(self):
-        return column([text(f'Index: {self.__index/10:.1f}')])
+        return column([text(f'Index: {self.__index / 10:.1f}')])
 
     def subscriptions(self):
         return [self.__stream]

@@ -30,9 +30,6 @@ class StylingExample(IcedApp):
             width=Length.FILL, height=Length.FILL,
         )
 
-    def update(self, msg):
-        print(repr(msg))
-
 
 if __name__ == '__main__':
     StylingExample().run()

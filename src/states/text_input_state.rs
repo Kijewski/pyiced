@@ -203,20 +203,25 @@ impl WrappedTextInputState {
         }
     }
 
-    /// move_cursor_to($self)
+    /// move_cursor_to($self, /, position)
     /// --
     ///
     /// Moves the :func:`~pyiced.TextInputCursor` of the :class:`~pyiced.TextInput` to an arbitrary location.
     ///
     /// The result is measured in terms of graphems, not bytes or codepoints!
     ///
+    /// See also
+    /// --------
+    /// :meth:`pyiced.TextInputState.state()`
+    ///
     /// Warning
     /// -------
     /// If the state is currently in use, the method will fail.
     ///
-    /// See also
-    /// --------
-    /// :meth:`pyiced.TextInputState.state()`
+    /// Parameters
+    /// ----------
+    /// position : int
+    ///     The new cursor position.
     fn move_cursor_to(&self, position: usize) -> PyResult<()> {
         match self.0.try_write() {
             Some(mut guard) => {

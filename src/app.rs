@@ -61,11 +61,16 @@ pub(crate) struct Task {
 #[pymethods]
 impl Task {
     #[call]
-    fn __call__(&mut self) {
-        if let Some(done) = self.done.take() {
-            done.send(self.result.clone())
-                .expect("Channel broken: send");
-        }
+    fn __call__(&mut self) -> PyResult<()> {
+        let sender = match self.done.take() {
+            Some(done) => done,
+            None => return Err(PyErr::new::<PyRuntimeError, _>("Already sent")),
+        };
+        let err = match sender.send(self.result.clone()) {
+            Ok(_) => return Ok(()),
+            Err(err) => err,
+        };
+        Err(PyErr::new::<PyRuntimeError, _>(format!("{:?}", err)))
     }
 }
 
@@ -96,7 +101,15 @@ fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> M
     }
 
     MessageOrFuture::Future(Box::pin(async move {
-        receiver.await.expect("Channel broken: recv")
+        let outcome = receiver.await;
+        let err = match outcome {
+            Ok(outcome) => return outcome,
+            Err(err) => err,
+        };
+        Python::with_gil(|py| {
+            PyErr::new::<PyRuntimeError, _>(format!("{:?}", err)).print(py);
+            py.None()
+        })
     }))
 }
 

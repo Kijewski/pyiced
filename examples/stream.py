@@ -19,10 +19,13 @@ class StreamExample(IcedApp):
         return column([text(f'Index: {self.__index / 10:.1f}')])
 
     def subscriptions(self):
-        return [self.__stream]
+        if self.__stream is not None:
+            return [self.__stream]
 
     def update(self, msg):
         match msg:
+            case Message('done'):
+                self.__stream = None
             case Message(index):
                 self.__index = index
 
@@ -30,6 +33,7 @@ class StreamExample(IcedApp):
         for i in range(1, 101):
             yield i
             await sleep(0.1)
+        yield 'done'
 
 
 if __name__ == '__main__':

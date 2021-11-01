@@ -19,7 +19,7 @@ pub(crate) type TextInputState = Arc<Mutex<State>>;
 /// TextInputState()
 /// --
 ///
-/// TODO
+/// The state of a :func:`~pyiced.text_input()`.
 #[pyclass(name = "TextInputState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedTextInputState(pub TextInputState);

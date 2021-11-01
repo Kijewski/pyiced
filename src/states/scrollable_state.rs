@@ -19,7 +19,7 @@ pub(crate) type ScrollableState = Arc<Mutex<State>>;
 /// ScrollableState()
 /// --
 ///
-/// TODO
+/// The state of a :func:`~pyiced.scrollable()`.
 #[pyclass(name = "ScrollableState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedScrollableState(pub ScrollableState);
@@ -33,7 +33,6 @@ impl PyObjectProtocol for WrappedScrollableState {
 
 #[pymethods]
 impl WrappedScrollableState {
-    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))

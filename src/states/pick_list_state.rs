@@ -18,7 +18,7 @@ pub(crate) type PickListState = Arc<Mutex<State<String>>>;
 /// PickListState()
 /// --
 ///
-/// TODO
+/// The state of a :func:`~pyiced.pick_list()`.
 #[pyclass(name = "PickListState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedPickListState(pub PickListState);
@@ -32,7 +32,6 @@ impl PyObjectProtocol for WrappedPickListState {
 
 #[pymethods]
 impl WrappedPickListState {
-    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))

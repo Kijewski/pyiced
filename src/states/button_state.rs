@@ -18,7 +18,7 @@ pub(crate) type ButtonState = Arc<Mutex<State>>;
 /// ButtonState()
 /// --
 ///
-/// TODO
+/// The state of a :func:`~pyiced.button()`.
 #[pyclass(name = "ButtonState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedButtonState(pub ButtonState);
@@ -32,7 +32,6 @@ impl PyObjectProtocol for WrappedButtonState {
 
 #[pymethods]
 impl WrappedButtonState {
-    /// TODO
     #[new]
     fn new() -> Self {
         Self(Arc::new(Mutex::new(Default::default())))

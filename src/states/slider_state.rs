@@ -18,7 +18,7 @@ pub(crate) type SliderState = Arc<Mutex<State>>;
 /// SliderState()
 /// --
 ///
-/// TODO
+/// The state of a :func:`~pyiced.slider()`.
 #[pyclass(name = "SliderState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedSliderState(pub SliderState);

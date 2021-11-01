@@ -1,51 +1,42 @@
+use std::sync::Arc;
+
 use iced::text_input::State;
-use parking_lot::lock_api::ArcMutexGuard;
-use parking_lot::RawMutex;
+use parking_lot::Mutex;
 use pyo3::prelude::*;
-use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
+
+use crate::states::WrappedTextInputState;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedTextCursor>()?;
     Ok(())
 }
 
-/// TextCursor
+/// TextInputCursor(state)
 /// --
-#[pyclass(name = "TextCursor", module = "pyiced", unsendable)]
+/// 
+/// A representation of cursor position in a :func:`~pyiced.text_input()`.
+/// 
+/// There should be no reason to create or inspect this object directly.
+/// 
+/// Parameters
+/// ----------
+/// state : TextInputState
+///     Text input state to inspect.
+///
+/// See also
+/// --------
+/// * `iced_native::widget::text_input::cursor::Cursor <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/cursor/struct.Cursor.html>`_
+#[pyclass(name = "TextInputCursor", module = "pyiced")]
 #[derive(Default)]
-pub(crate) struct WrappedTextCursor(pub Option<ArcMutexGuard<RawMutex, State>>);
-
-#[pyproto]
-impl PyGCProtocol for WrappedTextCursor {
-    fn __traverse__(&self, _visit: PyVisit) -> Result<(), PyTraverseError> {
-        Ok(())
-    }
-
-    fn __clear__(&mut self) {
-        *self = Self::default();
-    }
-}
+pub(crate) struct WrappedTextCursor(pub Arc<Mutex<State>>);
 
 #[pymethods]
 impl WrappedTextCursor {
-    fn __enter__(slf: PyRef<Self>) -> PyRef<Self> {
-        slf
+    #[new]
+    fn new(state: &WrappedTextInputState) -> Self {
+        Self(state.0.clone())
     }
 
-    fn __exit__(
-        &mut self,
-        exc_type: Option<&PyAny>,
-        exc_value: Option<&PyAny>,
-        traceback: Option<&PyAny>,
-    ) {
-        let _ = exc_type;
-        let _ = exc_value;
-        let _ = traceback;
-        self.0 = None;
-    }
-}
-
-impl WrappedTextCursor {
     // TODO: state
     // TODO: selection
 }

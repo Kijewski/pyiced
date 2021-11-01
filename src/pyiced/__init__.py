@@ -40,8 +40,8 @@ __all__ = [
 
     # wrapped
     'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Instant', 'Length', 'Line',
-    'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle', 'TooltipPosition',
-    'VerticalAlignment',
+    'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle', 'TextInputCursor',
+    'TooltipPosition', 'VerticalAlignment',
 
     # styles
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',

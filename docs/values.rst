@@ -18,7 +18,7 @@ Overview
    ~pyiced.SliderHandle
    ~pyiced.SliderHandleShape
    ~pyiced.SvgHandle
-   ~pyiced.TextCursor
+   ~pyiced.TextInputCursor
    ~pyiced.TooltipPosition
    ~pyiced.VerticalAlignment
 
@@ -69,7 +69,7 @@ Details
    :members:
    :undoc-members:
 
-.. autoclass:: pyiced.TextCursor
+.. autoclass:: pyiced.TextInputCursor
    :members:
    :undoc-members:
 

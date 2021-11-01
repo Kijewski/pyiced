@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use iced::scrollable::State;
-use parking_lot::Mutex;
+use parking_lot::RwLock;
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 use pyo3::PyObjectProtocol;
@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type ScrollableState = Arc<Mutex<State>>;
+pub(crate) type ScrollableState = Arc<RwLock<State>>;
 
 /// ScrollableState()
 /// --
@@ -35,7 +35,7 @@ impl PyObjectProtocol for WrappedScrollableState {
 impl WrappedScrollableState {
     #[new]
     fn new() -> Self {
-        Self(Arc::new(Mutex::new(Default::default())))
+        Self::default()
     }
 
     // TODO: scroll
@@ -44,7 +44,7 @@ impl WrappedScrollableState {
 
     /// TODO
     fn is_scroller_grabbed(&self) -> PyResult<bool> {
-        match self.0.try_lock() {
+        match self.0.try_read() {
             Some(guard) => Ok(guard.is_scroller_grabbed()),
             None => Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
         }
@@ -52,7 +52,7 @@ impl WrappedScrollableState {
 
     /// TODO
     fn is_scroll_box_touched(&self) -> PyResult<bool> {
-        match self.0.try_lock() {
+        match self.0.try_read() {
             Some(guard) => Ok(guard.is_scroll_box_touched()),
             None => Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
         }

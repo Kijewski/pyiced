@@ -88,14 +88,14 @@ macro_rules! make_with_state {
             #[cfg(feature = "wgpu")]
             use iced_wgpu::Renderer;
             use ouroboros::self_referencing;
-            use parking_lot::lock_api::ArcMutexGuard;
-            use parking_lot::{Mutex, RawMutex};
+            use parking_lot::lock_api::ArcRwLockWriteGuard;
+            use parking_lot::{RawRwLock, RwLock};
 
             use crate::common::{empty_space, Message};
 
             #[self_referencing]
             struct WidgetWithState {
-                _guard: ArcMutexGuard<RawMutex, $State>,
+                _guard: ArcRwLockWriteGuard<RawRwLock, $State>,
                 #[borrows(mut _guard)]
                 #[covariant]
                 widget: $Widget,
@@ -183,10 +183,10 @@ macro_rules! make_with_state {
 
             #[allow(dead_code)]
             pub(crate) fn with_state(
-                arc: &Arc<Mutex<$State>>,
+                arc: &Arc<RwLock<$State>>,
                 make: impl for<'this> FnOnce(&'this mut $State) -> Result<$Widget, ()>,
             ) -> Element<'static, Message> {
-                let guard = match arc.try_lock_arc() {
+                let guard = match arc.try_write_arc() {
                     Some(guard) => guard,
                     None => return empty_space(),
                 };
@@ -268,12 +268,10 @@ macro_rules! wrap_rust_enum {
 
 #[macro_export]
 macro_rules! CountIdents {
-    () => {
-        0
+    ($($idents:ident)*) => {
+        $( $crate::CountIdents!(> $idents) + )* 0
     };
-    ($ident:ident $($idents:ident)*) => {
-        (1 + $crate::CountIdents!($($idents)*))
-    };
+    (>$ident:ident) => ( 1 );
 }
 
 #[macro_export]

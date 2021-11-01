@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use iced::button::State;
-use parking_lot::Mutex;
+use parking_lot::RwLock;
 use pyo3::prelude::*;
 use pyo3::PyObjectProtocol;
 
@@ -13,7 +13,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-pub(crate) type ButtonState = Arc<Mutex<State>>;
+pub(crate) type ButtonState = Arc<RwLock<State>>;
 
 /// ButtonState()
 /// --
@@ -34,7 +34,7 @@ impl PyObjectProtocol for WrappedButtonState {
 impl WrappedButtonState {
     #[new]
     fn new() -> Self {
-        Self(Arc::new(Mutex::new(Default::default())))
+        Self::default()
     }
 }
 

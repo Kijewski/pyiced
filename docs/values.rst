@@ -18,6 +18,7 @@ Overview
    ~pyiced.SliderHandle
    ~pyiced.SliderHandleShape
    ~pyiced.SvgHandle
+   ~pyiced.TextCursor
    ~pyiced.TooltipPosition
    ~pyiced.VerticalAlignment
 
@@ -65,6 +66,10 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.SvgHandle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.TextCursor
    :members:
    :undoc-members:
 

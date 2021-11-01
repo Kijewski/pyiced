@@ -8,6 +8,7 @@ use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 use crate::make_with_state;
+use crate::wrapped::WrappedTextCursor;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedTextInputState>()?;
@@ -39,7 +40,13 @@ impl WrappedTextInputState {
         Self(Arc::new(Mutex::new(Default::default())))
     }
 
-    // TODO: cursor
+    /// TODO
+    fn cursor(&self) -> PyResult<WrappedTextCursor> {
+        match self.0.try_lock_arc() {
+            Some(guard) => Ok(WrappedTextCursor(Some(guard))),
+            None => return Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
+        }
+    }
 
     /// TODO
     fn is_focused(&self) -> PyResult<bool> {

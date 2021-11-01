@@ -29,6 +29,7 @@ init_mod! {
     slider_handle -> WrappedSliderHandle,
     slider_handle_shape -> WrappedSliderHandleShape,
     svg -> WrappedSvgHandle,
+    text_cursor -> WrappedTextCursor,
     tooltip_position -> WrappedTooltipPosition,
     vertical_alignment -> WrappedVerticalAlignment,
 }

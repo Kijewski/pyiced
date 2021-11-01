@@ -75,7 +75,7 @@ impl GCProtocol for TextInputBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::text_input::TextInput <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.TextInput.html>`_
+/// `iced_native::widget::text_input::TextInput <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.TextInput.html>`_
 fn make_text_input(
     state: &WrappedTextInputState,
     placeholder: String,

@@ -15,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::image::Handle <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Handle.html>`_
+/// `iced_native::widget::image::Handle <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Handle.html>`_
 #[pyclass(name = "ImageHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedImageHandle(pub Handle);

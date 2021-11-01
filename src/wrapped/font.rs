@@ -34,7 +34,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced::Font <https://docs.rs/iced/0.3.0/iced/enum.Font.html>`_
+/// `iced::Font <https://docs.rs/iced/0.3.0/iced/enum.Font.html>`_
 ///
 /// Warning
 /// -------

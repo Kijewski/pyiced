@@ -73,7 +73,7 @@ impl GCProtocol for ScrollableBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::scrollable::Scrollable <https://docs.rs/iced_native/0.4.0/iced_native/widget/scrollable/struct.Scrollable.html>`_
+/// `iced_native::widget::scrollable::Scrollable <https://docs.rs/iced_native/0.4.0/iced_native/widget/scrollable/struct.Scrollable.html>`_
 fn make_scrollable(
     py: Python,
     state: &WrappedScrollableState,

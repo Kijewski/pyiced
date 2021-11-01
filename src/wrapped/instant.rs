@@ -22,7 +22,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `std::time::Instant <https://doc.rust-lang.org/std/time/struct.Instant.html>`_
+/// `std::time::Instant <https://doc.rust-lang.org/std/time/struct.Instant.html>`_
 #[pyclass(name = "Instant", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedInstant(pub Instant);

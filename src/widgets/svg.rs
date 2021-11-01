@@ -48,7 +48,7 @@ impl GCProtocol for SvgBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::svg::Svg <https://docs.rs/iced_native/0.4.0/iced_native/widget/svg/struct.Svg.html>`_
+/// `iced_native::widget::svg::Svg <https://docs.rs/iced_native/0.4.0/iced_native/widget/svg/struct.Svg.html>`_
 fn make_svg(
     handle: &WrappedSvgHandle,
     width: Option<&WrappedLength>,

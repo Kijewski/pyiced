@@ -15,7 +15,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
+/// `iced::widget::svg::Handle <https://docs.rs/iced/0.3.0/iced/widget/svg/struct.Handle.html>`_
 #[pyclass(name = "SvgHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedSvgHandle(pub Handle);

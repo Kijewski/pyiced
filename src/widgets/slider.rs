@@ -75,7 +75,7 @@ impl GCProtocol for SliderBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::slider::Slider <https://docs.rs/iced_native/0.4.0/iced_native/widget/slider/struct.Slider.html>`_
+/// `iced_native::widget::slider::Slider <https://docs.rs/iced_native/0.4.0/iced_native/widget/slider/struct.Slider.html>`_
 fn make_slider(
     state: &WrappedSliderState,
     start: f32,

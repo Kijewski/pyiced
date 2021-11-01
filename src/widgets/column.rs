@@ -65,7 +65,7 @@ impl GCProtocol for ColumnBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::column::Column <https://docs.rs/iced_native/0.4.0/iced_native/widget/column/struct.Column.html>`_
+/// `iced_native::widget::column::Column <https://docs.rs/iced_native/0.4.0/iced_native/widget/column/struct.Column.html>`_
 fn make_column(
     py: Python,
     children: &PyAny,

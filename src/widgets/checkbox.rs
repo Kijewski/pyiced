@@ -68,7 +68,7 @@ impl GCProtocol for CheckboxBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::checkbox::Checkbox <https://docs.rs/iced_native/0.4.0/iced_native/widget/checkbox/struct.Checkbox.html>`_
+/// `iced_native::widget::checkbox::Checkbox <https://docs.rs/iced_native/0.4.0/iced_native/widget/checkbox/struct.Checkbox.html>`_
 fn make_checkbox(
     is_checked: bool,
     label: String,

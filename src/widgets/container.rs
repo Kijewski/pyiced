@@ -48,7 +48,7 @@ impl GCProtocol for ContainerBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::container::Container <https://docs.rs/iced_native/0.4.0/iced_native/widget/container/struct.Container.html>`_
+/// `iced_native::widget::container::Container <https://docs.rs/iced_native/0.4.0/iced_native/widget/container/struct.Container.html>`_
 fn make_container(
     content: &WrappedWidgetBuilder,
     padding: Option<u16>,

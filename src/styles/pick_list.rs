@@ -42,7 +42,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced::widget::pick_list::Style <https://docs.rs/iced/0.3.0/iced/widget/pick_list/struct.Style.html>`_
+/// `iced::widget::pick_list::Style <https://docs.rs/iced/0.3.0/iced/widget/pick_list/struct.Style.html>`_
 #[pyclass(name = "PickListStyle", module = "pyiced")]
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WrappedPickListStyle(pub PickListStyle);
@@ -85,7 +85,7 @@ impl WrappedPickListStyle {
 ///
 /// See also
 /// --------
-/// * `iced::widget::pick_list::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/pick_list/trait.StyleSheet.html>`_
+/// `iced::widget::pick_list::StyleSheet <https://docs.rs/iced/0.3.0/iced/widget/pick_list/trait.StyleSheet.html>`_
 #[pyclass(name = "PickListStyleSheet", module = "pyiced")]
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WrappedPickListStyleSheet(pub PickListStyleSheet);
@@ -155,7 +155,7 @@ impl StyleSheet for PickListStyleSheet {
 ///
 /// See also
 /// --------
-/// * `iced::widget::pick_list::Menu <https://docs.rs/iced/0.3.0/iced/widget/pick_list/struct.Menu.html>`_
+/// `iced::widget::pick_list::Menu <https://docs.rs/iced/0.3.0/iced/widget/pick_list/struct.Menu.html>`_
 #[pyclass(name = "PickListMenu", module = "pyiced")]
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct WrappedPickListMenu(pub PickListMenu);

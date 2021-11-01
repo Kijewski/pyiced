@@ -64,7 +64,7 @@ impl GCProtocol for RadioBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::radio::Radio <https://docs.rs/iced_native/0.4.0/iced_native/widget/radio/struct.Radio.html>`_
+/// `iced_native::widget::radio::Radio <https://docs.rs/iced_native/0.4.0/iced_native/widget/radio/struct.Radio.html>`_
 fn make_radio(
     value: i64,
     label: String,

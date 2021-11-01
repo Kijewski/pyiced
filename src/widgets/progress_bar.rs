@@ -54,7 +54,7 @@ impl GCProtocol for ProgressBarBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::progress_bar::ProgressBar <https://docs.rs/iced_native/0.4.0/iced_native/widget/progress_bar/struct.ProgressBar.html>`_
+/// `iced_native::widget::progress_bar::ProgressBar <https://docs.rs/iced_native/0.4.0/iced_native/widget/progress_bar/struct.ProgressBar.html>`_
 fn make_progress_bar(
     start: f32,
     end: f32,

@@ -64,7 +64,7 @@ impl GCProtocol for PickListBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::pick_list::PickList <https://docs.rs/iced_native/0.4.0/iced_native/widget/pick_list/struct.PickList.html>`_
+/// `iced_native::widget::pick_list::PickList <https://docs.rs/iced_native/0.4.0/iced_native/widget/pick_list/struct.PickList.html>`_
 fn make_pick_list(
     py: Python,
     state: &WrappedPickListState,

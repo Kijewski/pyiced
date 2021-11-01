@@ -44,7 +44,7 @@ impl GCProtocol for ImageBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::image::Image <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Image.html>`_
+/// `iced_native::widget::image::Image <https://docs.rs/iced_native/0.4.0/iced_native/widget/image/struct.Image.html>`_
 fn make_image(
     handle: &WrappedImageHandle,
     width: Option<&WrappedLength>,

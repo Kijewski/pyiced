@@ -3,7 +3,7 @@ crate::wrap_rust_enum!(
     ///
     /// See also
     /// --------
-    /// * `iced::Align <https://docs.rs/iced/0.3.0/iced/enum.Align.html>`_
+    /// `iced::Align <https://docs.rs/iced/0.3.0/iced/enum.Align.html>`_
     "Align" -> WrappedAlign(iced::Align) {
         /// Align at the start of the axis.
         START -> Start,

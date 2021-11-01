@@ -23,7 +23,7 @@ from contextlib import contextmanager
 from asyncio import Event, get_event_loop, Queue as AsyncQueue, run, run_coroutine_threadsafe
 from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Awaitable, Iterable, NoReturn, Optional, Tuple, Union
+from typing import Awaitable, Iterable, NewType, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
 
@@ -64,11 +64,11 @@ __all__ += [
 ]
 
 __author__ = _pyiced.__author__
-__version__ = _pyiced.__version__
 __license__ = _pyiced.__license__
+__version__ = _pyiced.__version__
 
-Command = Union[Message, Awaitable[Optional[Message]]]
-Commands = Iterable[Command]
+Command = NewType('Command', Union[Message, Awaitable[Optional[Message]]])
+Commands = NewType('Commands', Iterable[Command])
 
 ButtonStyle = ButtonStyleSheet
 ContainerStyle = ContainerStyleSheet

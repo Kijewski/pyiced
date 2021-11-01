@@ -30,7 +30,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced::widget::slider::Handle <https://docs.rs/iced/0.3.0/iced/widget/slider/struct.Handle.html>`_
+/// `iced::widget::slider::Handle <https://docs.rs/iced/0.3.0/iced/widget/slider/struct.Handle.html>`_
 #[pyclass(name = "SliderHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedSliderHandle(pub Handle);

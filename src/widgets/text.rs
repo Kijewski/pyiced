@@ -60,7 +60,7 @@ impl GCProtocol for TextBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::text::Text <https://docs.rs/iced_native/0.4.0/iced_native/widget/text/struct.Text.html>`_
+/// `iced_native::widget::text::Text <https://docs.rs/iced_native/0.4.0/iced_native/widget/text/struct.Text.html>`_
 fn make_text(
     label: String,
     size: Option<u16>,

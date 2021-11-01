@@ -115,7 +115,7 @@ impl Hash for Every {
 ///
 /// See also
 /// --------
-/// * `iced_futures::time::every <https://docs.rs/iced_futures/0.3.0/iced_futures/time/fn.every.html>`_
+/// `iced_futures::time::every <https://docs.rs/iced_futures/0.3.0/iced_futures/time/fn.every.html>`_
 #[pyfunction(name = "every")]
 fn make_every(py: Python, duration: &PyAny, token: Py<PyAny>) -> PyResult<WrappedSubscription> {
     Ok(Every::try_from((py, duration, token))?.into())

@@ -40,8 +40,10 @@ Details
 Type aliases
 ------------
 
-.. autoclass:: pyiced.Command
+.. py:data:: pyiced.Command
 
-.. autoclass:: pyiced.Commands
-   :members:
-   :undoc-members:
+   :class:`~pyiced.Message` | :class:`~typing.Awaitable`\ [:class:`~pyiced.Message` | None]
+
+.. py:data:: pyiced.Commands
+
+   :class:`~typing.Iterable`\ [\ :class:`~pyiced.Command` | None]

@@ -13,7 +13,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced::Length <https://docs.rs/iced/0.3.0/iced/enum.Length.html>`_
+/// `iced::Length <https://docs.rs/iced/0.3.0/iced/enum.Length.html>`_
 #[pyclass(name = "Length", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedLength(pub Length);

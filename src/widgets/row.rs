@@ -65,7 +65,7 @@ impl GCProtocol for RowBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::row::Row <https://docs.rs/iced_native/0.4.0/iced_native/widget/row/struct.Row.html>`_
+/// `iced_native::widget::row::Row <https://docs.rs/iced_native/0.4.0/iced_native/widget/row/struct.Row.html>`_
 fn make_row(
     py: Python,
     children: &PyAny,

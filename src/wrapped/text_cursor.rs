@@ -25,7 +25,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::text_input::cursor::Cursor <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/cursor/struct.Cursor.html>`_
+/// `iced_native::widget::text_input::cursor::Cursor <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/cursor/struct.Cursor.html>`_
 #[pyclass(name = "TextInputCursor", module = "pyiced")]
 #[derive(Default)]
 pub(crate) struct WrappedTextCursor(pub Arc<RwLock<State>>);

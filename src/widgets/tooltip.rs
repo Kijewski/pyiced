@@ -60,7 +60,7 @@ impl GCProtocol for TooltipBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::tooltip::Tooltip <https://docs.rs/iced_native/0.4.0/iced_native/widget/tooltip/struct.Tooltip.html>`_
+/// `iced_native::widget::tooltip::Tooltip <https://docs.rs/iced_native/0.4.0/iced_native/widget/tooltip/struct.Tooltip.html>`_
 fn make_tooltip(
     content: &WrappedWidgetBuilder,
     tooltip: String,

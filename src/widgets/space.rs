@@ -41,7 +41,7 @@ impl GCProtocol for SpaceBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::space::Space <https://docs.rs/iced_native/0.4.0/iced_native/widget/space/struct.Space.html>`_
+/// `iced_native::widget::space::Space <https://docs.rs/iced_native/0.4.0/iced_native/widget/space/struct.Space.html>`_
 fn make_space(
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,

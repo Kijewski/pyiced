@@ -40,7 +40,7 @@ impl GCProtocol for RuleBuilder {}
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::rule::Rule <https://docs.rs/iced_native/0.4.0/iced_native/widget/rule/struct.Rule.html>`_
+/// `iced_native::widget::rule::Rule <https://docs.rs/iced_native/0.4.0/iced_native/widget/rule/struct.Rule.html>`_
 fn make_rule(horizontal: Option<u16>, vertical: Option<u16>) -> PyResult<WrappedWidgetBuilder> {
     let horizontal = horizontal.and_then(|v| match v {
         0 => None,

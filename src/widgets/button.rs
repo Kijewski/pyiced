@@ -69,7 +69,7 @@ impl GCProtocol for ButtonBuilder {
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::button::Button <https://docs.rs/iced_native/0.4.0/iced_native/widget/button/struct.Button.html>`_
+/// `iced_native::widget::button::Button <https://docs.rs/iced_native/0.4.0/iced_native/widget/button/struct.Button.html>`_
 fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,

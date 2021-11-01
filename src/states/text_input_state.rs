@@ -25,7 +25,7 @@ pub(crate) type TextInputState = Arc<RwLock<State>>;
 ///
 /// See also
 /// --------
-/// * `iced_native::widget::text_input::State <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.State.html>`_
+/// `iced_native::widget::text_input::State <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.State.html>`_
 #[pyclass(name = "TextInputState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedTextInputState(pub TextInputState);

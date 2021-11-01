@@ -39,7 +39,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// Warning
 /// -------
 /// The font data gets interned!
-/// Even of the module is unloaded / reloaded, some memory is lost until the interpreter is restated.
+/// Even of the module is unloaded / reloaded, some memory is lost until the interpreter is restarted.
 #[pyclass(name = "Font", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedFont(pub Font);

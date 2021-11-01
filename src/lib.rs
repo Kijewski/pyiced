@@ -84,13 +84,15 @@ macro_rules! make_with_state {
 
             use iced::{Element, Length, Point, Rectangle};
             use iced_native::layout::{Limits, Node};
-            use iced_native::{self, Widget};
-            use iced_wgpu::Renderer;
+            use iced_native::Widget;
             use ouroboros::self_referencing;
             use parking_lot::lock_api::ArcMutexGuard;
             use parking_lot::{Mutex, RawMutex};
 
             use crate::common::{empty_space, Message};
+
+            #[cfg(feature = "wgpu")]
+            use iced_wgpu::Renderer;
 
             #[self_referencing]
             struct WidgetWithState {

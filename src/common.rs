@@ -13,11 +13,34 @@ pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub(crate) enum Message {
     None,
     Native(Event),
     Python(Py<PyAny>),
+}
+
+impl Debug for Message {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let obj = match self {
+            Self::None => return write!(f, "None"),
+            Self::Native(arg) => return f.debug_tuple("Native").field(arg).finish(),
+            Self::Python(obj) => obj,
+        };
+
+        Python::with_gil(|py| -> Result<(), std::fmt::Error> { 
+            match obj.as_ref(py).repr() {
+                Ok(obj) => write!(f, "Python({})", obj.to_string_lossy()),
+                Err(_) => write!(f, "Python({})", obj),
+            }
+        })
+    }
+}
+
+impl Default for Message {
+    fn default() -> Self {
+        Self::None
+    }
 }
 
 pub(crate) trait ToNative {

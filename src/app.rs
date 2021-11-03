@@ -66,11 +66,10 @@ impl Task {
             Some(done) => done,
             None => return Err(PyErr::new::<PyRuntimeError, _>("Already sent")),
         };
-        let err = match sender.send(self.result.clone()) {
-            Ok(_) => return Ok(()),
-            Err(err) => err,
+        if let Err(_) = sender.send(self.result.clone()) {
+            // the receiver was GC collected in the meantime
         };
-        Err(PyErr::new::<PyRuntimeError, _>(format!("{:?}", err)))
+        Ok(())
     }
 }
 

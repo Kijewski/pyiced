@@ -4,7 +4,7 @@ use std::hash::{Hash, Hasher};
 use futures_util::stream::{unfold, BoxStream};
 use iced::Subscription;
 use iced_native::subscription::Recipe;
-use pyo3::exceptions::{PyRuntimeError, PyStopAsyncIteration, PyTypeError};
+use pyo3::exceptions::{PyStopAsyncIteration, PyTypeError};
 use pyo3::prelude::*;
 use tokio::sync::oneshot::channel;
 
@@ -128,19 +128,13 @@ where
                 })?;
 
                 // await result
-                let outcome = receiver
-                    .await
-                    .map_err(|err| PyErr::new::<PyRuntimeError, _>(format!("{:?}", err)));
+                let outcome = match receiver.await {
+                    Ok(outcome) => outcome,
+                    Err(_) => return None, // the sender was GC collected in the meantime
+                };
 
                 // unwrap result
                 let result = Python::with_gil(|py| {
-                    let outcome = match outcome {
-                        Ok(outcome) => outcome,
-                        Err(recv_err) => {
-                            recv_err.print(py);
-                            return None;
-                        },
-                    };
                     let tuple = match outcome.extract::<(Option<Py<PyAny>>, Py<PyAny>)>(py) {
                         Ok(tuple) => tuple,
                         Err(err) => {

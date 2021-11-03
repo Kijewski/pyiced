@@ -25,7 +25,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     Some data passed to :meth:`~pyiced.IcedApp.update()`, or to pass to that method.
 ///     Must not be None.
 #[pyclass(name = "Message", module = "pyiced", gc)]
-#[derive(Clone)]
+#[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedMessage(pub Message);
 
 #[pyproto]

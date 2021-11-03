@@ -21,7 +21,7 @@ class StylingExample(IcedApp):
                 border_color=Color(0.95, 0.87, 0.22),
                 text_color=Color(1.00, 0.18, 0.13)
             ),
-            on_press=Message(None), padding=40,
+            on_press=Message(()), padding=40,
         )
         return container(
             styled_button,

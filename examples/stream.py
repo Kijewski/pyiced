@@ -26,7 +26,7 @@ class StreamExample(IcedApp):
         match msg:
             case Message('done'):
                 self.__stream = None
-            case Message(index):
+            case Message(int(index)):
                 self.__index = index
 
     async def __generator_func(self):

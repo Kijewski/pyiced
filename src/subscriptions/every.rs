@@ -7,11 +7,11 @@ use iced::time::every;
 use iced::Subscription;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::types::PyTuple;
+use pyo3::types::{PyDelta, PyDeltaAccess, PyTuple};
 
 use super::{ToSubscription, WrappedSubscription};
 use crate::app::Interop;
-use crate::common::{GCProtocol, Message};
+use crate::common::{EitherPy, GCProtocol, Message};
 use crate::wrapped::WrappedInstant;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -32,21 +32,43 @@ impl GCProtocol for Every {
     }
 }
 
-impl<'p> TryFrom<(Python<'p>, &'p PyAny, Py<PyAny>)> for Every {
+impl<'p> TryFrom<(Python<'p>, EitherPy<&PyDelta, f64>, Py<PyAny>)> for Every {
     type Error = PyErr;
 
-    fn try_from(value: (Python<'p>, &'p PyAny, Py<PyAny>)) -> PyResult<Self> {
+    fn try_from(value: (Python<'p>, EitherPy<&PyDelta, f64>, Py<PyAny>)) -> PyResult<Self> {
         let (py, duration, token) = value;
 
-        let seconds = match duration.extract::<f64>() {
-            Ok(seconds) => seconds,
-            Err(_) => duration.call_method0("total_seconds")?.extract::<f64>()?,
+        let duration = match duration {
+            EitherPy::Left(delta) => {
+                let days = delta.get_days();
+                if days < 0 {
+                    return Err(PyErr::new::<PyValueError, _>("Duration must be positive"));
+                }
+
+                let days = days as u64;
+                let secs = delta.get_seconds() as u64;
+                let micros = delta.get_microseconds() as u32;
+
+                let secs = match days.checked_mul(24 * 60 * 60).and_then(|s| secs.checked_add(s)) {
+                    Some(s) => s,
+                    None => return Err(PyErr::new::<PyValueError, _>("Duration too big")),
+                };
+                let nanos = micros * 1000;
+                Duration::new(secs, nanos)
+            },
+            EitherPy::Right(seconds) => {
+                if !seconds.is_normal() || seconds < 0.0 {
+                    // either nan, infinite, subnormal, or zero
+                    return Err(PyErr::new::<PyValueError, _>("Duration must be positive"));
+                }
+                let nanos = seconds * 1e9;
+                if !nanos.is_normal() || nanos > u64::MAX as _ {
+                    return Err(PyErr::new::<PyValueError, _>("Duration too big"));
+                };
+                Duration::from_nanos(nanos as u64)
+            }
         };
-        if !seconds.is_normal() {
-            // either nan, infinite, subnormal, or zero
-            return Err(PyErr::new::<PyValueError, _>("Duration must be positive"));
-        }
-        let duration = Duration::from_nanos((seconds * 1e9) as u64);
+
         if duration.as_micros() < 100 {
             // To prevent crashes in iced_graphics::window::Compositor::draw():
             // "Next frame: Outdated" while resizing window.
@@ -55,10 +77,7 @@ impl<'p> TryFrom<(Python<'p>, &'p PyAny, Py<PyAny>)> for Every {
             ));
         }
 
-        let hash = py
-            .import("builtins")?
-            .call_method1("hash", (&token,))?
-            .extract::<usize>()?;
+        let hash = token.as_ref(py).hash()? as _;
 
         Ok(Every {
             duration,
@@ -117,6 +136,6 @@ impl Hash for Every {
 /// --------
 /// `iced_futures::time::every <https://docs.rs/iced_futures/0.3.0/iced_futures/time/fn.every.html>`_
 #[pyfunction(name = "every")]
-fn make_every(py: Python, duration: &PyAny, token: Py<PyAny>) -> PyResult<WrappedSubscription> {
+fn make_every(py: Python, duration: EitherPy<&PyDelta, f64>, token: Py<PyAny>) -> PyResult<WrappedSubscription> {
     Ok(Every::try_from((py, duration, token))?.into())
 }

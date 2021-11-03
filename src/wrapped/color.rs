@@ -10,7 +10,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
-/// Color(/, r, g, b, a=1.0)
+/// Color(r, g, b, a=1.0)
 /// --
 ///
 /// A color in the sRGB color space.

@@ -49,7 +49,10 @@ impl<'p> TryFrom<(Python<'p>, EitherPy<&PyDelta, f64>, Py<PyAny>)> for Every {
                 let secs = delta.get_seconds() as u64;
                 let micros = delta.get_microseconds() as u32;
 
-                let secs = match days.checked_mul(24 * 60 * 60).and_then(|s| secs.checked_add(s)) {
+                let secs = match days
+                    .checked_mul(24 * 60 * 60)
+                    .and_then(|s| secs.checked_add(s))
+                {
                     Some(s) => s,
                     None => return Err(PyErr::new::<PyValueError, _>("Duration too big")),
                 };
@@ -66,7 +69,7 @@ impl<'p> TryFrom<(Python<'p>, EitherPy<&PyDelta, f64>, Py<PyAny>)> for Every {
                     return Err(PyErr::new::<PyValueError, _>("Duration too big"));
                 };
                 Duration::from_nanos(nanos as u64)
-            }
+            },
         };
 
         if duration.as_micros() < 100 {
@@ -136,6 +139,10 @@ impl Hash for Every {
 /// --------
 /// `iced_futures::time::every <https://docs.rs/iced_futures/0.3.0/iced_futures/time/fn.every.html>`_
 #[pyfunction(name = "every")]
-fn make_every(py: Python, duration: EitherPy<&PyDelta, f64>, token: Py<PyAny>) -> PyResult<WrappedSubscription> {
+fn make_every(
+    py: Python,
+    duration: EitherPy<&PyDelta, f64>,
+    token: Py<PyAny>,
+) -> PyResult<WrappedSubscription> {
     Ok(Every::try_from((py, duration, token))?.into())
 }

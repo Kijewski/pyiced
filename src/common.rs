@@ -81,7 +81,7 @@ where
                 Ok(MessageOrDatum(message)) => message,
                 Err(err) => {
                     err.print(py);
-                    return Message::None;
+                    Message::None
                 },
             },
         )

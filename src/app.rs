@@ -65,7 +65,7 @@ impl Task {
             Some(done) => done,
             None => return Err(PyErr::new::<PyRuntimeError, _>("Already sent")),
         };
-        if let Err(_) = sender.send(self.result.clone()) {
+        if sender.send(self.result.clone()).is_err() {
             // the receiver was GC collected in the meantime
         };
         Ok(())
@@ -453,9 +453,8 @@ pub(crate) fn run_iced(
         }
     }
 
-    let result = py.allow_threads(|| {
-        PythonApp::run(settings_).map_err(|err| debug_err::<PyRuntimeError, _>(err))
-    });
+    let result =
+        py.allow_threads(|| PythonApp::run(settings_).map_err(debug_err::<PyRuntimeError, _>));
     if let Err(err) = put_task.call0() {
         err.print(py);
     }

@@ -1,3 +1,4 @@
+use std::num::FpCategory;
 use std::time::{Duration, Instant};
 
 use pyo3::exceptions::PyValueError;
@@ -45,7 +46,7 @@ impl PyNumberProtocol for WrappedInstant {
         let secs = match rhs {
             EitherPy::Left(secs) => secs,
             EitherPy::Right(duration) => Python::with_gil(|py| -> PyResult<f64> {
-                Ok(duration.call_method0(py, "total_seconds")?.extract(py)?)
+                duration.call_method0(py, "total_seconds")?.extract(py)
             })?,
         };
         let duration = match duration_try_from_secs_f64(secs) {
@@ -98,17 +99,18 @@ fn duration_try_from_secs_f64(secs: f64) -> Result<Duration, ()> {
     const MAX_NANOS_F64: f64 = ((u64::MAX as u128 + 1) * (NANOS_PER_SEC as u128)) as f64;
 
     let nanos = secs * (NANOS_PER_SEC as f64);
-    if !nanos.is_finite() {
-        Err(())
-    } else if nanos >= MAX_NANOS_F64 {
-        Err(())
-    } else if nanos < 0.0 {
-        Err(())
-    } else {
-        let nanos = nanos as u128;
-        Ok(Duration::new(
-            (nanos / (NANOS_PER_SEC as u128)) as u64,
-            (nanos % (NANOS_PER_SEC as u128)) as u32,
-        ))
+    match nanos.classify() {
+        FpCategory::Nan | FpCategory::Infinite => return Err(()),
+        FpCategory::Zero | FpCategory::Subnormal => return Ok(Duration::default()),
+        FpCategory::Normal => {},
     }
+    if !(0.0..MAX_NANOS_F64).contains(&nanos) {
+        return Err(());
+    }
+
+    let nanos = nanos as u128;
+    Ok(Duration::new(
+        (nanos / (NANOS_PER_SEC as u128)) as u64,
+        (nanos % (NANOS_PER_SEC as u128)) as u32,
+    ))
 }

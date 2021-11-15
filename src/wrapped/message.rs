@@ -547,15 +547,15 @@ impl<'source> FromPyObject<'source> for MessageOrDatum {
     }
 }
 
-impl Into<Message> for MessageOrDatum {
-    fn into(self) -> Message {
-        self.0
+impl From<MessageOrDatum> for Message {
+    fn from(m: MessageOrDatum) -> Message {
+        m.0
     }
 }
 
-impl Into<Option<Message>> for MessageOrDatum {
-    fn into(self) -> Option<Message> {
-        match self.0 {
+impl From<MessageOrDatum> for Option<Message> {
+    fn from(m: MessageOrDatum) -> Option<Message> {
+        match m.0 {
             Message::None => None,
             m => Some(m),
         }

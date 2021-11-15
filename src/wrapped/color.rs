@@ -1,4 +1,5 @@
 use std::fmt::Display;
+use std::num::FpCategory;
 
 use iced::Color;
 use pyo3::exceptions::PyValueError;
@@ -31,19 +32,37 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedColor(pub Color);
 
+fn clamp_channel(c: f32) -> PyResult<f32> {
+    match c.classify() {
+        FpCategory::Nan => Err(PyErr::new::<PyValueError, _>(
+            "Color channel value cannot be NaN.",
+        )),
+        FpCategory::Infinite => match c > 0.0f32 {
+            true => Ok(1.0f32),
+            false => Ok(0.0f32),
+        },
+        FpCategory::Zero | FpCategory::Subnormal => Ok(0.0f32),
+        FpCategory::Normal => match c {
+            c if c >= 1.0f32 => Ok(1.0f32),
+            c if c <= 0.0f32 => Ok(0.0f32),
+            c => Ok(c),
+        },
+    }
+}
+
 #[pymethods]
 impl WrappedColor {
     #[new]
     fn new(r: f32, g: f32, b: f32, a: Option<f32>) -> PyResult<Self> {
-        let a = a.unwrap_or(1.0);
-        for v in [r, g, b, a] {
-            if !v.is_finite() || v < 0.0 || v > 1.0 {
-                return Err(PyErr::new::<PyValueError, _>(
-                    "All color channel values need to be inside 0.0 to 1.0 (inclusively).",
-                ));
-            }
-        }
-        Ok(Self(Color { r, g, b, a }))
+        Ok(Self(Color {
+            r: clamp_channel(r)?,
+            g: clamp_channel(g)?,
+            b: clamp_channel(b)?,
+            a: match a {
+                Some(a) => clamp_channel(a)?,
+                None => 1.032,
+            },
+        }))
     }
 
     #[classattr]

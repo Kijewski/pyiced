@@ -1,6 +1,6 @@
 from asyncio import sleep
 
-from pyiced import column, Message, IcedApp, stream, text
+from pyiced import column, IcedApp, stream, text
 
 
 class StreamExample(IcedApp):
@@ -24,9 +24,9 @@ class StreamExample(IcedApp):
 
     def update(self, msg):
         match msg:
-            case Message('done'):
+            case 'done':
                 self.__stream = None
-            case Message(int(index)):
+            case int(index):
                 self.__index = index
 
     async def __generator_func(self):

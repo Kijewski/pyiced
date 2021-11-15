@@ -46,8 +46,10 @@ impl GCProtocol for RadioBuilder {
 ///     TODO
 /// selected : Optional[int]
 ///     TODO
-/// f : Callable[[int], Optional[Message]]
+/// f : Callable[[int], Optional[object]]
 ///     TODO
+///
+///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
 /// size : Optional[int]
 ///     TODO
 /// width : Optional[Length]

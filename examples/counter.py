@@ -1,6 +1,5 @@
 from pyiced import (
-    Align, button, ButtonState, column, container, Message, IcedApp, Length,
-    text,
+    Align, button, ButtonState, column, container, IcedApp, Length, text,
 )
 
 
@@ -17,13 +16,13 @@ class ExampleApp(IcedApp):
         increment_button = button(
             self.__incr_button_state,  # To track the state across redraws.
             text('Increment'),         # This is content on the button.
-            on_press=Message('incr'),  # This value is received in update().
+            on_press='incr',           # This value is received in update().
         )
         value_label = text(f'{self.__value}', size=50)
         decerement_button = button(
             self.__decr_button_state,
             text('Decrement'),
-            on_press=Message('decr'),
+            on_press='decr',
         )
         return container(
             column([
@@ -40,9 +39,9 @@ class ExampleApp(IcedApp):
         # It can optionally return a list of async functions,
         # to handle the event.
         match message:
-            case Message('incr'):
+            case 'incr':
                 self.__value += 1
-            case Message('decr'):
+            case 'decr':
                 self.__value -= 1
 
 

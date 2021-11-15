@@ -1,6 +1,6 @@
 from pyiced import (
     Align, button, ButtonState, ButtonStyle, Color, container,
-    ContainerStyle, Message, IcedApp, Length, text,
+    ContainerStyle, IcedApp, Length, text,
 )
 
 
@@ -21,7 +21,7 @@ class StylingExample(IcedApp):
                 border_color=Color(0.95, 0.87, 0.22),
                 text_color=Color(1.00, 0.18, 0.13)
             ),
-            on_press=Message(()), padding=40,
+            on_press=(), padding=40,
         )
         return container(
             styled_button,

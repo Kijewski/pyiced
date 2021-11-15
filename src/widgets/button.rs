@@ -7,7 +7,8 @@ use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
 use crate::styles::{ButtonStyle, WrappedButtonStyleSheet};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
-use crate::wrapped::{WrappedLength, WrappedMessage};
+use crate::wrapped::MessageOrDatum;
+use crate::wrapped::WrappedLength;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_button, m)?)?;
@@ -23,13 +24,14 @@ pub(crate) struct ButtonBuilder {
     pub min_width: Option<u32>,
     pub min_height: Option<u32>,
     pub padding: Option<u16>,
-    pub on_press: Option<Message>,
+    pub on_press: Message,
     pub style: Option<ButtonStyle>,
 }
 
 impl GCProtocol for ButtonBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         self.content.traverse(visit)?;
+        self.on_press.traverse(visit)?;
         Ok(())
     }
 }
@@ -56,10 +58,10 @@ impl GCProtocol for ButtonBuilder {
 ///     Minimum height of the button in pixels.
 /// padding : Optional[int]
 ///     Amount of pixels surrounding the contained element.
-/// on_press : Optional[Message]
+/// on_press : Optional[object]
 ///     Message to send to the app's :meth:`~pyiced.IcedApp.update` loop when the key was clicked.
 ///     Without this argument the button won't be clickable.
-/// style : Option[ButtonStyle]
+/// style : Optional[ButtonStyle]
 ///     The style of the button.
 ///
 /// Returns
@@ -78,7 +80,7 @@ fn make_button(
     min_width: Option<u32>,
     min_height: Option<u32>,
     padding: Option<u16>,
-    on_press: Option<&WrappedMessage>,
+    on_press: Option<MessageOrDatum>,
     style: Option<&WrappedButtonStyleSheet>,
 ) -> WrappedWidgetBuilder {
     let el = ButtonBuilder {
@@ -89,7 +91,7 @@ fn make_button(
         min_width,
         min_height,
         padding,
-        on_press: on_press.map(|o| o.0.clone()),
+        on_press: on_press.unwrap_or_default().into(),
         style: style.map(|o| o.0),
     };
     el.into()
@@ -104,8 +106,8 @@ impl ToNative for ButtonBuilder {
                 el, self, width, height, min_width, min_height, padding, style,
             );
             let el = match &self.on_press {
-                Some(on_press) => el.on_press(on_press.clone()),
-                None => el,
+                Message::None => el,
+                on_press => el.on_press(on_press.clone()),
             };
             Ok(el)
         })

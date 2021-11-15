@@ -67,7 +67,7 @@ __author__ = _pyiced.__author__
 __license__ = _pyiced.__license__
 __version__ = _pyiced.__version__
 
-Command = NewType('Command', Union[Message, Awaitable[Optional[Message]]])
+Command = NewType('Command', Union[Awaitable[Optional[object]], object])
 Commands = NewType('Commands', Iterable[Command])
 
 ButtonStyle = ButtonStyleSheet
@@ -204,7 +204,7 @@ class IcedApp(metaclass=ABCMeta):
         '''
         return False
 
-    def update(self, msg: Message) -> Optional[Commands]:
+    def update(self, msg: Union[Message, object]) -> Optional[Commands]:
         '''
         TODO
         '''

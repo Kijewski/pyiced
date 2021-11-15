@@ -98,11 +98,11 @@ impl WrappedCheckboxStyle {
 /// ----------
 /// active : CheckboxStyle
 ///     Normal style of this checkbox.
-/// hovered : Option[CheckboxStyle]
+/// hovered : Optional[CheckboxStyle]
 ///     Style when hovering over the checkbox. Defaults to the same style as active.
-/// active_checked : Option[CheckboxStyle]
+/// active_checked : Optional[CheckboxStyle]
 ///     Style of this checkbox when the checkbox is checked. Defaults to the same style as active.
-/// hovered_checked : Option[CheckboxStyle]
+/// hovered_checked : Optional[CheckboxStyle]
 ///     Style when hovering over the checked checkbox. Defaults to the same style hovered.
 ///
 /// See also

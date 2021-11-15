@@ -45,8 +45,9 @@ impl GCProtocol for CheckboxBuilder {
 ///     Whether the checkbox is currently checked or not.
 /// label : str
 ///     A text besides the checkbox. Might be empty.
-/// f : Optional[Callable[[bool], Optional[Message]]]
+/// f : Optional[Callable[[bool], Optional[object]]]
 ///     Function to call when the checkbox is toggled. The argument is the new checked state.
+///
 ///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
 /// size : Optional[int]
 ///     Size of the checkbox.

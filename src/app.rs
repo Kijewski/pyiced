@@ -13,7 +13,7 @@ use tokio::sync::oneshot::{channel, Sender};
 use crate::common::{Message, ToNative, debug_err, method_into_py};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{WrappedColor, WrappedMessage};
+use crate::wrapped::{MessageOrDatum, WrappedColor};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_iced, m)?)?;
@@ -73,23 +73,29 @@ impl Task {
 }
 
 fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> MessageOrFuture {
-    let task = match result {
+    let task_or_message = match result {
         Ok(task) => task,
         Err(err) => {
             err.print(py);
             return MessageOrFuture::None;
         },
     };
-    if task.is_none() {
+    if task_or_message.is_none() {
         return MessageOrFuture::None;
     }
-    if let Ok(WrappedMessage(msg)) = task.extract() {
-        return MessageOrFuture::Message(msg);
+    match task_or_message.hasattr("__await__") {
+        Ok(hasattr) => if !hasattr {
+            return MessageOrFuture::Message(Message::Python(task_or_message.into_py(py)));
+        }
+        Err(err) => {
+            err.print(py);
+            return MessageOrFuture::None;
+        }
     }
 
     let (sender, receiver) = channel();
     let task = Task {
-        task: task.into_py(py),
+        task: task_or_message.into_py(py),
         result: py.None(),
         done: Some(sender),
     };
@@ -115,29 +121,19 @@ fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) ->
     Command::perform(future, |result| {
         Python::with_gil(|py| {
             let result = result.as_ref(py);
-            let result = match result.extract::<(Option<&PyAny>, Option<&PyAny>)>() {
+            let result = match result.extract::<(Option<&PyAny>, _)>() {
                 Ok(result) => result,
                 Err(err) => {
                     debug_err::<PyTypeError, _>(err).print(py);
                     return Message::None;
                 },
             };
-            let result = match result {
+            match result {
                 (Some(err), _) => {
                     PyErr::from_instance(err).print(py);
-                    return Message::None;
-                },
-                (None, None) => {
-                    return Message::None;
-                },
-                (None, Some(result)) => result,
-            };
-            match result.extract() {
-                Ok(WrappedMessage(msg)) => msg,
-                Err(err) => {
-                    err.print(py);
                     Message::None
                 },
+                (None, MessageOrDatum(result)) => result,
             }
         })
     })
@@ -239,8 +235,12 @@ impl Application for PythonApp {
         };
 
         Python::with_gil(|py| {
-            let vec = PyCell::new(py, WrappedMessage(message))
-                .and_then(|message| update.call1(py, (message,)));
+            let vec = match message {
+                m @ Message::Native(_) => update.call1(py, (m,)),
+                Message::Python(obj) => update.call1(py, (obj,)),
+                Message::None => return Command::none(), // unreachable
+            };
+
             let vec = match vec {
                 Ok(vec) => vec,
                 Err(err) => {
@@ -249,13 +249,10 @@ impl Application for PythonApp {
                 },
             };
 
-            let vec = vec.as_ref(py);
-            if vec.is_none() {
-                return Command::none();
-            }
-            if let Ok(WrappedMessage(msg)) = vec.extract() {
-                return Command::from(async { msg });
-            }
+            let vec = match vec.as_ref(py) {
+                vec if vec.is_none() => return Command::none(),
+                vec => vec,
+            };
 
             let iter = match vec.iter() {
                 Ok(iter) => iter,
@@ -266,7 +263,7 @@ impl Application for PythonApp {
             };
 
             let mut commands = Vec::new();
-            for datum in iter {
+            for datum in iter.take(64) {
                 let datum = message_or_future(py, datum, self);
                 let command = match datum {
                     MessageOrFuture::Message(msg) => Command::from(async move { msg }),

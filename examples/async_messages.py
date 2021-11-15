@@ -2,8 +2,7 @@ from asyncio import open_connection
 from contextlib import closing
 
 from pyiced import (
-    Align, Color, container, ContainerStyle, Font, IcedApp,
-    Message, Length, text,
+    Align, Color, container, ContainerStyle, Font, IcedApp, Length, text,
 )
 
 
@@ -23,7 +22,7 @@ class AsyncMessageExample(IcedApp):
 
     def update(self, message):
         match message:
-            case Message(('Font', font)):
+            case ('Font', font):
                 self.__font = font
 
     def view(self):
@@ -59,7 +58,7 @@ async def load_font():
         data = await reader.read()
     await writer.wait_closed()
 
-    return Message(('Font', Font(FONT_NAME, data)))
+    return ('Font', Font(FONT_NAME, data))
 
 
 if __name__ == '__main__':

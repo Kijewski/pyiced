@@ -8,7 +8,8 @@ use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::styles::{SliderStyleSheet, WrappedSliderStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{WrappedLength, WrappedMessage};
+use crate::wrapped::MessageOrDatum;
+use crate::wrapped::WrappedLength;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_slider, m)?)?;
@@ -22,7 +23,7 @@ pub(crate) struct SliderBuilder {
     pub end: f32,
     pub value: f32,
     pub on_change: Py<PyAny>, // fn f(value: Float) -> crate::Message
-    pub on_release: Option<Message>,
+    pub on_release: Message,
     pub width: Option<Length>,
     pub height: Option<u16>,
     pub step: Option<f32>,
@@ -32,6 +33,7 @@ pub(crate) struct SliderBuilder {
 impl GCProtocol for SliderBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         visit.call(&self.on_change)?;
+        self.on_release.traverse(visit)?;
         Ok(())
     }
 }
@@ -52,9 +54,11 @@ impl GCProtocol for SliderBuilder {
 ///     Biggest value inside the range.
 /// value : float
 ///     Current value.
-/// on_change : Callable[[float], Optional[Message]]
+/// on_change : Callable[[float], Optional[object]]
 ///     Function to call with the new value.
-/// on_release : Optional[Message]
+///
+///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
+/// on_release : Optional[object]
 ///     Sets the release message of the Slider. This is called when the mouse is released from the slider.
 ///
 ///     Typically, the user’s interaction with the slider is finished when this message is produced.
@@ -82,7 +86,7 @@ fn make_slider(
     end: f32,
     value: f32,
     on_change: Py<PyAny>,
-    on_release: Option<&WrappedMessage>,
+    on_release: Option<MessageOrDatum>,
     width: Option<&WrappedLength>,
     height: Option<u16>,
     step: Option<f32>,
@@ -109,7 +113,7 @@ fn make_slider(
         end,
         value,
         on_change,
-        on_release: on_release.map(|o| o.0.clone()),
+        on_release: on_release.unwrap_or_default().into(),
         width: width.map(|o| o.0),
         height,
         step,
@@ -126,8 +130,8 @@ impl ToNative for SliderBuilder {
             let el = Slider::new(state, range, self.value, on_change);
             let el = assign!(el, self, width, height, step, style);
             let el = match &self.on_release {
-                Some(on_release) => el.on_release(on_release.clone()),
-                None => el,
+                Message::None => el,
+                on_release => el.on_release(on_release.clone()),
             };
             Ok(el)
         })

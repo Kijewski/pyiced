@@ -48,13 +48,15 @@ impl GCProtocol for PickListBuilder {
 ///     Values to select from.
 /// selected : Optional[str]
 ///     The currently selected value.
-/// on_selected : Callable[[str], Optional[Message]]
+/// on_selected : Callable[[str], Optional[object]]
 ///     Function to call when a new value was selected.
-/// text_size : Option[int]
+///
+///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
+/// text_size : Optional[int]
 ///     The text size of the pick list.
-/// font : Option[Font]
+/// font : Optional[Font]
 ///     Font of the pick list.
-/// style : Option[PickListStyle]
+/// style : Optional[PickListStyle]
 ///     Style of the pick list.
 ///
 /// Returns

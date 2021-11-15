@@ -22,7 +22,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 /// text_color : Color
 ///     The container's text color.
-/// background : Option[Color]
+/// background : Optional[Color]
 ///     The container's background color.
 /// border_radius : float
 ///     The container's border radius.

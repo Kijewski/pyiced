@@ -9,7 +9,7 @@ use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyVisit};
 
 use crate::format_to_string_ignore;
-use crate::wrapped::WrappedMessage;
+use crate::wrapped::MessageOrDatum;
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
@@ -76,19 +76,14 @@ where
 {
     let f = f.clone();
     move |value: T| {
-        Python::with_gil(|py| match f.call1(py, (value,)) {
-            Ok(value) if !value.is_none(py) => match value.extract(py) {
-                Ok(WrappedMessage(message)) => message,
+        Python::with_gil(|py| {
+            match f.call1(py, (value,)).and_then(|res| res.extract(py)) {
+                Ok(MessageOrDatum(message)) => message,
                 Err(err) => {
                     err.print(py);
-                    Message::None
+                    return Message::None;
                 },
-            },
-            Ok(_) => Message::None,
-            Err(err) => {
-                err.print(py);
-                Message::None
-            },
+            }
         })
     }
 }

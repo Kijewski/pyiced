@@ -6,7 +6,8 @@ use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{text_input_with_state, TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{WrappedFont, WrappedLength, WrappedMessage};
+use crate::wrapped::MessageOrDatum;
+use crate::wrapped::{WrappedFont, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_text_input, m)?)?;
@@ -24,7 +25,7 @@ pub(crate) struct TextInputBuilder {
     pub max_width: Option<u32>,
     pub padding: Option<u16>,
     pub size: Option<u16>,
-    pub on_submit: Option<Message>,
+    pub on_submit: Message,
     pub password: bool,
     // style: TODO,
 }
@@ -32,6 +33,7 @@ pub(crate) struct TextInputBuilder {
 impl GCProtocol for TextInputBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         visit.call(&self.on_change)?;
+        self.on_submit.traverse(visit)?;
         Ok(())
     }
 }
@@ -50,9 +52,11 @@ impl GCProtocol for TextInputBuilder {
 ///     Placeholder text for an element input.
 /// value : str
 ///     Current value of the input element.
-/// on_change : Callable[[str], Optional[Message]]
+/// on_change : Callable[[str], Optional[object]]
 ///     Function to call when the text was changed. The new text is the argument of the callback function.
 ///     The new text should be value for argument "value", but you may reject the new text if it does not fit some criteria defined by you.
+///
+///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
 /// font : Optional[Font]
 ///     The font of the text.
 /// width : Optional[Length]
@@ -63,7 +67,7 @@ impl GCProtocol for TextInputBuilder {
 ///     The padding of the input element.
 /// size : Optional[int]
 ///      The text size of the input element.
-/// on_submit : Optional[Message]
+/// on_submit : Optional[object]
 ///     Message to send to :meth:`pyiced.IcedApp.update` if :kbd:`Enter` was pressed.
 /// password : bool
 ///     If set to True, the input element becomes a secure password input.
@@ -86,7 +90,7 @@ fn make_text_input(
     max_width: Option<u32>,
     padding: Option<u16>,
     size: Option<u16>,
-    on_submit: Option<&WrappedMessage>,
+    on_submit: Option<MessageOrDatum>,
     password: Option<bool>,
 ) -> WrappedWidgetBuilder {
     TextInputBuilder {
@@ -99,7 +103,7 @@ fn make_text_input(
         max_width,
         padding,
         size,
-        on_submit: on_submit.map(|o| o.0.clone()),
+        on_submit: on_submit.unwrap_or_default().into(),
         password: password.unwrap_or(false),
     }
     .into()
@@ -112,8 +116,8 @@ impl ToNative for TextInputBuilder {
             let el = TextInput::new(state, &self.placeholder, &self.value, on_change);
             let el = assign!(el, self, font, width, max_width, padding, size);
             let el = match &self.on_submit {
-                Some(on_submit) => el.on_submit(on_submit.clone()),
-                _ => el,
+                Message::None => el,
+                on_submit => el.on_submit(on_submit.clone()),
             };
             let el = match self.password {
                 true => el.password(),

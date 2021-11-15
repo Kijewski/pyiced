@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from pyiced import column, every, Message, IcedApp, Instant, text
+from pyiced import column, every, IcedApp, Instant, text
 
 
 class SubscriptionExample(IcedApp):
@@ -32,7 +32,7 @@ class SubscriptionExample(IcedApp):
 
     def update(self, msg):
         match msg:
-            case Message(('tick', instant)):
+            case ('tick', instant):
                 self.__last_instant = self.__instant
                 self.__counter += 1
                 self.__instant = instant

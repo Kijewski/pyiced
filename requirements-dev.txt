@@ -1,4 +1,9 @@
 cibuildwheel == 2.*, >= 2.1.3
 setuptools >= 41.0.0
-wheel
 setuptools-rust == 0.12.*, >= 0.12.1
+wheel
+
+# keep synchronous to requirements-readthedocs.txt
+cloud-sptheme == 1.*, >= 1.10.1.post20200504175005
+sphinx == 4.*, >= 4.2.0
+sphinxprettysearchresults == 0.*, >= 0.3.5

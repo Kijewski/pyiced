@@ -1,9 +1,11 @@
+use std::fmt::Display;
+
 use iced::Color;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_py;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedColor>()?;
@@ -105,20 +107,26 @@ impl WrappedColor {
     fn a(&self) -> f32 {
         self.0.a
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedColor {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }
 
-    fn __repr__(&self) -> String {
-        let Color { r, g, b, a } = self.0;
+    fn __repr__(&self) -> PyResult<String> {
+        format_to_py!("{}", ColorFormat(&self.0))
+    }
+}
+
+#[derive(Clone)]
+pub(crate) struct ColorFormat<'a>(pub &'a Color);
+
+impl Display for ColorFormat<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let &Color { r, g, b, a } = self.0;
         if a != 1.0 {
-            format!("Color({}, {}, {}, a={})", r, g, b, a)
+            write!(f, "Color({}, {}, {}, a={})", r, g, b, a)
         } else {
-            format!("Color({}, {}, {})", r, g, b)
+            write!(f, "Color({}, {}, {})", r, g, b)
         }
     }
 }

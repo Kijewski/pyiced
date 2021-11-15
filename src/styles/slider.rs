@@ -1,5 +1,5 @@
 use iced::slider::{Style, StyleSheet};
-use pyo3::exceptions::{PyTypeError, PyValueError};
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 

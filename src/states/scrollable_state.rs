@@ -4,7 +4,6 @@ use iced::scrollable::State;
 use parking_lot::RwLock;
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 use crate::make_with_state;
@@ -23,13 +22,6 @@ pub(crate) type ScrollableState = Arc<RwLock<State>>;
 #[pyclass(name = "ScrollableState", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedScrollableState(pub ScrollableState);
-
-#[pyproto]
-impl PyObjectProtocol for WrappedScrollableState {
-    fn __str__(&self) -> PyResult<String> {
-        debug_str(&self.0)
-    }
-}
 
 #[pymethods]
 impl WrappedScrollableState {
@@ -56,6 +48,10 @@ impl WrappedScrollableState {
             Some(guard) => Ok(guard.is_scroll_box_touched()),
             None => Err(PyErr::new::<PyRuntimeError, _>("State is in use")),
         }
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        debug_str(&self.0)
     }
 }
 

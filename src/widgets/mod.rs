@@ -1,6 +1,6 @@
 use iced::Element;
 use pyo3::prelude::*;
-use pyo3::{PyGCProtocol, PyObjectProtocol};
+use pyo3::PyGCProtocol;
 
 use crate::common::{debug_str, GCProtocol, Message, ToNative};
 
@@ -43,8 +43,8 @@ macro_rules! init_mod {
             }
         }
 
-        #[pyproto]
-        impl PyObjectProtocol for WrappedWidgetBuilder {
+        #[pymethods]
+        impl WrappedWidgetBuilder {
             fn __str__(&self) -> PyResult<String> {
                 match &self.0 {
                     $( WidgetBuilder::$name(value) => debug_str(value) ),+

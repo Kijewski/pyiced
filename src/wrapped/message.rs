@@ -3,9 +3,10 @@ use std::path::PathBuf;
 
 use pyo3::exceptions::{PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
-use pyo3::{PyGCProtocol, PyObjectProtocol, PyTraverseError, PyVisit};
+use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
 
-use crate::common::{EitherPy, Message};
+use crate::common::{EitherPy, Message, debug_str};
+use crate::format_to_py;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedMessage>()?;
@@ -127,13 +128,17 @@ impl WrappedMessage {
 
     /// TODO
     #[getter]
-    fn key_code(&self) -> Option<String> {
-        match get_keyboard(self).ok()? {
+    fn key_code(&self) -> PyResult<Option<String>> {
+        let c = match get_keyboard(self) {
+            Ok(c) => c,
+            Err(_) => return Ok(None),
+        };
+        match c {
             iced::keyboard::Event::KeyPressed { key_code, .. }
             | iced::keyboard::Event::KeyReleased { key_code, .. } => {
-                Some(format!("{:?}", key_code))
+                Ok(Some(format_to_py!("{:?}", key_code)?))
             },
-            _ => None,
+            _ => Ok(None),
         }
     }
 
@@ -181,10 +186,14 @@ impl WrappedMessage {
 
     /// TODO
     #[getter]
-    fn characterreceived(&self) -> Option<String> {
-        match get_keyboard(self).ok()? {
-            iced::keyboard::Event::CharacterReceived(c) => Some(format!("{}", c)),
-            _ => None,
+    fn characterreceived(&self) -> PyResult<Option<String>> {
+        let c = match get_keyboard(self) {
+            Ok(c) => c,
+            Err(_) => return Ok(None),
+        };
+        match c {
+            iced::keyboard::Event::CharacterReceived(c) => Ok(Some(format_to_py!("{}", c)?)),
+            _ => Ok(None),
         }
     }
 
@@ -339,6 +348,23 @@ impl WrappedMessage {
         // Structural Pattern Matching: https://www.python.org/dev/peps/pep-0634/
         ("python",)
     }
+
+    fn __str__(&self) -> PyResult<String> {
+        debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<String> {
+        Python::with_gil(|py| {
+            let dorepr = DoRepr { msg: self, py };
+            let mut result = String::new();
+            match write!(result, "{:?}", dorepr) {
+                Ok(()) => Ok(result),
+                Err(_) => Err(PyErr::new::<PyRuntimeError, _>(
+                    "Could not stringify Message.",
+                )),
+            }
+        })
+    }
 }
 
 fn get_native(v: &WrappedMessage) -> Result<&iced_native::Event, ()> {
@@ -373,35 +399,6 @@ fn get_window(v: &WrappedMessage) -> Result<&iced_native::window::Event, ()> {
     match get_native(v)? {
         iced_native::Event::Window(ev) => Ok(ev),
         _ => Err(()),
-    }
-}
-
-#[pyproto]
-impl PyObjectProtocol for WrappedMessage {
-    fn __str__(&self) -> PyResult<String> {
-        Python::with_gil(|py| {
-            let dorepr = DoRepr { msg: self, py };
-            let mut result = String::new();
-            match write!(result, "{:#?}", dorepr) {
-                Ok(()) => Ok(result),
-                Err(_) => Err(PyErr::new::<PyRuntimeError, _>(
-                    "Could not stringify Message.",
-                )),
-            }
-        })
-    }
-
-    fn __repr__(&self) -> PyResult<String> {
-        Python::with_gil(|py| {
-            let dorepr = DoRepr { msg: self, py };
-            let mut result = String::new();
-            match write!(result, "{:?}", dorepr) {
-                Ok(()) => Ok(result),
-                Err(_) => Err(PyErr::new::<PyRuntimeError, _>(
-                    "Could not stringify Message.",
-                )),
-            }
-        })
     }
 }
 

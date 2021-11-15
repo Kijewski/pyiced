@@ -3,7 +3,6 @@ use std::sync::Arc;
 use iced::pick_list::State;
 use parking_lot::RwLock;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::{debug_str, Message};
 use crate::make_with_state;
@@ -23,18 +22,15 @@ pub(crate) type PickListState = Arc<RwLock<State<String>>>;
 #[derive(Debug, Default, Clone)]
 pub(crate) struct WrappedPickListState(pub PickListState);
 
-#[pyproto]
-impl PyObjectProtocol for WrappedPickListState {
-    fn __str__(&self) -> PyResult<String> {
-        debug_str(&self.0)
-    }
-}
-
 #[pymethods]
 impl WrappedPickListState {
     #[new]
     fn new() -> Self {
         Self::default()
+    }
+
+    fn __str__(&self) -> PyResult<String> {
+        debug_str(&self.0)
     }
 }
 

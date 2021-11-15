@@ -1,9 +1,11 @@
+use std::borrow::Cow;
+
 use iced::Font;
 use parking_lot::{const_mutex, Mutex};
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_cow;
 
 struct NameAndData {
     name: String,
@@ -82,11 +84,15 @@ impl WrappedFont {
     fn DEFAULT() -> Self {
         Self(Font::Default)
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedFont {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<Cow<'static, str>> {
+        match self.0 {
+            Font::Default => Ok(Cow::Borrowed("Font.DEFAULT")),
+            Font::External { name, .. } => format_to_cow!("Font({:?}, …)", name),
+        }
     }
 }

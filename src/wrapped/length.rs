@@ -1,8 +1,10 @@
+use std::borrow::Cow;
+
 use iced::Length;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_cow;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedLength>()?;
@@ -45,11 +47,17 @@ impl WrappedLength {
     fn SHRINK() -> Self {
         Self(Length::Shrink)
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedLength {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<Cow<'static, str>> {
+        match self.0 {
+            Length::Fill => Ok(Cow::Borrowed("Length.FILL")),
+            Length::Shrink => Ok(Cow::Borrowed("Length.SHRINK")),
+            Length::FillPortion(i) => format_to_cow!("Length.fill_portion({:?})", i),
+            Length::Units(i) => format_to_cow!("Length.units({:?})", i),
+        }
     }
 }

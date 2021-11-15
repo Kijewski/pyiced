@@ -2,7 +2,6 @@ use std::path::PathBuf;
 
 use iced::svg::Handle;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
 
@@ -61,10 +60,7 @@ impl WrappedSvgHandle {
     fn from_memory(bytes: Vec<u8>) -> Self {
         Self(Handle::from_memory(bytes))
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedSvgHandle {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }

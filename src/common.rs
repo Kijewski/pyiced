@@ -1,12 +1,14 @@
+use std::borrow::Cow;
 use std::fmt::{Debug, Write};
 
 use iced::{Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::{PyException, PyTypeError};
-use pyo3::prelude::*;
+use pyo3::{PyTypeInfo, prelude::*};
 use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyVisit};
 
+use crate::format_to_string_ignore;
 use crate::wrapped::WrappedMessage;
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
@@ -143,13 +145,11 @@ where
         } else if let Ok(result) = R::extract(src) {
             Ok(Self::Right(result))
         } else {
-            match src.get_type().name() {
-                Ok(name) => Err(PyErr::new::<PyTypeError, _>(format!(
-                    "Unexpected type: {:?}",
-                    name
-                ))),
-                Err(_) => Err(PyErr::new::<PyTypeError, _>("Unexpected type")),
-            }
+            let s = match src.get_type().name() {
+                Ok(name) => format_to_string_ignore!("Unexpected type: {:?}", name),
+                Err(_) => Cow::Borrowed("Unexpected type"),
+            };
+            Err(PyErr::new::<PyTypeError, _>(s))
         }
     }
 }
@@ -166,4 +166,13 @@ where
             EitherPy::Right(right) => right.into_py(py),
         }
     }
+}
+
+pub(crate) fn debug_err<T: PyTypeInfo, E: Debug>(err: E) -> PyErr {
+    let mut s = String::new();
+    let s = match write!(s, "{:?}", err) {
+        Ok(_) => Cow::Owned(s),
+        Err(_) => Cow::Borrowed("Could not even debug display the error messages"),
+    };
+    PyErr::new::<T, _>(s)
 }

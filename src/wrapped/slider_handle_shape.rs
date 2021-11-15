@@ -1,9 +1,11 @@
+use std::fmt::Display;
+
 use iced::slider::HandleShape;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_py;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderHandleShape>()?;
@@ -73,11 +75,24 @@ impl WrappedSliderHandleShape {
             border_radius,
         }))
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedSliderHandleShape {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<String> {
+        format_to_py!("{}", SliderHandleShapeFormat(&self.0))
+    }
+}
+
+#[derive(Clone)]
+pub(crate) struct SliderHandleShapeFormat<'a>(pub &'a HandleShape);
+
+impl Display for SliderHandleShapeFormat<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self.0 {
+            HandleShape::Circle { radius } => write!(f, "SliderHandleShape.circle({:?})", radius),
+            HandleShape::Rectangle { width, border_radius } => write!(f, "SliderHandleShape.rectangle({:?}, {:?})", width, border_radius),
+        }
     }
 }

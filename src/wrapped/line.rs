@@ -1,10 +1,11 @@
 use iced::widget::pane_grid::Line;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_py;
 use crate::wrapped::WrappedColor;
+use crate::wrapped::color::ColorFormat;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedLine>()?;
@@ -46,11 +47,13 @@ impl WrappedLine {
             width,
         }))
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedLine {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<String> {
+        let Line { ref color, width } = self.0;
+        format_to_py!("Line({}, {}", ColorFormat(color), width)
     }
 }

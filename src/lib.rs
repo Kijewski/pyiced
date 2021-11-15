@@ -219,7 +219,6 @@ macro_rules! wrap_rust_enum {
         }
     ) => {
         use pyo3::prelude::*;
-        use pyo3::PyObjectProtocol;
 
         use crate::common::debug_str;
 
@@ -247,10 +246,7 @@ macro_rules! wrap_rust_enum {
                     Self(<$RustType>::$Value)
                 }
             )*
-        }
 
-        #[pyproto]
-        impl PyObjectProtocol for $WrappedName {
             fn __str__(&self) -> PyResult<String> {
                 debug_str(&self.0)
             }
@@ -290,10 +286,9 @@ macro_rules! extract_multiple {
                     $(
                         stringify!($name) => result.0.$name = value.try_into()?,
                     )*
-                    key => return Err(PyErr::new::<PyValueError, _>(format!(
-                        "Unknown keyword argument: {:#?}",
-                        key,
-                    ))),
+                    key => return Err(PyErr::new::<PyValueError, _>(
+                        $crate::format_to_string_ignore!("Unknown keyword argument: {:#?}", key)
+                    )),
                 }
             }
             return Ok(Self(result));
@@ -311,16 +306,65 @@ macro_rules! dyn_style_proto {
                     Ok(s) => match s.to_str()? {
                         stringify!($default)  => Box::<dyn StyleSheet>::default().$default(),
                         $( stringify!($alt)  => Box::<dyn StyleSheet>::default().$alt(), )*
-                        s => {
-                            return Err(PyErr::new::<PyValueError, _>(format!("Unknown proto value: {:#}", s)));
-                        }
+                        s => return Err(PyErr::new::<PyValueError, _>(
+                            $crate::format_to_string_ignore!("Unknown proto value: {:#}", s),
+                        )),
                     },
                     Err(err) => {
-                        return Err(PyErr::new::<PyTypeError, _>(format!("{}", err)));
+                        return Err($crate::common::debug_err::<PyValueError, _>(err));
                     }
                 }
             },
             None => Box::<dyn StyleSheet>::default().$default(),
         }
     };
+}
+
+#[macro_export]
+macro_rules! format_to_string {
+    ($($arg:tt)+) => {
+        {
+            use std::fmt::Write as _;
+
+            type Result = ::std::result::Result::<
+                ::std::string::String,
+                &'static ::std::primitive::str,
+            >;
+
+            let mut s = ::std::string::String::new();
+            match ::std::write!(s, $($arg)+) {
+                ::std::result::Result::Ok(_) => Result::Ok(s),
+                ::std::result::Result::Err(_) => Result::Err("Could not format"),
+            }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! format_to_string_ignore {
+    ($($arg:tt)+) => (
+        match $crate::format_to_string!($($arg)+) {
+            ::std::result::Result::Ok(s) => ::std::borrow::Cow::Owned(s),
+            ::std::result::Result::Err(s) => ::std::borrow::Cow::Borrowed(s),
+        }
+    );
+}
+
+#[macro_export]
+macro_rules! format_to_py {
+    ($error_type:ty, $($arg:tt)+) => (
+        $crate::format_to_string!($($arg)+).map_err(|err| {
+            ::pyo3::PyErr::new::<$error_type, _>(err)
+        })
+    );
+    ($($arg:tt)+) => (
+        $crate::format_to_py!(::pyo3::exceptions::PyRuntimeError, $($arg)+)
+    );
+}
+
+#[macro_export]
+macro_rules! format_to_cow {
+    ($($arg:tt)+) => (
+        $crate::format_to_py!($($arg)+).map(::std::borrow::Cow::Owned)
+    );
 }

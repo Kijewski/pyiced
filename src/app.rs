@@ -5,12 +5,12 @@ use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
-use pyo3::exceptions::{PyAttributeError, PyException, PyRuntimeError, PyTypeError};
+use pyo3::exceptions::{PyAttributeError, PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 use tokio::sync::oneshot::{channel, Sender};
 
-use crate::common::{method_into_py, Message, ToNative};
+use crate::common::{Message, ToNative, debug_err, method_into_py};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{WrappedColor, WrappedMessage};
@@ -60,7 +60,6 @@ pub(crate) struct Task {
 
 #[pymethods]
 impl Task {
-    #[call]
     fn __call__(&mut self) -> PyResult<()> {
         let sender = match self.done.take() {
             Some(done) => done,
@@ -103,10 +102,10 @@ fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> M
         let outcome = receiver.await;
         let err = match outcome {
             Ok(outcome) => return outcome,
-            Err(err) => err,
+            Err(err) => debug_err::<PyRuntimeError, _>(err),
         };
         Python::with_gil(|py| {
-            PyErr::new::<PyRuntimeError, _>(format!("{:?}", err)).print(py);
+            err.print(py);
             py.None()
         })
     }))
@@ -119,7 +118,7 @@ fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) ->
             let result = match result.extract::<(Option<&PyAny>, Option<&PyAny>)>() {
                 Ok(result) => result,
                 Err(err) => {
-                    PyErr::new::<PyTypeError, _>(format!("{:?}", err)).print(py);
+                    debug_err::<PyTypeError, _>(err).print(py);
                     return Message::None;
                 },
             };
@@ -456,7 +455,7 @@ pub(crate) fn run_iced(
     }
 
     let result = py.allow_threads(|| {
-        PythonApp::run(settings_).map_err(|err| PyException::new_err(format!("{}", err)))
+        PythonApp::run(settings_).map_err(|err| debug_err::<PyRuntimeError, _>(err))
     });
     if let Err(err) = put_task.call0() {
         err.print(py);

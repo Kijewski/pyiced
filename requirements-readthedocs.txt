@@ -1,5 +1,8 @@
+# keep synchronous to Cargo.toml
 pyiced == 0.3.0
 
-sphinx == 4.*, >= 4.2.0
+# keep synchronous to requirements-dev.txt
 cloud-sptheme == 1.*, >= 1.10.1.post20200504175005
+sphinx == 4.*, >= 4.2.0
 sphinxprettysearchresults == 0.*, >= 0.3.5
+

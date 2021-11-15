@@ -3,7 +3,8 @@ use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
-use crate::extract_multiple;
+use crate::common::debug_err;
+use crate::{extract_multiple, format_to_string_ignore};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedCheckboxStyle>()?;
@@ -62,14 +63,14 @@ impl WrappedCheckboxStyle {
                         "active_checked" => Box::<dyn StyleSheet>::default().active(true),
                         "hovered_checked" => Box::<dyn StyleSheet>::default().hovered(true),
                         s => {
-                            return Err(PyErr::new::<PyValueError, _>(format!(
+                            return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!(
                                 "Unknown proto value: {:#}",
                                 s
                             )));
                         },
                     },
                     Err(err) => {
-                        return Err(PyErr::new::<PyTypeError, _>(format!("{}", err)));
+                        return Err(debug_err::<PyTypeError, _>(err));
                     },
                 },
             },

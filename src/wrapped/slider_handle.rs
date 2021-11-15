@@ -1,10 +1,12 @@
 use iced::slider::Handle;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::PyObjectProtocol;
 
 use crate::common::debug_str;
+use crate::format_to_py;
 use crate::wrapped::{WrappedColor, WrappedSliderHandleShape};
+use crate::wrapped::slider_handle_shape::SliderHandleShapeFormat;
+use crate::wrapped::color::ColorFormat;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderHandle>()?;
@@ -56,11 +58,19 @@ impl WrappedSliderHandle {
             border_color: border_color.0,
         }))
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedSliderHandle {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
+    }
+
+    fn __repr__(&self) -> PyResult<String> {
+        let Handle { ref shape, ref color, border_width, ref border_color } = self.0;
+        format_to_py!(
+            "SliderHandle({}, {}, {:?}, {})",
+            SliderHandleShapeFormat(shape),
+            ColorFormat(color),
+            border_width,
+            ColorFormat(border_color),
+        )
     }
 }

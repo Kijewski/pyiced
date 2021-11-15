@@ -2,7 +2,7 @@ use std::time::{Duration, Instant};
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::{PyNumberProtocol, PyObjectProtocol};
+use pyo3::PyNumberProtocol;
 
 use crate::common::{debug_str, EitherPy};
 
@@ -33,16 +33,13 @@ impl WrappedInstant {
     fn new() -> Self {
         Self(Instant::now())
     }
-}
 
-#[pyproto]
-impl PyObjectProtocol for WrappedInstant {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }
 }
 
-#[pyproto]
+#[pyproto]  // TODO
 impl PyNumberProtocol for WrappedInstant {
     fn __add__(lhs: WrappedInstant, rhs: EitherPy<f64, Py<PyAny>>) -> PyResult<WrappedInstant> {
         let secs = match rhs {

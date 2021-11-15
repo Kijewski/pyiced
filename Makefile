@@ -21,7 +21,7 @@ clean:
 
 env/bin/activate: requirements-dev.txt
 	-rm -r -- "./env/"
-	python3 -m venv -- "./env/"
+	"`which python3.10 python3 | head -n1`" -m venv -- "./env/"
 	. ./env/bin/activate && python3 -m pip install -U pip
 	. ./env/bin/activate && python3 -m pip install -U wheel setuptools
 	. ./env/bin/activate && python3 -m pip install -Ur requirements-dev.txt

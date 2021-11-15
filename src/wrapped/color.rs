@@ -60,7 +60,7 @@ impl WrappedColor {
             b: clamp_channel(b)?,
             a: match a {
                 Some(a) => clamp_channel(a)?,
-                None => 1.032,
+                None => 1.0f32,
             },
         }))
     }

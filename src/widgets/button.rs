@@ -7,8 +7,7 @@ use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
 use crate::styles::{ButtonStyle, WrappedButtonStyleSheet};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
-use crate::wrapped::MessageOrDatum;
-use crate::wrapped::WrappedLength;
+use crate::wrapped::{MessageOrDatum, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_button, m)?)?;

@@ -4,9 +4,9 @@ use pyo3::prelude::*;
 
 use crate::common::debug_str;
 use crate::format_to_py;
-use crate::wrapped::{WrappedColor, WrappedSliderHandleShape};
-use crate::wrapped::slider_handle_shape::SliderHandleShapeFormat;
 use crate::wrapped::color::ColorFormat;
+use crate::wrapped::slider_handle_shape::SliderHandleShapeFormat;
+use crate::wrapped::{WrappedColor, WrappedSliderHandleShape};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderHandle>()?;
@@ -64,7 +64,12 @@ impl WrappedSliderHandle {
     }
 
     fn __repr__(&self) -> PyResult<String> {
-        let Handle { ref shape, ref color, border_width, ref border_color } = self.0;
+        let Handle {
+            ref shape,
+            ref color,
+            border_width,
+            ref border_color,
+        } = self.0;
         format_to_py!(
             "SliderHandle({}, {}, {:?}, {})",
             SliderHandleShapeFormat(shape),

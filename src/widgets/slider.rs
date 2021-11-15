@@ -8,8 +8,7 @@ use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::styles::{SliderStyleSheet, WrappedSliderStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::MessageOrDatum;
-use crate::wrapped::WrappedLength;
+use crate::wrapped::{MessageOrDatum, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_slider, m)?)?;

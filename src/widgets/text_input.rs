@@ -6,8 +6,7 @@ use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{text_input_with_state, TextInputState, WrappedTextInputState};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::MessageOrDatum;
-use crate::wrapped::{WrappedFont, WrappedLength};
+use crate::wrapped::{MessageOrDatum, WrappedFont, WrappedLength};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_text_input, m)?)?;

@@ -39,7 +39,7 @@ impl WrappedInstant {
     }
 }
 
-#[pyproto]  // TODO
+#[pyproto] // TODO
 impl PyNumberProtocol for WrappedInstant {
     fn __add__(lhs: WrappedInstant, rhs: EitherPy<f64, Py<PyAny>>) -> PyResult<WrappedInstant> {
         let secs = match rhs {

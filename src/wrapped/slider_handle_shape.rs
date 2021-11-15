@@ -92,7 +92,14 @@ impl Display for SliderHandleShapeFormat<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.0 {
             HandleShape::Circle { radius } => write!(f, "SliderHandleShape.circle({:?})", radius),
-            HandleShape::Rectangle { width, border_radius } => write!(f, "SliderHandleShape.rectangle({:?}, {:?})", width, border_radius),
+            HandleShape::Rectangle {
+                width,
+                border_radius,
+            } => write!(
+                f,
+                "SliderHandleShape.rectangle({:?}, {:?})",
+                width, border_radius
+            ),
         }
     }
 }

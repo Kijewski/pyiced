@@ -10,7 +10,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 use tokio::sync::oneshot::{channel, Sender};
 
-use crate::common::{Message, ToNative, debug_err, method_into_py};
+use crate::common::{debug_err, method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{MessageOrDatum, WrappedColor};
@@ -84,13 +84,15 @@ fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> M
         return MessageOrFuture::None;
     }
     match task_or_message.hasattr("__await__") {
-        Ok(hasattr) => if !hasattr {
-            return MessageOrFuture::Message(Message::Python(task_or_message.into_py(py)));
-        }
+        Ok(hasattr) => {
+            if !hasattr {
+                return MessageOrFuture::Message(Message::Python(task_or_message.into_py(py)));
+            }
+        },
         Err(err) => {
             err.print(py);
             return MessageOrFuture::None;
-        }
+        },
     }
 
     let (sender, receiver) = channel();

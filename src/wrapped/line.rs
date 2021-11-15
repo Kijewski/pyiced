@@ -4,8 +4,8 @@ use pyo3::prelude::*;
 
 use crate::common::debug_str;
 use crate::format_to_py;
-use crate::wrapped::WrappedColor;
 use crate::wrapped::color::ColorFormat;
+use crate::wrapped::WrappedColor;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedLine>()?;

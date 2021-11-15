@@ -5,7 +5,7 @@ use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
 
-use crate::common::{EitherPy, Message, debug_str};
+use crate::common::{debug_str, EitherPy, Message};
 use crate::format_to_py;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {

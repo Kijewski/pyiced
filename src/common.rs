@@ -4,9 +4,9 @@ use std::fmt::{Debug, Write};
 use iced::{Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::{PyException, PyTypeError};
-use pyo3::{PyTypeInfo, prelude::*};
+use pyo3::prelude::*;
 use pyo3::types::PyTuple;
-use pyo3::{PyTraverseError, PyVisit};
+use pyo3::{PyTraverseError, PyTypeInfo, PyVisit};
 
 use crate::format_to_string_ignore;
 use crate::wrapped::MessageOrDatum;
@@ -76,15 +76,15 @@ where
 {
     let f = f.clone();
     move |value: T| {
-        Python::with_gil(|py| {
-            match f.call1(py, (value,)).and_then(|res| res.extract(py)) {
+        Python::with_gil(
+            |py| match f.call1(py, (value,)).and_then(|res| res.extract(py)) {
                 Ok(MessageOrDatum(message)) => message,
                 Err(err) => {
                     err.print(py);
                     return Message::None;
                 },
-            }
-        })
+            },
+        )
     }
 }
 

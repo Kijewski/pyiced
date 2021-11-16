@@ -156,7 +156,7 @@ impl PyBufferProtocol for WrappedFont {
             return Err(PyValueError::new_err("Font is not writable."));
         }
 
-        let bytes = match (&*slf).0 {
+        let bytes = match (*slf).0 {
             Font::Default => {
                 return Err(PyNotImplementedError::new_err(
                     "Buffer not implemented for default font.",

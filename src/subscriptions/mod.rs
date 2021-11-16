@@ -8,7 +8,7 @@ macro_rules! init_mod {
     ( $($module:ident -> $typ:ident),* $(,)? ) => {
         $( mod $module; )*
 
-        $( pub(crate) use $module::$typ; )*
+        pub(crate) use { $( $module::$typ ),* };
 
         pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
             m.add_class::<WrappedSubscription>()?;
@@ -22,6 +22,7 @@ macro_rules! init_mod {
         }
 
         #[derive(Debug, Clone)]
+        #[allow(clippy::enum_variant_names)]
         pub(crate) enum Subscription {
             $( $typ($typ) ),*
         }

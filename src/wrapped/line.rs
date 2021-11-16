@@ -41,16 +41,12 @@ impl WrappedLine {
     fn new(color: &WrappedColor, width: f32) -> PyResult<Self> {
         let width = match width.classify() {
             FpCategory::Nan | FpCategory::Infinite => {
-                return Err(PyErr::new::<PyValueError, _>(
-                    "The width must be finite",
-                ));
-            }
+                return Err(PyErr::new::<PyValueError, _>("The width must be finite"));
+            },
             FpCategory::Zero | FpCategory::Subnormal => 0.0f32,
             FpCategory::Normal => {
                 if width < 0.0 {
-                    return Err(PyErr::new::<PyValueError, _>(
-                        "The width must be >= 0",
-                    ));
+                    return Err(PyErr::new::<PyValueError, _>("The width must be >= 0"));
                 }
                 width
             },

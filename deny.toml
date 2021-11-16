@@ -1,0 +1,27 @@
+[advisories]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "deny"
+notice = "warn"
+
+[licenses]
+unlicensed = "deny"
+allow = [
+    "MPL-2.0",
+]
+copyleft = "warn"
+allow-osi-fsf-free = "both"
+default = "allow"
+confidence-threshold = 0.8
+
+[bans]
+multiple-versions = "allow"
+wildcards = "allow"
+highlight = "all"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = [
+    "https://github.com/rust-lang/crates.io-index",
+]

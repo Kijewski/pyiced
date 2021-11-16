@@ -7,12 +7,12 @@ updates:
     schedule:
       interval: "daily"
 
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "daily"
 
-  - package-ecosystem: "gitsubmodule"
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"

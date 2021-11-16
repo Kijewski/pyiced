@@ -1,9 +1,10 @@
 use std::borrow::Cow;
 use std::fmt::{Debug, Write};
+use std::num::FpCategory;
 
 use iced::{Element, Length, Space};
 use iced_native::Event;
-use pyo3::exceptions::{PyException, PyTypeError};
+use pyo3::exceptions::{PyException, PyTypeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyTypeInfo, PyVisit};
@@ -170,4 +171,22 @@ pub(crate) fn debug_err<T: PyTypeInfo, E: Debug>(err: E) -> PyErr {
         Err(_) => Cow::Borrowed("Could not even debug display the error messages"),
     };
     PyErr::new::<T, _>(s)
+}
+
+pub(crate) fn validate_f32(value: f32) -> PyResult<f32> {
+    match value.classify() {
+        FpCategory::Normal => Ok(value),
+        FpCategory::Zero | FpCategory::Subnormal => Ok(0.0f32),
+        FpCategory::Nan | FpCategory::Infinite => {
+            Err(PyErr::new::<PyValueError, _>("float values must be finite"))
+        },
+    }
+}
+
+pub(crate) fn validate_f32_nonneg(value: f32) -> PyResult<f32> {
+    let value = validate_f32(value)?;
+    if value < 0.0f32 {
+        return Err(PyErr::new::<PyValueError, _>("float value must be >= 0"));
+    }
+    Ok(value)
 }

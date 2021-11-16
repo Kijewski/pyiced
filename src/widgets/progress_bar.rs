@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{GCProtocol, Message, ToNative};
+use crate::common::{validate_f32, GCProtocol, Message, ToNative};
 use crate::styles::{ProgressBarStyle, WrappedProgressBarStyle};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::WrappedLength;
@@ -63,11 +63,9 @@ fn make_progress_bar(
     height: Option<&WrappedLength>,
     style: Option<&WrappedProgressBarStyle>,
 ) -> PyResult<WrappedWidgetBuilder> {
-    if !start.is_finite() || !end.is_finite() || !value.is_finite() {
-        return Err(PyErr::new::<PyValueError, _>(
-            "The arguments start, end and value need to be finite.",
-        ));
-    }
+    let start = validate_f32(start)?;
+    let end = validate_f32(end)?;
+    let value = validate_f32(value)?;
     if start > end || start > value || value > end {
         return Err(PyErr::new::<PyValueError, _>(
             "The following comparison must be true: start <= value <= end",

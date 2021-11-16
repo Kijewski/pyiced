@@ -1,8 +1,8 @@
 use iced::pane_grid::Line;
 use iced::{Background, Color, Vector};
-use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
+use crate::common::validate_f32;
 use crate::wrapped::{WrappedColor, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape};
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
@@ -14,12 +14,8 @@ pub(crate) struct Extractor<'p>(pub &'p PyAny);
 impl<'p> TryFrom<Extractor<'p>> for f32 {
     type Error = PyErr;
 
-    fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        let value = value.0.extract::<f32>()?;
-        if !value.is_finite() {
-            return Err(PyErr::new::<PyValueError, _>("float values must be finite"));
-        }
-        Ok(value)
+    fn try_from(value: Extractor<'p>) -> PyResult<f32> {
+        validate_f32(value.0.extract::<f32>()?)
     }
 }
 
@@ -58,10 +54,10 @@ impl<'p> TryFrom<Extractor<'p>> for Vector {
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
         let (x, y) = value.0.extract::<(f32, f32)>()?;
-        if !x.is_finite() || !y.is_finite() {
-            return Err(PyErr::new::<PyValueError, _>("float values must be finite"));
-        }
-        Ok(Vector { x, y })
+        Ok(Vector {
+            x: validate_f32(x)?,
+            y: validate_f32(y)?,
+        })
     }
 }
 

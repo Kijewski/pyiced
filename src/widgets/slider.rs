@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
+use crate::common::{to_msg_fn, validate_f32, GCProtocol, Message, ToNative};
 use crate::states::{slider_with_state, SliderState, WrappedSliderState};
 use crate::styles::{SliderStyleSheet, WrappedSliderStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
@@ -91,15 +91,14 @@ fn make_slider(
     step: Option<f32>,
     style: Option<&WrappedSliderStyleSheet>,
 ) -> PyResult<WrappedWidgetBuilder> {
-    if !start.is_finite()
-        || !end.is_finite()
-        || !value.is_finite()
-        || !step.map_or(true, |o| o.is_finite())
-    {
-        return Err(PyErr::new::<PyValueError, _>(
-            "The arguments start, end, value and step need to be finite.",
-        ));
-    }
+    let start = validate_f32(start)?;
+    let end = validate_f32(end)?;
+    let value = validate_f32(value)?;
+    let step = match step {
+        Some(step) => Some(validate_f32(step)?),
+        None => None,
+    };
+
     if start > end || start > value || value > end {
         return Err(PyErr::new::<PyValueError, _>(
             "The following comparison must be true: start <= value <= end",

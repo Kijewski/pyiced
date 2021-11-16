@@ -1,8 +1,7 @@
 use iced::slider::Handle;
-use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 
-use crate::common::debug_str;
+use crate::common::{debug_str, validate_f32_nonneg};
 use crate::format_to_py;
 use crate::wrapped::color::ColorFormat;
 use crate::wrapped::slider_handle_shape::SliderHandleShapeFormat;
@@ -46,15 +45,10 @@ impl WrappedSliderHandle {
         border_width: f32,
         border_color: &WrappedColor,
     ) -> PyResult<Self> {
-        if !border_width.is_finite() || border_width < 0.0 {
-            return Err(PyErr::new::<PyValueError, _>(
-                "The border_width must be finite and >= 0",
-            ));
-        }
         Ok(Self(Handle {
             shape: shape.0,
             color: color.0,
-            border_width,
+            border_width: validate_f32_nonneg(border_width)?,
             border_color: border_color.0,
         }))
     }

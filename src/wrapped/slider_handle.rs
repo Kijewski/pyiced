@@ -25,7 +25,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     The color of the slider_handle.
 /// color : Color
 ///     The width of the slider_handle.
-/// border_width : f32
+/// border_width : float
 ///     The width of the slider_handle.
 /// border_color : Color
 ///     The width of the slider_handle.

@@ -34,11 +34,11 @@ impl GCProtocol for ProgressBarBuilder {}
 ///
 /// Parameters
 /// ----------
-/// start : f32
+/// start : float
 ///     Minimum value inside the value range.
-/// end : f32
+/// end : float
 ///     Maximum value inside the value range.
-/// value : f32
+/// value : float
 ///     Current value of the progress bar.
 /// width : Optional[Length]
 ///     Width of the progress bar.

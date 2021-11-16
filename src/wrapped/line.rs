@@ -1,3 +1,5 @@
+use std::num::FpCategory;
+
 use iced::widget::pane_grid::Line;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -37,15 +39,54 @@ pub(crate) struct WrappedLine(pub Line);
 impl WrappedLine {
     #[new]
     fn new(color: &WrappedColor, width: f32) -> PyResult<Self> {
-        if !width.is_finite() || width < 0.0 {
-            return Err(PyErr::new::<PyValueError, _>(
-                "The width must be finite and >= 0",
-            ));
-        }
+        let width = match width.classify() {
+            FpCategory::Nan | FpCategory::Infinite => {
+                return Err(PyErr::new::<PyValueError, _>(
+                    "The width must be finite",
+                ));
+            }
+            FpCategory::Zero | FpCategory::Subnormal => 0.0f32,
+            FpCategory::Normal => {
+                if width < 0.0 {
+                    return Err(PyErr::new::<PyValueError, _>(
+                        "The width must be >= 0",
+                    ));
+                }
+                width
+            },
+        };
         Ok(Self(Line {
             color: color.0,
             width,
         }))
+    }
+
+    /// The color of the line.
+    ///
+    /// Returns
+    /// -------
+    /// Color
+    ///     The "color" parameter given when constructing this line.
+    #[getter]
+    fn color(&self) -> WrappedColor {
+        WrappedColor(self.0.color)
+    }
+
+    /// The width of the line.
+    ///
+    /// Returns
+    /// -------
+    /// float
+    ///     The "width" parameter given when constructing this line.
+    #[getter]
+    fn width(&self) -> f32 {
+        self.0.width
+    }
+
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn __match_args__() -> (&'static str, &'static str) {
+        ("color", "width")
     }
 
     fn __str__(&self) -> PyResult<String> {

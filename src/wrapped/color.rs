@@ -127,6 +127,12 @@ impl WrappedColor {
         self.0.a
     }
 
+    #[classattr]
+    #[allow(non_snake_case)]
+    fn __match_args__() -> (&'static str, &'static str, &'static str, &'static str) {
+        ("r", "g", "b", "a")
+    }
+
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }

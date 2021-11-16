@@ -208,11 +208,11 @@ macro_rules! make_with_state {
 #[macro_export]
 macro_rules! wrap_rust_enum {
     (
-        $( #[doc = $class_doc:expr] )*
+        $( #[doc = $class_doc:expr] )+
         $Name:literal -> $WrappedName:ident($RustType:ty)
         {
             $(
-                $( #[doc = $value_doc:expr] )*
+                $( #[doc = $value_doc:expr] )+
                 $UpperCase:ident -> $Value:ident
             ),*
             $(,)?
@@ -228,6 +228,13 @@ macro_rules! wrap_rust_enum {
         }
 
         $( #[doc = $class_doc] )*
+        #[doc = ""]
+        #[doc = "Attributes"]
+        #[doc = "----------"]
+        $(
+            #[doc = stringify!($UpperCase)]
+            $( #[doc = concat!("    ", $value_doc)] )*
+        )*
         #[pyclass(
             name = $Name,
             module = "pyiced",

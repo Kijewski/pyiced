@@ -7,7 +7,7 @@ crate::wrap_rust_enum!(
     "VerticalAlignment" -> WrappedVerticalAlignment(iced::VerticalAlignment) {
         /// Align top
         TOP -> Top,
-        //// Vertically centered
+        /// Vertically centered
         CENTER -> Center,
         /// Align bottom
         BOTTOM -> Bottom,

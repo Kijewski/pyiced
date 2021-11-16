@@ -26,8 +26,6 @@ Details
 -------
 
 .. autoclass:: pyiced.Align
-   :members:
-   :undoc-members:
 
 .. autoclass:: pyiced.Color
    :members:
@@ -38,8 +36,6 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.HorizontalAlignment
-   :members:
-   :undoc-members:
 
 .. autoclass:: pyiced.ImageHandle
    :members:
@@ -74,12 +70,8 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.TooltipPosition
-   :members:
-   :undoc-members:
 
 .. autoclass:: pyiced.VerticalAlignment
-   :members:
-   :undoc-members:
 
 Named Colors
 ------------

@@ -23,14 +23,14 @@ pub(crate) struct WrappedSliderHandleShape(pub HandleShape);
 
 #[pymethods]
 impl WrappedSliderHandleShape {
-    /// circle($module, /, radius)
+    /// circle(radius)
     /// --
     ///
     /// A circle.
     ///
     /// Parameters
     /// ----------
-    /// radius : f32
+    /// radius : float
     ///     The radius of the circle
     ///
     /// Returns
@@ -47,22 +47,22 @@ impl WrappedSliderHandleShape {
         Ok(Self(HandleShape::Circle { radius }))
     }
 
-    /// rectangle($module, /, width, border_radius)
+    /// rectangle(width, border_radius)
     /// --
     ///
-    /// A circle.
+    /// A rectangle.
     ///
     /// Parameters
     /// ----------
-    /// width : f32
+    /// width : float
     ///     TODO
-    /// border_radius : f32
+    /// border_radius : float
     ///     TODO
     ///
     /// Returns
     /// -------
     /// SliderHandleShape
-    ///     A slider handle in the shape of a circle.
+    ///     A slider handle in the shape of a rectangle.
     #[staticmethod]
     fn rectangle(width: u16, border_radius: f32) -> PyResult<Self> {
         if !border_radius.is_finite() || border_radius < 0.0 {

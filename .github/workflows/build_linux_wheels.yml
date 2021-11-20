@@ -7,10 +7,6 @@ on:
         description: OS
         required: true
         default: ubuntu-20.04
-      python:
-        description: Python
-        required: true
-        default: "3.9"
       manylinux:
         description: Manylinux
         required: true
@@ -22,7 +18,7 @@ on:
 
 jobs:
   build_wheels:
-    name: Build compat:${{ github.event.inputs.manylinux }}, python:${{ github.event.inputs.python }}, os:${{ github.event.inputs.os }}
+    name: Build ${{ github.event.inputs.os }} ${{ github.event.inputs.manylinux }} ${{ github.event.inputs.archs }}
     runs-on: ${{ github.event.inputs.os }}
 
     steps:
@@ -33,7 +29,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ github.event.inputs.python }}
+          python-version: "3.9"
 
       - name: Install requirements
         run: |
@@ -51,11 +47,12 @@ jobs:
             curl -sSf -o /tmp/rustup-init.sh https://sh.rustup.rs
             sh /tmp/rustup-init.sh -y
           CIBW_ENVIRONMENT: PATH=$HOME/.cargo/bin:$PATH
-          CIBW_BEFORE_ALL_LINUX: yum install -y freetype-devel libxkbcommon-devel
+          CIBW_BEFORE_ALL_LINUX: |
+            yum install -y freetype-devel libxkbcommon-devel || apt install -y libfreetype-dev libxkbcommon-dev
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: Wheelhouse
+          name: "${{ github.event.inputs.os }}-${{ github.event.inputs.manylinux }}"
           path: ./wheelhouse/*.whl

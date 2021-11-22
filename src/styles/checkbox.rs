@@ -1,3 +1,5 @@
+#![allow(clippy::needless_option_as_deref)]
+
 use iced::checkbox::{Style, StyleSheet};
 use pyo3::exceptions::{PyTypeError, PyValueError};
 use pyo3::prelude::*;

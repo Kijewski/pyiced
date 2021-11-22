@@ -1,3 +1,5 @@
+#![allow(clippy::needless_option_as_deref)]
+
 use iced::pick_list::{Menu, Style, StyleSheet};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;

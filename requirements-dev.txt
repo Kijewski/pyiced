@@ -1,6 +1,6 @@
 cibuildwheel == 2.*, >= 2.1.3
 setuptools >= 41.0.0
-setuptools-rust == 0.12.*, >= 0.12.1
+setuptools-rust == 1.0.*
 wheel
 
 # keep synchronous to requirements-readthedocs.txt

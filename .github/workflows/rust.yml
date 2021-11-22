@@ -1,4 +1,4 @@
-name: So, does it work?
+name: Rust
 
 on:
   push:
@@ -7,35 +7,11 @@ on:
     branches: ['main']
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          key: cache-test
-          path: target
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-
   fmt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v1
 
       - name: Cache
         uses: actions/cache@v2
@@ -43,7 +19,8 @@ jobs:
           key: cache-fmt
           path: target
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install cargo
+        uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
@@ -55,7 +32,8 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v1
 
       - name: Cache
         uses: actions/cache@v2
@@ -63,7 +41,8 @@ jobs:
           key: cache-clippy
           path: target
 
-      - uses: actions-rs/toolchain@v1
+      - name: Install cargo
+        uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly

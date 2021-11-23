@@ -20,6 +20,7 @@ init_mod! {
     align -> { WrappedAlign },
     clipboard -> { WrappedClipboard },
     color -> { WrappedColor },
+    fill_mode -> { WrappedFillMode },
     font -> { WrappedFont },
     horizontal_alignment -> { WrappedHorizontalAlignment },
     image -> { WrappedImageHandle },

@@ -10,6 +10,7 @@ Overview
    ~pyiced.Align
    ~pyiced.Clipboard
    ~pyiced.Color
+   ~pyiced.FillMode
    ~pyiced.Font
    ~pyiced.HorizontalAlignment
    ~pyiced.ImageHandle
@@ -33,6 +34,10 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.Color
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.FillMode
    :members:
    :undoc-members:
 

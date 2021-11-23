@@ -39,8 +39,8 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Clipboard', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Instant',
-    'Length', 'Line', 'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle',
+    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'ImageHandle',
+    'Instant', 'Length', 'Line', 'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle',
     'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
     # styles

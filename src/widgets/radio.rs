@@ -48,9 +48,8 @@ impl GCProtocol for RadioBuilder {
 /// selected : Optional[int]
 ///     The identifier of the currently selected option.
 /// f : Callable[[int], Optional[object]]
-///     Function to call with the `value` was argument when the radio was selected.
-///     The call may update `selected` for the next call,
-///     or it can be ignored if the option is invalid.
+///     Function to call with the `value` as argument if the radio was selected.
+///     The call may update `selected` for the next call, or it can be ignored, e.g. if the select is invalid.
 ///
 ///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
 /// size : Optional[int]

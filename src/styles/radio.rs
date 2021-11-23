@@ -53,7 +53,14 @@ impl WrappedRadioStyle {
     #[new]
     fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
         let proto = dyn_style_proto!(proto, active, hovered);
-        extract_multiple!(kwargs, RadioStyle(proto), background, dot_color, border_width, border_color)
+        extract_multiple!(
+            kwargs,
+            RadioStyle(proto),
+            background,
+            dot_color,
+            border_width,
+            border_color
+        )
     }
 }
 
@@ -85,16 +92,10 @@ pub(crate) struct RadioStyleSheet {
 #[pymethods]
 impl WrappedRadioStyleSheet {
     #[new]
-    fn new(
-        active: &WrappedRadioStyle,
-        hovered: Option<&WrappedRadioStyle>,
-    ) -> Self {
+    fn new(active: &WrappedRadioStyle, hovered: Option<&WrappedRadioStyle>) -> Self {
         let active = active.0.0;
         let hovered = hovered.map_or(active, |s| s.0.0);
-        Self(RadioStyleSheet {
-            active,
-            hovered,
-        })
+        Self(RadioStyleSheet { active, hovered })
     }
 }
 

@@ -81,7 +81,7 @@ fn make_radio(
     width: Option<&WrappedLength>,
     spacing: Option<u16>,
     text_size: Option<u16>,
-    style: Option<&WrappedRadioStyleSheet>
+    style: Option<&WrappedRadioStyleSheet>,
 ) -> WrappedWidgetBuilder {
     let el = RadioBuilder {
         value,

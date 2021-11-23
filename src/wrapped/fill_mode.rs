@@ -44,7 +44,9 @@ impl WrappedFillMode {
     fn percent(percentage: f32) -> PyResult<Self> {
         let percentage = match percentage.classify() {
             FpCategory::Nan | FpCategory::Infinite => {
-                return Err(PyErr::new::<PyValueError, _>("The percentage must be finite"));
+                return Err(PyErr::new::<PyValueError, _>(
+                    "The percentage must be finite",
+                ));
             },
             FpCategory::Zero | FpCategory::Subnormal => 0.0f32,
             FpCategory::Normal => match percentage {

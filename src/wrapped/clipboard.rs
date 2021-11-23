@@ -52,7 +52,10 @@ impl WrappedClipboard {
     ///     The new contents of the clipboard.
     fn write(&self, value: String) -> PyResult<()> {
         match self.0.upgrade() {
-            Some(clipboard) => Ok(unsafe { &mut **clipboard }.write(value)),
+            Some(clipboard) => {
+                unsafe { &mut **clipboard }.write(value);
+                Ok(())
+            },
             None => Err(PyRuntimeError::new_err("Clipboard expired.")),
         }
     }

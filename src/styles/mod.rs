@@ -23,7 +23,7 @@ init_mod! {
     pane_grid -> { PaneGridStyle, WrappedPaneGridStyle },
     pick_list -> { PickListStyleSheet, WrappedPickListStyleSheet },
     progress_bar -> { ProgressBarStyle, WrappedProgressBarStyle },
-    // radio -> { RadioStyle, WrappedRadioStyle },
+    radio -> { RadioStyleSheet, WrappedRadioStyleSheet },
     // rule -> { RuleStyle, WrappedRuleStyle },
     // scrollable -> { ScrollableStyle, WrappedScrollableStyle },
     slider -> { SliderStyle, SliderStyleSheet, WrappedSliderStyle, WrappedSliderStyleSheet },

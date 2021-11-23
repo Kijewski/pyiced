@@ -20,6 +20,8 @@ Overview
    ~pyiced.PickListStyleSheet
    ~pyiced.ProgressBarStyle
    ~pyiced.ProgressBarStyleSheet
+   ~pyiced.RadioStyle
+   ~pyiced.RadioStyleSheet
    ~pyiced.SliderStyle
    ~pyiced.SliderStyleSheet
 
@@ -79,6 +81,14 @@ Details
 .. autoclass:: pyiced.ProgressBarStyle
 
 .. autoclass:: pyiced.ProgressBarStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.RadioStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.RadioStyleSheet
    :members:
    :undoc-members:
 

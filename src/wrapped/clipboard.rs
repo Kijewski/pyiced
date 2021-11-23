@@ -35,13 +35,10 @@ impl WrappedClipboard {
     /// Optional[str]
     ///     The current contents of the clipboard.
     fn read(&self) -> PyResult<Option<String>> {
-        let clipboard = match self.0.upgrade() {
-            Some(clipboard) => clipboard,
-            None => return Err(PyRuntimeError::new_err("Clipboard expired.")),
-        };
-        let clipboard: *mut Clipboard = *clipboard;
-        let clipboard = unsafe { &mut *clipboard };
-        Ok(clipboard.read())
+        match self.0.upgrade() {
+            Some(clipboard) => Ok(unsafe { &**clipboard }.read()),
+            None => Err(PyRuntimeError::new_err("Clipboard expired.")),
+        }
     }
 
     /// write($self, /, value)
@@ -54,13 +51,9 @@ impl WrappedClipboard {
     /// value : str
     ///     The new contents of the clipboard.
     fn write(&self, value: String) -> PyResult<()> {
-        let clipboard = match self.0.upgrade() {
-            Some(clipboard) => clipboard,
-            None => return Err(PyRuntimeError::new_err("Clipboard expired.")),
-        };
-        let clipboard: *mut Clipboard = *clipboard;
-        let clipboard = unsafe { &mut *clipboard };
-        clipboard.write(value);
-        Ok(())
+        match self.0.upgrade() {
+            Some(clipboard) => Ok(unsafe { &mut **clipboard }.write(value)),
+            None => Err(PyRuntimeError::new_err("Clipboard expired.")),
+        }
     }
 }

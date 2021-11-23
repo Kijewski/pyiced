@@ -1,10 +1,12 @@
 use std::pin::Pin;
+use std::rc::Rc;
 
 use futures_util::Future;
 use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
+use parking_lot::Mutex;
 use pyo3::exceptions::{PyAttributeError, PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -13,7 +15,7 @@ use tokio::sync::oneshot::{channel, Sender};
 use crate::common::{debug_err, method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{MessageOrDatum, WrappedColor};
+use crate::wrapped::{MessageOrDatum, WrappedClipboard, WrappedColor};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_iced, m)?)?;
@@ -230,18 +232,21 @@ impl Application for PythonApp {
         }
     }
 
-    fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
+    fn update(&mut self, message: Message, clipboard: &mut Clipboard) -> Command<Message> {
         let (message, update) = match (message, &self.interop.update) {
             (Message::None, _) | (_, None) => return Command::none(),
             (message, Some(update)) => (message, update),
         };
 
         Python::with_gil(|py| {
+            let rc = Rc::new(Mutex::new(Some(clipboard as *mut _)));
+            let clipboard = WrappedClipboard(rc.clone());
             let vec = match message {
-                m @ Message::Native(_) => update.call1(py, (m,)),
-                Message::Python(obj) => update.call1(py, (obj,)),
+                m @ Message::Native(_) => update.call1(py, (m, clipboard)),
+                Message::Python(obj) => update.call1(py, (obj, clipboard)),
                 Message::None => return Command::none(), // unreachable
             };
+            rc.as_ref().lock().take();
 
             let vec = match vec {
                 Ok(vec) => vec,

@@ -20,8 +20,8 @@ class AsyncMessageExample(IcedApp):
     def new(self):
         return load_font()
 
-    def update(self, message):
-        match message:
+    def update(self, msg, clipboard):
+        match msg:
             case ('Font', font):
                 self.__font = font
 

@@ -23,14 +23,14 @@ pub(crate) struct WrappedImageHandle(pub Handle);
 impl WrappedImageHandle {
     /// from_path(path)
     /// --
-    /// 
+    ///
     /// Creates an image handle pointing to the image of the given path.
-    /// 
+    ///
     /// Arguments
     /// ---------
     /// path : pathlib.Path
     ///     The path of the image file.
-    /// 
+    ///
     /// Returns
     /// -------
     /// ImageHandle
@@ -42,14 +42,14 @@ impl WrappedImageHandle {
 
     /// from_memory(bytes)
     /// --
-    /// 
+    ///
     /// Creates an image handle containing the image data directly.
-    /// 
+    ///
     /// Arguments
     /// ---------
     /// bytes : bytes-like
     ///     The data of the image file.
-    /// 
+    ///
     /// Returns
     /// -------
     /// ImageHandle

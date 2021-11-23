@@ -8,6 +8,7 @@ Overview
 
 .. autosummary::
    ~pyiced.Align
+   ~pyiced.Clipboard
    ~pyiced.Color
    ~pyiced.Font
    ~pyiced.HorizontalAlignment
@@ -26,6 +27,10 @@ Details
 -------
 
 .. autoclass:: pyiced.Align
+
+.. autoclass:: pyiced.Clipboard
+   :members:
+   :undoc-members:
 
 .. autoclass:: pyiced.Color
    :members:

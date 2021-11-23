@@ -34,11 +34,11 @@ class ExampleApp(IcedApp):
             width=Length.FILL, height=Length.FILL,
         )
 
-    def update(self, message):
+    def update(self, msg, clipboard):
         # When an event occurs, this method is called.
         # It can optionally return a list of async functions,
         # to handle the event.
-        match message:
+        match msg:
             case 'incr':
                 self.__value += 1
             case 'decr':

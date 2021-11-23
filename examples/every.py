@@ -30,7 +30,7 @@ class SubscriptionExample(IcedApp):
             every(timedelta(milliseconds=16.667), 'tick'),
         ]
 
-    def update(self, msg):
+    def update(self, msg, clipboard):
         match msg:
             case ('tick', instant):
                 self.__last_instant = self.__instant

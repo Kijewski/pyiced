@@ -22,7 +22,7 @@ class StreamExample(IcedApp):
         if self.__stream is not None:
             return [self.__stream]
 
-    def update(self, msg):
+    def update(self, msg, clipboard):
         match msg:
             case 'done':
                 self.__stream = None

@@ -98,9 +98,9 @@ impl WrappedMessage {
     }
 
     /// The name of the pressed or released key.
-    /// 
+    ///
     /// See `iced_native::keyboard::KeyCode <https://docs.rs/iced_native/0.4.0/iced_native/keyboard/enum.KeyCode.html>`_ for the name of the keys.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[str]
@@ -121,7 +121,7 @@ impl WrappedMessage {
     }
 
     /// The shift key was pressed / released.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[bool]
@@ -138,7 +138,7 @@ impl WrappedMessage {
     }
 
     /// The alt key was pressed / released.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[bool]
@@ -155,9 +155,9 @@ impl WrappedMessage {
     }
 
     /// The "logo" key was pressed / released.
-    /// 
+    ///
     /// The logo key is the windows key, command key, etc.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[bool]
@@ -175,7 +175,7 @@ impl WrappedMessage {
     }
 
     /// The control key was pressed / released.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[bool]
@@ -193,7 +193,7 @@ impl WrappedMessage {
     }
 
     /// A unicode character was received.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[str]
@@ -213,7 +213,7 @@ impl WrappedMessage {
     // mouse
 
     /// A mouse event.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[str]
@@ -251,7 +251,7 @@ impl WrappedMessage {
     }
 
     /// The button of a mouse event.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Union[str|int|None]
@@ -275,7 +275,7 @@ impl WrappedMessage {
     }
 
     /// The unit of the scroll movement.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[str]
@@ -295,13 +295,13 @@ impl WrappedMessage {
     }
 
     /// The scroll movement.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[tuple[float, float]]
     ///     The horizontal and vertical amount.
     ///     The unit can be determined by inspecting :attr:`~pyiced.Message.wheelscrolled`.
-    /// 
+    ///
     ///     `None` if not a scroll movement.
     #[getter]
     fn amount(&self) -> Option<(f32, f32)> {
@@ -318,7 +318,7 @@ impl WrappedMessage {
     // touch
 
     /// A touch interaction.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[str]
@@ -398,7 +398,7 @@ impl WrappedMessage {
     }
 
     /// The new size of the window.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Optional[tuple(int, int)]

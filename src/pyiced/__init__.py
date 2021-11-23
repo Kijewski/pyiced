@@ -39,9 +39,9 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Instant', 'Length', 'Line',
-    'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle', 'TextInputCursor',
-    'TooltipPosition', 'VerticalAlignment',
+    'Align', 'Clipboard', 'Color', 'Font', 'HorizontalAlignment', 'ImageHandle', 'Instant',
+    'Length', 'Line', 'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle',
+    'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
@@ -204,7 +204,7 @@ class IcedApp(metaclass=ABCMeta):
         '''
         return False
 
-    def update(self, msg: Union[Message, object]) -> Optional[Commands]:
+    def update(self, msg: Union[Message, object], clipboard: Clipboard) -> Optional[Commands]:
         '''
         TODO
         '''

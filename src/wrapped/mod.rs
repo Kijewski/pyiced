@@ -18,6 +18,7 @@ macro_rules! init_mod {
 
 init_mod! {
     align -> { WrappedAlign },
+    clipboard -> { WrappedClipboard },
     color -> { WrappedColor },
     font -> { WrappedFont },
     horizontal_alignment -> { WrappedHorizontalAlignment },

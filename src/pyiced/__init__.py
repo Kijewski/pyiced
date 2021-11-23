@@ -19,11 +19,10 @@
 # SOFTWARE.
 
 from abc import ABCMeta, abstractmethod
-from contextlib import contextmanager
-from asyncio import Event, get_event_loop, Queue as AsyncQueue, run, run_coroutine_threadsafe
+from asyncio import get_event_loop, Queue as AsyncQueue, run as _run, run_coroutine_threadsafe
 from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Awaitable, Iterable, NewType, NoReturn, Optional, Tuple, Union
+from typing import Awaitable, Callable, Iterable, NewType, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
 
@@ -68,7 +67,7 @@ __license__ = _pyiced.__license__
 __version__ = _pyiced.__version__
 
 Command = NewType('Command', Union[Awaitable[Optional[object]], object])
-Commands = NewType('Commands', Iterable[Command])
+Commands = NewType('Commands', Iterable[Optional[Command]])
 
 ButtonStyle = ButtonStyleSheet
 ContainerStyle = ContainerStyleSheet
@@ -87,42 +86,42 @@ class WindowSettings:
     @property
     def min_size(self) -> Optional[Tuple[int, int]]:
         '''
-        TODO
+        The minimum size of the window.
         '''
         return None
 
     @property
     def max_size(self) -> Optional[Tuple[int, int]]:
         '''
-        TODO
+        The maximum size of the window.
         '''
         return None
 
     @property
     def resizable(self) -> bool:
         '''
-        TODO
+        Whether the window should be resizable or not.
         '''
         return True
 
     @property
     def decorations(self) -> bool:
         '''
-        TODO
+        Whether the window should have a border, a title bar, etc. or not.
         '''
         return True
 
     @property
     def transparent(self) -> bool:
         '''
-        TODO
+        Whether the window should be transparent.
         '''
         return False
 
     @property
     def always_on_top(self) -> bool:
         '''
-        TODO
+        Whether the window will always be on top of other windows.
         '''
         return False
 
@@ -133,107 +132,145 @@ class Settings:
     @property
     def default_text_size(self) -> int:
         '''
-        TODO
+        The text size that will be used by default.
         '''
         return 20
 
     @property
     def exit_on_close_request(self) -> bool:
         '''
-        TODO
+        Whether the :class:`~pyiced.IcedApp` should exit when the user requests the window to close (e.g. the user presses the close button).
         '''
         return True
 
     @property
     def antialiasing(self) -> bool:
         '''
-        TODO
+        If set to true, the renderer will try to perform antialiasing for some primitives.
+
+        Enabling it can produce a smoother result in some widgets, like the Canvas, at a performance cost.
         '''
         return True
-
-    # TODO: default_font
 
     @property
     def window(self) -> Optional[WindowSettings]:
         '''
-        TODO
+        The window settings.
         '''
         return None
 
+    @property
+    def default_font(self) -> Optional[Font]:
+        '''
+        The font that will be used by default.
+
+        If `None` or `Font.DEFAULT` is provided, a default system font will be chosen.
+        '''
+        Font.DEFAULT
+
 
 class IcedApp(metaclass=ABCMeta):
-    def run(self, *, run=run) -> NoReturn:
+    def run(self, *, run: Optional[Callable[[Awaitable], None]]=None) -> NoReturn:
         '''
-        TODO
+        Runs the application.
+
+        This method will take control of the current thread and will NOT return unless there is an error during startup.
+
+        It should probably be that last thing you call in your main function.
+
+        Arguments
+        ---------
+        run
+            Coroutine executor. Defaults to :func:`asyncio.run()`.
         '''
         return run_iced(self, run=run)
 
+    @property
     def settings(self) -> Optional[Settings]:
         '''
-        TODO
+        The initial settings of the program.
+
+        Once queried once.
         '''
         return None
 
     def new(self) -> Optional[Commands]:
         '''
-        TODO
+        Initialize the application.
+
+        You can return :class:`~pyiced.Commands` if you need to perform some async action in the background on startup. This is useful if you want to load state from a file, perform an initial HTTP request, etc.
         '''
         return None
 
     def title(self) -> str:
         '''
-        TODO
+        The current title of the application.
+
+        This title can be dynamic! The runtime will automatically update the title of your application when necessary.
         '''
         return f'PyIced {__version__}'
 
     def should_exit(self) -> bool:
         '''
-        TODO
+        Returns whether the application should be terminated.
+
+        This will kill the Python instance, too.
         '''
         return False
 
     def scale_factor(self) -> float:
         '''
-        TODO
+        Returns the scale factor of the application.
+
+        It can be used to dynamically control the size of the UI at runtime (i.e. zooming).
+
+        For instance, a scale factor of 2.0 will make widgets twice as big, while a scale factor of 0.5 will shrink them to half their size.
         '''
         return 1.0
 
     def fullscreen(self) -> bool:
         '''
-        TODO
+        True if the program should run in fullscreen mode.
+
+        The runtime will automatically transition your application if a new mode is returned.
         '''
         return False
 
     def update(self, msg: Union[Message, object], clipboard: Clipboard) -> Optional[Commands]:
         '''
-        TODO
+        Handles a message and updates the state of the application.
+
+        This is where you define your update logic. All the messages, produced by either user interactions or commands, will be handled by this method.
+
+        Any :class:`~pyiced.Command` returned will be executed immediately in the background.
         '''
         return None
 
-    def subscriptions(self) -> Optional[Iterable[Subscription]]:
+    def subscriptions(self) -> Optional[Iterable[Optional[Subscription]]]:
         '''
-        TODO
+        Returns the event :ref:`subscriptions <subscriptions:Event Listening>` for the current state of the application.
+
+        A subscription will be kept alive as long as you keep returning it, and the messages produced will be handled by update.
         '''
         return None
 
     def background_color(self) -> Optional[Color]:
         '''
-        TODO
+        Returns the background color of the application.
         '''
         return Color.WHITE
 
     @abstractmethod
     def view(self) -> Element:
         '''
-        TODO
+        Returns the :ref:`widget <elements:Displayable Elements>` to display in the application.
+
+        These widgets can produce messages based on user interaction.
         '''
         ...
 
 
-def run_iced(app: IcedApp, *, run=run) -> NoReturn:
-    '''
-    TODO
-    '''
+def run_iced(app: IcedApp, *, run=None) -> NoReturn:
     return _pyiced.run_iced(
         new=app.new,
         title=app.title,
@@ -249,9 +286,13 @@ def run_iced(app: IcedApp, *, run=run) -> NoReturn:
     )
 
 
-def make_loop(run):
+def make_loop(run=None):
     put_task = SyncQueue(1)
-    thread = Thread(None, run, args=(thread_code(put_task),))
+    thread = Thread(
+        None,
+        run if run is not None else _run,
+        args=(thread_code(put_task),)
+    )
     thread.start()
     return put_task.get()
 
@@ -270,12 +311,8 @@ async def thread_code(put_task):
 
         try:
             taskobj.result = None, (await taskobj.task)
-        except Exception as ex:
+        except SystemExit:
+            raise
+        except BaseException as ex:
             taskobj.result = ex, None
         taskobj()
-
-
-async def async_generator_await_once(async_generator):
-    async for elem in async_generator:
-        return (elem,)
-

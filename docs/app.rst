@@ -10,7 +10,6 @@ Overview
     ~pyiced.IcedApp
     ~pyiced.Element
     ~pyiced.Message
-    ~pyiced.Subscription
     ~pyiced.Settings
     ~pyiced.WindowSettings
 
@@ -42,8 +41,8 @@ Type aliases
 
 .. py:data:: pyiced.Command
 
-   :class:`~pyiced.Message` | :class:`~typing.Awaitable`\ [:class:`~pyiced.Message` | None]
+   :data:`~typing.Union`\ [\ :class:`~typing.Awaitable`\ [\ :data:`~typing.Optional`\ [\ :class:`object`]] | :class:`object`]
 
 .. py:data:: pyiced.Commands
 
-   :class:`~typing.Iterable`\ [\ :class:`~pyiced.Command` | None]
+   :class:`~typing.Iterable`\ [\ :data:`~typing.Optional`\ [\ :class:`~pyiced.Command`]]

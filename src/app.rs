@@ -3,8 +3,8 @@ use std::rc::Rc;
 
 use futures_util::Future;
 use iced::{
-    executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
-    Subscription,
+    executor, window, Application, Clipboard, Color, Command, Element, Font, Length, Settings,
+    Space, Subscription,
 };
 use pyo3::exceptions::{PyAttributeError, PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
@@ -14,7 +14,7 @@ use tokio::sync::oneshot::{channel, Sender};
 use crate::common::{debug_err, method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{MessageOrDatum, WrappedClipboard, WrappedColor};
+use crate::wrapped::{MessageOrDatum, WrappedClipboard, WrappedColor, WrappedFont};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_iced, m)?)?;
@@ -440,7 +440,17 @@ pub(crate) fn run_iced(
         assign_py_to_obj!(py, settings_, settings, default_text_size);
         assign_py_to_obj!(py, settings_, settings, exit_on_close_request);
         assign_py_to_obj!(py, settings_, settings, antialiasing);
-        // TODO: default_font
+
+        match settings.getattr("default_font") {
+            Ok(data) if !data.is_none() => match data.extract()? {
+                WrappedFont(Font::Default) => {},
+                WrappedFont(Font::External { bytes, .. }) => {
+                    settings_.default_font = Some(bytes);
+                },
+            },
+            Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
+            Ok(_) | Err(_) => {},
+        }
 
         match settings.getattr("window") {
             Ok(window) if !window.is_none() => {

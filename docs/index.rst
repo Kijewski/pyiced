@@ -36,7 +36,7 @@ Table of Contents
 -----------------
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 3
 
     examples.rst
     app.rst

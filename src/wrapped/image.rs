@@ -21,13 +21,39 @@ pub(crate) struct WrappedImageHandle(pub Handle);
 
 #[pymethods]
 impl WrappedImageHandle {
+    /// from_path(path)
+    /// --
+    /// 
     /// Creates an image handle pointing to the image of the given path.
+    /// 
+    /// Arguments
+    /// ---------
+    /// path : pathlib.Path
+    ///     The path of the image file.
+    /// 
+    /// Returns
+    /// -------
+    /// ImageHandle
+    ///     The new image handle.
     #[staticmethod]
     fn from_path(path: PathBuf) -> Self {
         Self(Handle::from_path(path))
     }
 
+    /// from_memory(bytes)
+    /// --
+    /// 
     /// Creates an image handle containing the image data directly.
+    /// 
+    /// Arguments
+    /// ---------
+    /// bytes : bytes-like
+    ///     The data of the image file.
+    /// 
+    /// Returns
+    /// -------
+    /// ImageHandle
+    ///     The new image handle.
     #[staticmethod]
     fn from_memory(bytes: Vec<u8>) -> Self {
         Self(Handle::from_memory(bytes))

@@ -22,12 +22,18 @@ pub(crate) struct WrappedLength(pub Length);
 
 #[pymethods]
 impl WrappedLength {
+    /// fill_portion(i)
+    /// --
+    ///
     /// Fill a portion of the remaining space relative to other elements.
     #[staticmethod]
     fn fill_portion(i: u16) -> Self {
         Self(Length::FillPortion(i))
     }
 
+    /// units(i)
+    /// --
+    ///
     /// Fill a fixed amount of space.
     #[staticmethod]
     fn units(i: u16) -> Self {

@@ -60,7 +60,7 @@ impl WrappedMessage {
     ///
     /// Returns
     /// -------
-    /// Optional[str]
+    /// str
     ///     * `"mouse"` for mouse interactions, e.g. mouse clicking
     ///     * `"window"` for window interactions, e.g. resizing
     ///     * `"keyboard"` for keyboard interactions, e.g. key presses
@@ -97,7 +97,14 @@ impl WrappedMessage {
         })
     }
 
-    /// TODO
+    /// The name of the pressed or released key.
+    /// 
+    /// See `iced_native::keyboard::KeyCode <https://docs.rs/iced_native/0.4.0/iced_native/keyboard/enum.KeyCode.html>`_ for the name of the keys.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     The name of the key, or `None` if the not a key press or release.
     #[getter]
     fn key_code(&self) -> PyResult<Option<String>> {
         let c = match get_keyboard(self) {
@@ -113,7 +120,14 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The shift key was pressed / released.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[bool]
+    ///     * `True` – Yes, the shift key was pressed or released.
+    ///     * `False` – No, the state of the shift key is unchanged.
+    ///     * `None` – Not a `"keypress"`, `"keyrelease"` or `"modifierschanged"` event.
     #[getter]
     fn shift(&self) -> Option<bool> {
         match get_keyboard(self).ok()? {
@@ -123,7 +137,14 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The alt key was pressed / released.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[bool]
+    ///     * `True` – Yes, the alt key was pressed or released.
+    ///     * `False` – No, the state of the alt key is unchanged.
+    ///     * `None` – Not a `"keypress"`, `"keyrelease"` or `"modifierschanged"` event.
     #[getter]
     fn alt(&self) -> Option<bool> {
         match get_keyboard(self).ok()? {
@@ -133,7 +154,16 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The "logo" key was pressed / released.
+    /// 
+    /// The logo key is the windows key, command key, etc.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[bool]
+    ///     * `True` – Yes, the "logo" key was pressed or released.
+    ///     * `False` – No, the state of the "logo" key is unchanged.
+    ///     * `None` – Not a `"keypress"`, `"keyrelease"` or `"modifierschanged"` event.
     #[getter]
     fn logo(&self) -> Option<bool> {
         match get_keyboard(self).ok()? {
@@ -144,7 +174,14 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The control key was pressed / released.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[bool]
+    ///     * `True` – Yes, the control key was pressed or released.
+    ///     * `False` – No, the state of the control key is unchanged.
+    ///     * `None` – Not a `"keypress"`, `"keyrelease"` or `"modifierschanged"` event.
     #[getter]
     fn control(&self) -> Option<bool> {
         match get_keyboard(self).ok()? {
@@ -155,7 +192,12 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// A unicode character was received.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     The received, composed character. `None` if not a character event.
     #[getter]
     fn characterreceived(&self) -> PyResult<Option<String>> {
         let c = match get_keyboard(self) {
@@ -170,7 +212,18 @@ impl WrappedMessage {
 
     // mouse
 
-    /// TODO
+    /// A mouse event.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     * `"cursorentered"` – The mouse cursor entered the window.
+    ///     * `"cursorleft"` – The mouse cursor left the window.
+    ///     * `"cursormoved"` – The mouse cursor was moved
+    ///     * `"buttonpressed"` – A mouse button was pressed.
+    ///     * `"buttonreleased"` – A mouse button was released.
+    ///     * `"wheelscrolled"` – The mouse wheel was scrolled.
+    ///     * `None` – Not a mouse event.
     #[getter]
     fn mouse(&self) -> Option<&'static str> {
         Some(match get_mouse(self).ok()? {
@@ -183,7 +236,12 @@ impl WrappedMessage {
         })
     }
 
-    /// TODO
+    /// The mouse cursor was moved
+    ///
+    /// Returns
+    /// -------
+    /// Optional[tuple[float, float]]
+    ///     Horizontal and vertical pixels, or `None` if cursor was not moved.
     #[getter]
     fn cursormoved(&self) -> Option<(f32, f32)> {
         match get_mouse(self).ok()? {
@@ -192,7 +250,16 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The button of a mouse event.
+    /// 
+    /// Returns
+    /// -------
+    /// Union[str|int|None]
+    ///     * `"left"` – The left mouse button.
+    ///     * `"right"` – The right mouse button.
+    ///     * `"middle"` – The middle (wheel) button.
+    ///     * :class:`int` – Another button.
+    ///     * `None` – Not a mouse event.
     #[getter]
     fn button(&self) -> Option<EitherPy<&'static str, u32>> {
         let b = match get_mouse(self).ok()? {
@@ -207,7 +274,14 @@ impl WrappedMessage {
         })
     }
 
-    /// TODO
+    /// The unit of the scroll movement.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     * `"lines"` – Counting in lines / columns.
+    ///     * `"pixels"` – Counting in pixels.
+    ///     * `None` – Not a scroll movement.
     #[getter]
     fn wheelscrolled(&self) -> Option<&'static str> {
         let delta = match get_mouse(self).ok()? {
@@ -220,7 +294,15 @@ impl WrappedMessage {
         })
     }
 
-    /// TODO
+    /// The scroll movement.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[tuple[float, float]]
+    ///     The horizontal and vertical amount.
+    ///     The unit can be determined by inspecting :attr:`~pyiced.Message.wheelscrolled`.
+    /// 
+    ///     `None` if not a scroll movement.
     #[getter]
     fn amount(&self) -> Option<(f32, f32)> {
         let delta = match get_mouse(self).ok()? {
@@ -235,7 +317,16 @@ impl WrappedMessage {
 
     // touch
 
-    /// TODO
+    /// A touch interaction.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     * `"fingerpressed"` – A touch interaction was started.
+    ///     * `"fingermoved"` – An on-going touch interaction was moved.
+    ///     * `"fingerlifted"` – A touch interaction was ended.
+    ///     * `"fingerlost"` – A touch interaction was canceled.
+    ///     * `None` – Not a touch interaction.
     #[getter]
     fn touch(&self) -> Option<&'static str> {
         Some(match get_touch(self).ok()? {
@@ -266,7 +357,7 @@ impl WrappedMessage {
     ///
     /// Returns
     /// -------
-    /// Tuple[float, float]
+    /// tuple[float, float]
     ///     A 2D point
     #[getter]
     fn position(&self) -> Option<(f32, f32)> {
@@ -280,7 +371,19 @@ impl WrappedMessage {
 
     // window
 
-    /// TODO
+    /// The kind of the window message.
+    ///
+    /// Returns
+    /// -------
+    /// Optional[str]
+    ///     * `"resized"` – The window was resized.
+    ///     * `"closerequested"` – The window close button was clicked.
+    ///     * `"focused"` – The window was focus.
+    ///     * `"unfocused"` – The focus left the window.
+    ///     * `"filehovered"` – A file is hovering the window. A selection of multiple files cause multiple messages.
+    ///     * `"filedropped"` – A file was dropped on the window. A selection of multiple files cause multiple messages.
+    ///     * `"fileshoveredleft"` – The cursor the with hovering file(s) left the window.
+    ///     * `None` – Not a window message.
     #[getter]
     fn window(&self) -> Option<&'static str> {
         Some(match get_window(self).ok()? {
@@ -294,7 +397,12 @@ impl WrappedMessage {
         })
     }
 
-    /// TODO
+    /// The new size of the window.
+    /// 
+    /// Returns
+    /// -------
+    /// Optional[tuple(int, int)]
+    ///     The width and height in pixels or null, if it's not a resize action.
     #[getter]
     fn resized(&self) -> Option<(u32, u32)> {
         match get_window(self).ok()? {
@@ -303,7 +411,12 @@ impl WrappedMessage {
         }
     }
 
-    /// TODO
+    /// The path of the hovering or dropped file.
+    ///
+    /// Returns
+    /// -------
+    /// Optional[pathlib.Path]
+    ///     The path or none, if the Message is not a file action.
     #[getter]
     fn file(&self) -> Option<PathBuf> {
         match get_window(self).ok()? {

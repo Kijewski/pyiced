@@ -100,7 +100,7 @@ html_css_files = [
 html_sidebars = {
     '**': [
         'globaltoc.html',
-        'localtoc.html',
+        # 'localtoc.html',
         # 'sourcelink.html',
         'searchbox.html',
     ]

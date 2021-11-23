@@ -58,3 +58,13 @@ to receive :class:`~pyiced.Message`\ s about asynchronously generated informatio
 
 .. literalinclude :: ../examples/stream.py
    :language: python
+
+Capturing Keystrokes
+--------------------
+
+To capture any keystoke (or indeed any event that original from user interaction),
+you can make :meth:`pyiced.IcedApp.subscriptions()` return a list
+\[\ :data:`pyced.Subscription.UNCAPTURED <pyiced.Subscription.UNCAPTURED>`].
+
+.. literalinclude :: ../examples/fullscreen.py
+   :language: python

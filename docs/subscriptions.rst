@@ -27,3 +27,6 @@ Details
 .. autoclass:: pyiced.Subscription
    :members:
    :undoc-members:
+
+   .. literalinclude :: ../examples/fullscreen.py
+      :language: python

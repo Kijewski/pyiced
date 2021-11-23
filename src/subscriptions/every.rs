@@ -130,7 +130,7 @@ impl Hash for Every {
 /// Subscription
 ///     The new subscription.
 ///
-///     Every "duration" a message ``Message((token, instant))`` is sent to :meth:`pyiced.IcedApp.update`.
+///     Every "duration" a message ``(token, instant)`` is sent to :meth:`pyiced.IcedApp.update`.
 ///
 ///     .. seealso::
 ///         :class:`~pyiced.Instant`.

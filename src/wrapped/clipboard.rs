@@ -1,7 +1,6 @@
-use std::rc::Rc;
+use std::rc::Weak;
 
 use iced::Clipboard;
-use parking_lot::Mutex;
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 
@@ -22,7 +21,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// --------
 /// `iced::Clipboard <https://docs.rs/iced/0.3.0/iced/struct.Clipboard.html>`_
 #[pyclass(name = "Clipboard", module = "pyiced", unsendable, freelist = 3)]
-pub(crate) struct WrappedClipboard(pub Rc<Mutex<Option<*mut Clipboard>>>);
+pub(crate) struct WrappedClipboard(pub Weak<*mut Clipboard>);
 
 #[pymethods]
 impl WrappedClipboard {
@@ -36,15 +35,12 @@ impl WrappedClipboard {
     /// Optional[str]
     ///     The current contents of the clipboard.
     fn read(&self) -> PyResult<Option<String>> {
-        let rc: &Mutex<_> = self.0.as_ref();
-        let guard = match rc.try_lock() {
-            None => return Err(PyRuntimeError::new_err("Clipboard in use.")),
-            Some(guard) => guard,
-        };
-        let clipboard = match *guard {
+        let clipboard = match self.0.upgrade() {
+            Some(clipboard) => clipboard,
             None => return Err(PyRuntimeError::new_err("Clipboard expired.")),
-            Some(clipboard) => unsafe { &mut *clipboard },
         };
+        let clipboard: *mut Clipboard = *clipboard;
+        let clipboard = unsafe { &mut *clipboard };
         Ok(clipboard.read())
     }
 
@@ -58,15 +54,12 @@ impl WrappedClipboard {
     /// value : str
     ///     The new contents of the clipboard.
     fn write(&self, value: String) -> PyResult<()> {
-        let rc: &Mutex<_> = self.0.as_ref();
-        let guard = match rc.try_lock() {
-            None => return Err(PyRuntimeError::new_err("Clipboard in use.")),
-            Some(guard) => guard,
-        };
-        let clipboard = match *guard {
+        let clipboard = match self.0.upgrade() {
+            Some(clipboard) => clipboard,
             None => return Err(PyRuntimeError::new_err("Clipboard expired.")),
-            Some(clipboard) => unsafe { &mut *clipboard },
         };
+        let clipboard: *mut Clipboard = *clipboard;
+        let clipboard = unsafe { &mut *clipboard };
         clipboard.write(value);
         Ok(())
     }

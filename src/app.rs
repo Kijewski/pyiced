@@ -6,7 +6,6 @@ use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Length, Settings, Space,
     Subscription,
 };
-use parking_lot::Mutex;
 use pyo3::exceptions::{PyAttributeError, PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
@@ -239,14 +238,15 @@ impl Application for PythonApp {
         };
 
         Python::with_gil(|py| {
-            let rc = Rc::new(Mutex::new(Some(clipboard as *mut _)));
-            let clipboard = WrappedClipboard(rc.clone());
-            let vec = match message {
-                m @ Message::Native(_) => update.call1(py, (m, clipboard)),
-                Message::Python(obj) => update.call1(py, (obj, clipboard)),
-                Message::None => return Command::none(), // unreachable
+            let vec = {
+                let clipboard = Rc::new(clipboard as *mut _);
+                let clipboard = WrappedClipboard(Rc::downgrade(&clipboard));
+                match message {
+                    m @ Message::Native(_) => update.call1(py, (m, clipboard)),
+                    Message::Python(obj) => update.call1(py, (obj, clipboard)),
+                    Message::None => return Command::none(), // unreachable
+                }
             };
-            rc.as_ref().lock().take();
 
             let vec = match vec {
                 Ok(vec) => vec,

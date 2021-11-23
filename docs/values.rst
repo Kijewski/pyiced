@@ -17,6 +17,9 @@ Overview
    ~pyiced.Instant
    ~pyiced.Length
    ~pyiced.Line
+   ~pyiced.Point
+   ~pyiced.Rectangle
+   ~pyiced.Size
    ~pyiced.SliderHandle
    ~pyiced.SliderHandleShape
    ~pyiced.SvgHandle
@@ -60,6 +63,18 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.Line
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.Point
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.Rectangle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.Size
    :members:
    :undoc-members:
 

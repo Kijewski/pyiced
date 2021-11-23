@@ -39,13 +39,14 @@ __all__ = [
 
     # wrapped
     'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'ImageHandle',
-    'Instant', 'Length', 'Line', 'Message', 'SliderHandle', 'SliderHandleShape', 'SvgHandle',
-    'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
+    'Instant', 'Length', 'Line', 'Message', 'Point', 'Rectangle', 'SliderHandle',
+    'SliderHandleShape', 'SvgHandle', 'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
     'PaneGridStyleSheet', 'PickListMenu', 'PickListStyle', 'PickListStyleSheet',
-    'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'SliderStyle', 'SliderStyleSheet',
+    'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'Size', 'SliderStyle',
+    'SliderStyleSheet',
 
     # subscription
     'every', 'stream', 'Subscription',

@@ -39,17 +39,17 @@ impl WrappedFillMode {
     /// Arguments
     /// ---------
     /// percentage : float
-    ///     The range is [0.0, 100.0].
+    ///     The range is [0.0, 100.0]. The value gets clamped in this range automatically.
     #[staticmethod]
     fn percent(percentage: f32) -> PyResult<Self> {
         let percentage = match percentage.classify() {
-            FpCategory::Nan | FpCategory::Infinite => {
+            FpCategory::Nan => {
                 return Err(PyErr::new::<PyValueError, _>(
                     "The percentage must be finite",
                 ));
             },
             FpCategory::Zero | FpCategory::Subnormal => 0.0f32,
-            FpCategory::Normal => match percentage {
+            FpCategory::Normal | FpCategory::Infinite => match percentage {
                 c if c >= 100.0f32 => 100.0f32,
                 c if c <= 0.0f32 => 0.0f32,
                 c => c,

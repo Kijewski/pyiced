@@ -178,7 +178,7 @@ pub(crate) fn validate_f32(value: f32) -> PyResult<f32> {
         FpCategory::Normal => Ok(value),
         FpCategory::Zero | FpCategory::Subnormal => Ok(0.0f32),
         FpCategory::Nan | FpCategory::Infinite => {
-            Err(PyErr::new::<PyValueError, _>("float values must be finite"))
+            Err(PyErr::new::<PyValueError, _>("float value must be finite"))
         },
     }
 }
@@ -189,4 +189,17 @@ pub(crate) fn validate_f32_nonneg(value: f32) -> PyResult<f32> {
         return Err(PyErr::new::<PyValueError, _>("float value must be >= 0"));
     }
     Ok(value)
+}
+
+pub(crate) fn f32_nonneg(value: f32) -> PyResult<f32> {
+    match value.classify() {
+        FpCategory::Nan => {
+            Err(PyErr::new::<PyValueError, _>("float value not be NaN"))
+        },
+        FpCategory::Zero | FpCategory::Subnormal => Ok(0.0f32),
+        FpCategory::Normal | FpCategory::Infinite => match value {
+            c if c < 0.0f32 => Err(PyErr::new::<PyValueError, _>("float value must be >= 0")),
+            c => Ok(c),
+        },
+    }
 }

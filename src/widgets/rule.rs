@@ -22,18 +22,18 @@ pub(crate) struct RuleBuilder {
 impl GCProtocol for RuleBuilder {}
 
 #[pyfunction(name = "rule")]
-/// rule($module, *, horizontal=0, vertical=0)
+/// rule($module, *, horizontal=0, vertical=0, style=None)
 /// --
 ///
 /// Display a horizontal or vertical rule for dividing content.
 ///
 /// Parameters
 /// ----------
-/// horizontal : int
+/// horizontal : Optional[int]
 ///     Creates a horizontal rule for dividing content by the given vertical spacing.
-/// vertical : int
+/// vertical : Optional[int]
 ///     Creates a vertical rule for dividing content by the given horizontal spacing.
-/// style : RuleStyleSheet
+/// style : Optional[RuleStyleSheet]
 ///     The style of the rule.
 ///
 /// Returns

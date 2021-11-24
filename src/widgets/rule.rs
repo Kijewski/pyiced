@@ -33,7 +33,7 @@ impl GCProtocol for RuleBuilder {}
 ///     Creates a horizontal rule for dividing content by the given vertical spacing.
 /// vertical : int
 ///     Creates a vertical rule for dividing content by the given horizontal spacing.
-/// style : RuleStyle
+/// style : RuleStyleSheet
 ///     The style of the rule.
 ///
 /// Returns

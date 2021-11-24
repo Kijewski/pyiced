@@ -1,8 +1,14 @@
 all:
 
 .DELETE_ON_ERROR:
+.ONESHELL:
 
 .PHONY: all clean docs install wheel
+
+ifeq ($(strip ${PYTHON}),)
+  env/: PYTHON:=$(shell readlink "$(shell "$(shell which where which | head -n1)" python3.10 python3 | head -n1)")
+endif
+
 
 all:
 	@echo "There is no default or 'all' target!"
@@ -12,6 +18,7 @@ all:
 	@echo " -- make wheel: build binary wheel"
 	@false
 
+
 clean:
 	-rm -r -- "./build/"
 	-rm -r -- "./dist/"
@@ -19,23 +26,67 @@ clean:
 	-rm -r -- "./src/pyiced.egg-info/"
 	-rm -r -- "./target/"
 
-env/bin/activate: requirements-dev.txt
+
+env/: requirements-dev.txt
 	-rm -r -- "./env/"
-	"`which python3.10 python3 | head -n1`" -m venv -- "./env/"
-	. ./env/bin/activate && python3 -m pip install -U pip
-	. ./env/bin/activate && python3 -m pip install -U wheel setuptools
-	. ./env/bin/activate && python3 -m pip install -Ur requirements-dev.txt
 
-install: | env/bin/activate
-	. ./env/bin/activate && python3 -m pip install .
+	"${PYTHON}" -m venv -- "./env/" || exit 1
 
-wheel: | env/bin/activate
-	. ./env/bin/activate && python3 ./setup.py bdist_wheel
+	if [ -e ./env/bin/activate ]
+	then
+		. ./env/bin/activate || exit 1
+	else
+		set -o igncr || true
+		. env/Scripts/activate || exit 1
+	fi
 
-source: | env/bin/activate
-	. ./env/bin/activate && python3 ./setup.py sdist
+	python -m pip install -U pip || exit 1
+	python -m pip install -U wheel setuptools || exit 1
+	python -m pip install -Ur requirements-dev.txt || exit 1
 
-docs: install
+
+install: | env/
+	if [ -e ./env/bin/activate ]
+	then
+		. ./env/bin/activate || exit 1
+	else
+		set -o igncr || true
+		. env/Scripts/activate || exit 1
+	fi
+	python -m pip install . || exit 1
+
+
+wheel: | env/
+	if [ -e ./env/bin/activate ]
+	then
+		. ./env/bin/activate || exit 1
+	else
+		set -o igncr || true
+		. env/Scripts/activate || exit 1
+	fi
+	python ./setup.py bdist_wheel || exit 1
+
+
+source: | env/
+	if [ -e ./env/bin/activate ]
+	then
+		. ./env/bin/activate || exit 1
+	else
+		set -o igncr || true
+		. env/Scripts/activate || exit 1
+	fi
+	python ./setup.py sdist || exit 1
+
+
+docs: install | env/
 	-rm -r -- "./dist/doctrees/"
 	-rm -r -- "./dist/html/"
-	. ./env/bin/activate && python3 -m sphinx -M html ./docs/ ./dist/
+
+	if [ -e ./env/bin/activate ]
+	then
+		. ./env/bin/activate || exit 1
+	else
+		set -o igncr || true
+		. env/Scripts/activate || exit 1
+	fi
+	python -m sphinx -M html ./docs/ ./dist/

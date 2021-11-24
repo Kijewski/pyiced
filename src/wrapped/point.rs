@@ -69,9 +69,9 @@ impl WrappedPoint {
 
     /// distance($self, /, to)
     /// --
-    /// 
+    ///
     /// Computes the distance to another point.
-    /// 
+    ///
     /// Arguments
     /// ---------
     /// to : Point

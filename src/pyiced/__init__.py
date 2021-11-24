@@ -292,7 +292,8 @@ def make_loop(run=None):
     thread = Thread(
         None,
         run if run is not None else _run,
-        args=(thread_code(put_task),)
+        args=(thread_code(put_task),),
+        name='PyIced-AsyncLoop',
     )
     thread.start()
     return put_task.get()

@@ -83,9 +83,9 @@ impl WrappedSize {
 
     /// pad($self, /, padding)
     /// --
-    /// 
+    ///
     /// Increments the Size to account for the given padding.
-    /// 
+    ///
     /// Arguments
     /// ---------
     /// padding : float

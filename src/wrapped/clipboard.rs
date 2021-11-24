@@ -15,8 +15,6 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// -------
 /// The clipboard is only valid during the call to :meth:`pyiced.IcedApp.update()`.
 ///
-/// Calling :meth:`pyiced.Clipboard.read()` or :meth:`pyiced.Clipboard.write()` in another thread will kill the application!
-///
 /// See also
 /// --------
 /// `iced::Clipboard <https://docs.rs/iced/0.3.0/iced/struct.Clipboard.html>`_

@@ -193,9 +193,7 @@ pub(crate) fn validate_f32_nonneg(value: f32) -> PyResult<f32> {
 
 pub(crate) fn f32_nonneg(value: f32) -> PyResult<f32> {
     match value.classify() {
-        FpCategory::Nan => {
-            Err(PyErr::new::<PyValueError, _>("float value not be NaN"))
-        },
+        FpCategory::Nan => Err(PyErr::new::<PyValueError, _>("float value must not be NaN")),
         FpCategory::Zero | FpCategory::Subnormal => Ok(0.0f32),
         FpCategory::Normal | FpCategory::Infinite => match value {
             c if c < 0.0f32 => Err(PyErr::new::<PyValueError, _>("float value must be >= 0")),

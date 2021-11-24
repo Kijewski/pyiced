@@ -14,13 +14,13 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 
 /// Rectangle(top_left, size)
 /// --
-/// 
+///
 /// A rectangle.
 ///
 /// See also
 /// --------
 /// `iced::Rectangle <https://docs.rs/iced/0.3.0/iced/struct.Rectangle.html>`_
-/// 
+///
 /// Arguments
 /// ---------
 /// top_left : Point
@@ -40,14 +40,14 @@ impl WrappedRectangle {
 
     /// with_size(size)
     /// --
-    /// 
+    ///
     /// Creates a new Rectangle with its top-left corner at the origin and with the provided Size.
-    /// 
+    ///
     /// Arguments
     /// ---------
     /// size : Size
     ///     Size of the new Rectangle
-    /// 
+    ///
     /// Returns
     /// -------
     /// Rectangle
@@ -140,10 +140,18 @@ impl WrappedRectangle {
     }
 
     fn __repr__(&self) -> PyResult<Cow<'static, str>> {
-        let Rectangle { x, y, width, height } = self.0;
+        let Rectangle {
+            x,
+            y,
+            width,
+            height,
+        } = self.0;
         format_to_cow!(
             "Rectangle(Point({:?}, {:?}), Size({:?}, {:?}))",
-            x, y, width, height,
+            x,
+            y,
+            width,
+            height,
         )
     }
 }

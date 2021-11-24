@@ -45,8 +45,8 @@ __all__ = [
     # styles
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
     'PaneGridStyleSheet', 'PickListMenu', 'PickListStyle', 'PickListStyleSheet',
-    'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'Size', 'SliderStyle',
-    'SliderStyleSheet', 'TextInputStyle', 'TextInputStyleSheet',
+    'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'RuleStyleSheet', 'Size',
+    'SliderStyle', 'SliderStyleSheet', 'TextInputStyle', 'TextInputStyleSheet',
 
     # subscription
     'every', 'stream', 'Subscription',
@@ -74,6 +74,7 @@ ButtonStyle = ButtonStyleSheet
 ContainerStyle = ContainerStyleSheet
 PaneGridStyle = PaneGridStyleSheet
 ProgressBarStyle = ProgressBarStyleSheet
+RuleStyle = RuleStyleSheet
 
 
 class WindowSettings:

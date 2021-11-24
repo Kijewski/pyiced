@@ -1,15 +1,34 @@
 use iced::pane_grid::Line;
+use iced::rule::FillMode;
 use iced::{Background, Color, Vector};
 use pyo3::prelude::*;
 
 use crate::common::validate_f32;
-use crate::wrapped::{WrappedColor, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape};
+use crate::wrapped::{
+    WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape,
+};
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
 pub(crate) struct Extractor<'p>(pub &'p PyAny);
+
+impl<'p> TryFrom<Extractor<'p>> for FillMode {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> PyResult<FillMode> {
+        Ok(value.0.extract::<WrappedFillMode>()?.0)
+    }
+}
+
+impl<'p> TryFrom<Extractor<'p>> for u16 {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> PyResult<u16> {
+        value.0.extract::<u16>()
+    }
+}
 
 impl<'p> TryFrom<Extractor<'p>> for f32 {
     type Error = PyErr;

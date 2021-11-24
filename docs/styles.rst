@@ -22,6 +22,8 @@ Overview
    ~pyiced.ProgressBarStyleSheet
    ~pyiced.RadioStyle
    ~pyiced.RadioStyleSheet
+   ~pyiced.RuleStyle
+   ~pyiced.RuleStyleSheet
    ~pyiced.SliderStyle
    ~pyiced.SliderStyleSheet
    ~pyiced.TextInputStyle
@@ -91,6 +93,14 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.RadioStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.RuleStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.RuleStyleSheet
    :members:
    :undoc-members:
 

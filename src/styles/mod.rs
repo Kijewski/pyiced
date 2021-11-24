@@ -25,7 +25,7 @@ init_mod! {
     progress_bar -> { ProgressBarStyle, WrappedProgressBarStyle },
     radio -> { RadioStyleSheet, WrappedRadioStyleSheet },
     rule -> { RuleStyle, WrappedRuleStyleSheet },
-    // scrollable -> { ScrollableStyle, WrappedScrollableStyle },
+    scrollable -> { ScrollableStyleSheet, WrappedScrollableStyleSheet, WrappedScrollerStyle },
     slider -> { SliderStyle, SliderStyleSheet, WrappedSliderStyle, WrappedSliderStyleSheet },
     text_input -> { TextInputStyleSheet, WrappedTextInputStyleSheet },
 }

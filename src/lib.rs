@@ -304,15 +304,15 @@ macro_rules! extract_multiple {
 }
 
 #[macro_export]
-macro_rules! dyn_style_proto {
-    ( $proto:expr, $default:ident $(, $alt:ident)* $(,)? ) => {
+macro_rules! dyn_style_proto_get {
+    ( $proto:expr, $get:expr, $default:ident $(, $alt:ident)* $(,)? ) => {
         match $proto {
             Some(proto) => match proto.extract() {
                 Ok(Self(proto)) => proto.0,
                 Err(_) => match proto.downcast::<PyString>() {
                     Ok(s) => match s.to_str()? {
-                        stringify!($default)  => Box::<dyn StyleSheet>::default().$default(),
-                        $( stringify!($alt)  => Box::<dyn StyleSheet>::default().$alt(), )*
+                        stringify!($default) => $get(Box::<dyn StyleSheet>::default().$default()),
+                        $( stringify!($alt) => $get(Box::<dyn StyleSheet>::default().$alt()), )*
                         s => return Err(PyErr::new::<PyValueError, _>(
                             $crate::format_to_string_ignore!("Unknown proto value: {:#}", s),
                         )),
@@ -322,8 +322,15 @@ macro_rules! dyn_style_proto {
                     }
                 }
             },
-            None => Box::<dyn StyleSheet>::default().$default(),
+            None => $get(Box::<dyn StyleSheet>::default().$default()),
         }
+    };
+}
+
+#[macro_export]
+macro_rules! dyn_style_proto {
+    ( $proto:expr, $default:ident $(, $alt:ident)* $(,)? ) => {
+        $crate::dyn_style_proto_get!($proto, |o| o, $default, $($alt),*)
     };
 }
 

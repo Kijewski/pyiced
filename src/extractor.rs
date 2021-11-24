@@ -1,5 +1,6 @@
 use iced::pane_grid::Line;
 use iced::rule::FillMode;
+use iced::scrollable::Scroller;
 use iced::{Background, Color, Vector};
 use pyo3::prelude::*;
 
@@ -7,6 +8,7 @@ use crate::common::validate_f32;
 use crate::wrapped::{
     WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape,
 };
+use crate::styles::WrappedScrollerStyle;
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
@@ -126,5 +128,16 @@ impl<'p> TryFrom<Extractor<'p>> for (Color, Color) {
             .0
             .extract()
             .map(|(WrappedColor(a), WrappedColor(b))| (a, b))
+    }
+}
+
+impl<'p> TryFrom<Extractor<'p>> for Scroller {
+    type Error = PyErr;
+
+    fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
+        value
+            .0
+            .extract()
+            .map(|WrappedScrollerStyle(a)| a.0)
     }
 }

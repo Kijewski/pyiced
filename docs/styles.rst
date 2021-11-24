@@ -24,6 +24,9 @@ Overview
    ~pyiced.RadioStyleSheet
    ~pyiced.RuleStyle
    ~pyiced.RuleStyleSheet
+   ~pyiced.ScrollableStyleSheet
+   ~pyiced.ScrollbarStyle
+   ~pyiced.ScrollerStyle
    ~pyiced.SliderStyle
    ~pyiced.SliderStyleSheet
    ~pyiced.TextInputStyle
@@ -101,6 +104,18 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.RuleStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.ScrollableStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.ScrollbarStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.ScrollerStyle
    :members:
    :undoc-members:
 

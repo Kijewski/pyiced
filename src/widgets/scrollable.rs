@@ -7,6 +7,7 @@ use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{scrollable_with_state, ScrollableState, WrappedScrollableState};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedAlign, WrappedLength};
+use crate::styles::{ScrollableStyleSheet, WrappedScrollableStyleSheet};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_scrollable, m)?)?;
@@ -28,13 +29,13 @@ pub(crate) struct ScrollableBuilder {
     pub scrollbar_margin: Option<u16>,
     pub scroller_width: Option<u16>,
     // pub on_scroll: Py<PyAny>, // fn f(value: f32) -> crate::Message
-    // style: TODO,
+    pub style: Option<ScrollableStyleSheet>,
 }
 
 impl GCProtocol for ScrollableBuilder {}
 
 #[pyfunction(name = "scrollable")]
-/// scrollable($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None)
+/// scrollable($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None, style=None)
 /// --
 ///
 /// A widget that can vertically display an infinite amount of content with a scrollbar.
@@ -65,6 +66,8 @@ impl GCProtocol for ScrollableBuilder {}
 ///     Scrollbar margin of the scrollable.
 /// scroller_width : Optional[int]
 ///     Scroller width of the scrollable. Silently enforces a minimum value of 1.
+/// style : Optional[ScrollableStyleSheet]
+///     The style of the scrollable.
 ///
 /// Returns
 /// -------
@@ -89,6 +92,7 @@ fn make_scrollable(
     scrollbar_margin: Option<u16>,
     scroller_width: Option<u16>,
     // on_scroll: Py<PyAny>,
+    style: Option<&WrappedScrollableStyleSheet>,
 ) -> PyResult<WrappedWidgetBuilder> {
     let children = children
         .iter()?
@@ -123,6 +127,7 @@ fn make_scrollable(
         scrollbar_margin,
         scroller_width,
         // on_scroll,
+        style: style.map(|o| o.0),
     };
     Ok(el.into())
 }
@@ -152,6 +157,7 @@ impl ToNative for ScrollableBuilder {
                 scrollbar_width,
                 scrollbar_margin,
                 scroller_width,
+                style,
             );
             Ok(el)
         })

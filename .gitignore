@@ -33,3 +33,4 @@ run.cgi
 
 .*
 !.git*
+!.reuse/

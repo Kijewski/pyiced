@@ -1,3 +1,5 @@
-include Cargo.toml pyproject.toml Makefile requirements*.txt rustfmt.toml
+include build.rs Cargo.toml pyproject.toml Makefile requirements*.txt rustfmt.toml
 recursive-include docs *
 recursive-include src *
+recursive-include LICENSES *
+recursive-include .reuse *

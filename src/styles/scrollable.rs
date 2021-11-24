@@ -5,7 +5,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
-use crate::{dyn_style_proto, dyn_style_proto_get, extract_multiple};
+use crate::wrapped::WrappedColor;
+use crate::{dyn_style_proto, dyn_style_proto_get, extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedScrollerStyle>()?;
@@ -48,6 +49,14 @@ pub(crate) struct WrappedScrollerStyle(pub ScrollerStyle);
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct ScrollerStyle(pub Scroller);
 
+getters! {
+    WrappedScrollerStyle => |&WrappedScrollerStyle(ScrollerStyle(ref o))| o,
+    color -> "Color" WrappedColor,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+}
+
 #[pymethods]
 impl WrappedScrollerStyle {
     #[args(prototype = "None", kwargs = "**")]
@@ -81,7 +90,7 @@ impl WrappedScrollerStyle {
 ///     same as the argument for :class:`~pyiced.ScrollableStyleSheet`.
 ///
 ///     None is the same as "active".
-/// background : Color
+/// background : Optional[Color]
 ///     The scrollbar's background color.
 /// border_radius : float
 ///     The scrollbar's border radius.
@@ -115,9 +124,18 @@ impl WrappedScrollbarStyle {
             border_radius,
             border_width,
             border_color,
-            scroller
+            scroller,
         )
     }
+}
+
+getters! {
+    WrappedScrollbarStyle => |&WrappedScrollbarStyle(ScrollbarStyle(ref o))| o,
+    background -> "Optional[Color]" Option<WrappedColor>,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+    scroller -> "ScrollerStyle" WrappedScrollerStyle,
 }
 
 /// ScrollableStyleSheet(active, hovered=None, dragging=None)
@@ -146,6 +164,13 @@ pub(crate) struct ScrollableStyleSheet {
     active: Scrollbar,
     hovered: Scrollbar,
     dragging: Scrollbar,
+}
+
+getters! {
+    WrappedScrollableStyleSheet => |&WrappedScrollableStyleSheet(ref o)| o,
+    active -> "ScrollbarStyle" WrappedScrollbarStyle,
+    hovered -> "ScrollbarStyle" WrappedScrollbarStyle,
+    dragging -> "ScrollbarStyle" WrappedScrollbarStyle,
 }
 
 #[pymethods]

@@ -18,14 +18,26 @@ macro_rules! init_mod {
 
 init_mod! {
     button -> { ButtonStyle, WrappedButtonStyleSheet },
-    checkbox -> { CheckboxStyleSheet, WrappedCheckboxStyleSheet },
+    checkbox -> {
+        CheckboxStyle, CheckboxStyleSheet, WrappedCheckboxStyle, WrappedCheckboxStyleSheet,
+    },
     container -> { ContainerStyle, WrappedContainerStyle },
     pane_grid -> { PaneGridStyle, WrappedPaneGridStyle },
-    pick_list -> { PickListStyleSheet, WrappedPickListStyleSheet },
+    pick_list -> {
+        PickListMenu, PickListStyle, PickListStyleSheet, WrappedPickListMenu, WrappedPickListStyle,
+        WrappedPickListStyleSheet,
+    },
     progress_bar -> { ProgressBarStyle, WrappedProgressBarStyle },
-    radio -> { RadioStyleSheet, WrappedRadioStyleSheet },
+    radio -> {
+        RadioStyle, RadioStyleSheet, WrappedRadioStyle, WrappedRadioStyleSheet,
+    },
     rule -> { RuleStyle, WrappedRuleStyleSheet },
-    scrollable -> { ScrollableStyleSheet, WrappedScrollableStyleSheet, WrappedScrollerStyle },
+    scrollable -> {
+        ScrollableStyleSheet, ScrollbarStyle, ScrollerStyle, WrappedScrollableStyleSheet,
+        WrappedScrollbarStyle,WrappedScrollerStyle,
+    },
     slider -> { SliderStyle, SliderStyleSheet, WrappedSliderStyle, WrappedSliderStyleSheet },
-    text_input -> { TextInputStyleSheet, WrappedTextInputStyleSheet },
+    text_input -> {
+        TextInputStyle, TextInputStyleSheet, WrappedTextInputStyle, WrappedTextInputStyleSheet,
+    },
 }

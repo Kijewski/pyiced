@@ -6,7 +6,8 @@ use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
 use crate::common::debug_err;
-use crate::{extract_multiple, format_to_string_ignore};
+use crate::wrapped::WrappedColor;
+use crate::{extract_multiple, format_to_string_ignore, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedCheckboxStyle>()?;
@@ -91,6 +92,15 @@ impl WrappedCheckboxStyle {
     }
 }
 
+getters! {
+    WrappedCheckboxStyle => |&WrappedCheckboxStyle(CheckboxStyle(ref o))| o,
+    background -> "Color" WrappedColor,
+    checkmark_color -> "Color" WrappedColor,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+}
+
 /// CheckboxStyleSheet(active, hoverered=None, active_checked=None, hovered_checked=None)
 /// --
 ///
@@ -120,6 +130,14 @@ pub(crate) struct CheckboxStyleSheet {
     pub hovered: Style,
     pub active_checked: Style,
     pub hovered_checked: Style,
+}
+
+getters! {
+    WrappedCheckboxStyleSheet => |&WrappedCheckboxStyleSheet(ref o)| o,
+    active -> "CheckboxStyle" WrappedCheckboxStyle,
+    hovered -> "CheckboxStyle" WrappedCheckboxStyle,
+    active_checked -> "CheckboxStyle" WrappedCheckboxStyle,
+    hovered_checked -> "CheckboxStyle" WrappedCheckboxStyle,
 }
 
 #[pymethods]

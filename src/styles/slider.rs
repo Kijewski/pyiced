@@ -5,7 +5,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
-use crate::{dyn_style_proto, extract_multiple};
+use crate::wrapped::{WrappedColor, WrappedSliderHandle};
+use crate::{dyn_style_proto, extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderStyle>()?;
@@ -24,20 +25,14 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     Source style sheet to clone and modify.
 ///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
 ///
-///     The valid string values are "active", "hovered", "dragging" and "hovered_checked",
+///     The valid string values are "active", "hovered" and "dragging",
 ///     same as the argument for :class:`~pyiced.SliderStyleSheet`.
 ///
 ///     None is the same as "active".
-/// background : Color
-///     The slider's background color.
-/// checkmark_color : Color
-///     The color of the slider.
-/// border_radius : float
-///     The slider's border radius.
-/// border_width : float
-///     The slider's border width.
-/// border_color : Color
-///     The slider's border color.
+/// rail_colors : Tuple[Color, Color]
+///     TODO
+/// handle : SliderHandle
+///     TODO
 ///
 /// See also
 /// --------
@@ -49,13 +44,19 @@ pub(crate) struct WrappedSliderStyle(pub SliderStyle);
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct SliderStyle(pub Style);
 
+getters! {
+    WrappedSliderStyle => |&WrappedSliderStyle(SliderStyle(ref o))| o,
+    rail_colors -> "Tuple[Color, Color]" (WrappedColor, WrappedColor),
+    handle -> "SliderHandle" WrappedSliderHandle,
+}
+
 #[pymethods]
 impl WrappedSliderStyle {
     #[args(prototype = "None", kwargs = "**")]
     #[new]
     fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
         let proto = dyn_style_proto!(proto, active, hovered, dragging);
-        extract_multiple!(kwargs, SliderStyle(proto), rail_colors, handle,)
+        extract_multiple!(kwargs, SliderStyle(proto), rail_colors, handle)
     }
 }
 

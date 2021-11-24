@@ -3,7 +3,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::extract_multiple;
+use crate::wrapped::{WrappedColor, WrappedFillMode};
+use crate::{extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedRuleStyleSheet>()?;
@@ -51,6 +52,14 @@ impl WrappedRuleStyleSheet {
         });
         extract_multiple!(kwargs, proto, color, width, radius, fill_mode)
     }
+}
+
+getters! {
+    WrappedRuleStyleSheet => |&WrappedRuleStyleSheet(RuleStyle(ref o))| o,
+    color -> "Color" WrappedColor,
+    width -> "Color" u16,
+    radius -> "float" f32,
+    fill_mode -> "FillMode" WrappedFillMode,
 }
 
 impl StyleSheet for RuleStyle {

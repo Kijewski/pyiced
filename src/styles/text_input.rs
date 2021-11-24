@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
 use crate::wrapped::WrappedColor;
-use crate::{dyn_style_proto, extract_multiple};
+use crate::{dyn_style_proto, extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedTextInputStyle>()?;
@@ -66,6 +66,14 @@ impl WrappedTextInputStyle {
     }
 }
 
+getters! {
+    WrappedTextInputStyle => |&WrappedTextInputStyle(TextInputStyle(ref o))| o,
+    background -> "Color" WrappedColor,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+}
+
 /// TextInputStyleSheet(active, focused=None, hovered=None, placeholder_color=None, value_color=None, selection_color=None)
 /// --
 ///
@@ -101,6 +109,16 @@ pub(crate) struct TextInputStyleSheet {
     placeholder_color: Color,
     value_color: Color,
     selection_color: Color,
+}
+
+getters! {
+    WrappedTextInputStyleSheet => |&WrappedTextInputStyleSheet(ref o)| o,
+    active -> "TextInputStyle" WrappedTextInputStyle,
+    focused -> "TextInputStyle" WrappedTextInputStyle,
+    hovered -> "TextInputStyle" WrappedTextInputStyle,
+    placeholder_color -> "Color" WrappedColor,
+    value_color -> "Color" WrappedColor,
+    selection_color -> "Color" WrappedColor,
 }
 
 #[pymethods]

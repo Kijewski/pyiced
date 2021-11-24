@@ -26,7 +26,7 @@ iced_wgpu = { version = "0.4", optional = true }
 mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
 ouroboros = "0.13"
 parking_lot = { version = "0.11", features = ["arc_lock"] }
-pyo3 = { version = "0.15", default-features = false, features = ["extension-module", "macros"] }
+pyo3 = { version = "0.15", default-features = false, features = ["extension-module", "macros", "multiple-pymethods"] }
 tokio = { version = "1", default-features = false, features = ["parking_lot", "sync"] }
 
 [build-dependencies]

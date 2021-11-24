@@ -382,3 +382,30 @@ macro_rules! format_to_cow {
         $crate::format_to_py!($($arg)+).map(::std::borrow::Cow::Owned)
     );
 }
+
+#[macro_export]
+macro_rules! getters {
+    (
+        $wrapped:ty => $get:expr,
+        $( $name:ident -> $python_type:literal $wrapped_type:ty ),* $(,)?
+    ) => {
+        #[pymethods]
+        impl $wrapped {
+            $(
+                #[doc = concat!(
+                    "The \"", stringify!($name), "\" parameter given to the constructor.\n",
+                    "\n",
+                    "Returns\n",
+                    "-------\n",
+                    $python_type, "\n",
+                    "    The set, copied or defaulted value."
+                )]
+                #[getter]
+                fn $name(&self) -> $wrapped_type {
+                    let src = $crate::extractor::Unextractor(&($get)(self).$name);
+                    $crate::extractor::Unextract::unextract(src)
+                }
+            )*
+        }
+    };
+}

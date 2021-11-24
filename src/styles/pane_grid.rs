@@ -3,7 +3,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::extract_multiple;
+use crate::wrapped::WrappedLine;
+use crate::{extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedPaneGridStyle>()?;
@@ -42,13 +43,19 @@ pub(crate) struct PaneGridStyleInner {
     hovered_split: Option<Line>,
 }
 
+getters! {
+    WrappedPaneGridStyle => |&WrappedPaneGridStyle(PaneGridStyle(ref o))| o,
+    picked_split -> "Optional[Line]" Option<WrappedLine>,
+    hovered_split -> "Optional[Line]" Option<WrappedLine>,
+}
+
 #[pymethods]
 impl WrappedPaneGridStyle {
     #[args(proto = "None", kwargs = "**")]
     #[new]
     fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
         let proto = proto.map_or_else(PaneGridStyle::default, |p| p.0);
-        extract_multiple!(kwargs, proto, picked_split, hovered_split,)
+        extract_multiple!(kwargs, proto, picked_split, hovered_split)
     }
 }
 
@@ -57,7 +64,7 @@ impl StyleSheet for WrappedPaneGridStyle {
         self.0.0.picked_split
     }
 
-    fn hovered_split(&self) -> Option<iced::pane_grid::Line> {
+    fn hovered_split(&self) -> Option<Line> {
         self.0.0.hovered_split
     }
 }

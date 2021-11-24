@@ -3,7 +3,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::extract_multiple;
+use crate::wrapped::WrappedColor;
+use crate::{extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedContainerStyle>()?;
@@ -20,7 +21,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// proto : Optional[ContainerStyleSheet]
 ///     Source style sheet to clone and modify.
 ///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
-/// text_color : Color
+/// text_color : Optional[Color]
 ///     The container's text color.
 /// background : Optional[Color]
 ///     The container's background color.
@@ -58,6 +59,15 @@ impl WrappedContainerStyle {
             border_color,
         )
     }
+}
+
+getters! {
+    WrappedContainerStyle => |&WrappedContainerStyle(ContainerStyle(ref o))| o,
+    text_color -> "Optional[Color]" Option<WrappedColor>,
+    background -> "Optional[Color]" Option<WrappedColor>,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
 }
 
 impl StyleSheet for ContainerStyle {

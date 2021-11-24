@@ -3,7 +3,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::extract_multiple;
+use crate::wrapped::WrappedColor;
+use crate::{extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedProgressBarStyle>()?;
@@ -17,9 +18,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 /// Parameters
 /// ----------
-/// background : Optional[Color]
+/// background : Color
 ///     The progress bar's background color.
-/// bar : Optional[Color]
+/// bar : Color
 ///     The progress bar's foreground color.
 /// border_radius : float
 ///     The progress bar's border radius.
@@ -47,8 +48,15 @@ impl WrappedProgressBarStyle {
     #[new]
     fn new(proto: Option<&Self>, kwargs: Option<&PyDict>) -> PyResult<Self> {
         let proto = proto.map_or_else(ProgressBarStyle::default, |p| p.0);
-        extract_multiple!(kwargs, proto, background, bar, border_radius,)
+        extract_multiple!(kwargs, proto, background, bar, border_radius)
     }
+}
+
+getters! {
+    WrappedProgressBarStyle => |&WrappedProgressBarStyle(ProgressBarStyle(ref o))| o,
+    background -> "Color" WrappedColor,
+    bar -> "Color" WrappedColor,
+    border_radius -> "float" f32,
 }
 
 impl StyleSheet for ProgressBarStyle {

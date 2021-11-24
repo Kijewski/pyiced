@@ -5,7 +5,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
-use crate::{dyn_style_proto, extract_multiple};
+use crate::wrapped::WrappedColor;
+use crate::{dyn_style_proto, extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedPickListMenu>()?;
@@ -39,7 +40,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///     The pick list's border width.
 /// border_color : Color
 ///     The pick list's border color.
-/// icon_size : Color
+/// icon_size : float
 ///     The pick list's arrow down icon size.
 ///
 /// See also
@@ -71,6 +72,16 @@ impl WrappedPickListStyle {
     }
 }
 
+getters! {
+    WrappedPickListStyle => |&WrappedPickListStyle(PickListStyle(ref o))| o,
+    text_color -> "Color" WrappedColor,
+    background -> "Color" WrappedColor,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+    icon_size -> "float" f32,
+}
+
 /// PickListStyleSheet(menu, active, hovered=None)
 /// --
 ///
@@ -97,6 +108,13 @@ pub(crate) struct PickListStyleSheet {
     menu: Menu,
     active: Style,
     hovered: Style,
+}
+
+getters! {
+    WrappedPickListStyleSheet => |&WrappedPickListStyleSheet(ref o)| o,
+    menu -> "PickListMenu" WrappedPickListMenu,
+    active -> "PickListStyle" WrappedPickListStyle,
+    hovered -> "PickListStyle" WrappedPickListStyle,
 }
 
 #[pymethods]
@@ -182,4 +200,14 @@ impl WrappedPickListMenu {
             selected_background
         )
     }
+}
+
+getters! {
+    WrappedPickListMenu => |&WrappedPickListMenu(PickListMenu(ref o))| o,
+    text_color -> "Color" WrappedColor,
+    background -> "Color" WrappedColor,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+    selected_text_color -> "Color" WrappedColor,
+    selected_background -> "Color" WrappedColor,
 }

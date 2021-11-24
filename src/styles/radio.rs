@@ -5,7 +5,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyString};
 
-use crate::{dyn_style_proto, extract_multiple};
+use crate::wrapped::WrappedColor;
+use crate::{dyn_style_proto, extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedRadioStyle>()?;
@@ -64,6 +65,14 @@ impl WrappedRadioStyle {
     }
 }
 
+getters! {
+    WrappedRadioStyle => |&WrappedRadioStyle(RadioStyle(ref o))| o,
+    background -> "Color" WrappedColor,
+    dot_color -> "Color" WrappedColor,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+}
+
 /// RadioStyleSheet(active, hovered=None)
 /// --
 ///
@@ -87,6 +96,12 @@ pub(crate) struct WrappedRadioStyleSheet(pub RadioStyleSheet);
 pub(crate) struct RadioStyleSheet {
     active: Style,
     hovered: Style,
+}
+
+getters! {
+    WrappedRadioStyleSheet => |&WrappedRadioStyleSheet(ref o)| o,
+    active -> "Color" WrappedRadioStyle,
+    hovered -> "Color" WrappedRadioStyle,
 }
 
 #[pymethods]

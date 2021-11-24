@@ -3,7 +3,8 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-use crate::extract_multiple;
+use crate::wrapped::WrappedColor;
+use crate::{extract_multiple, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedButtonStyleSheet>()?;
@@ -61,6 +62,16 @@ impl WrappedButtonStyleSheet {
             text_color,
         )
     }
+}
+
+getters! {
+    WrappedButtonStyleSheet => |&WrappedButtonStyleSheet(ButtonStyle(ref o))| o,
+    shadow_offset -> "Tuple[float]" (f32, f32),
+    background -> "Optional[Color]" Option<WrappedColor>,
+    border_radius -> "float" f32,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+    text_color -> "Color" WrappedColor,
 }
 
 impl StyleSheet for ButtonStyle {

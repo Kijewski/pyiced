@@ -24,6 +24,8 @@ Overview
    ~pyiced.RadioStyleSheet
    ~pyiced.SliderStyle
    ~pyiced.SliderStyleSheet
+   ~pyiced.TextInputStyle
+   ~pyiced.TextInputStyleSheet
 
 Quick Example
 -------------
@@ -97,5 +99,13 @@ Details
    :undoc-members:
 
 .. autoclass:: pyiced.SliderStyleSheet
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.TextInputStyle
+   :members:
+   :undoc-members:
+
+.. autoclass:: pyiced.TextInputStyleSheet
    :members:
    :undoc-members:

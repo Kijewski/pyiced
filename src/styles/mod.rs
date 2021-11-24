@@ -27,5 +27,5 @@ init_mod! {
     // rule -> { RuleStyle, WrappedRuleStyle },
     // scrollable -> { ScrollableStyle, WrappedScrollableStyle },
     slider -> { SliderStyle, SliderStyleSheet, WrappedSliderStyle, WrappedSliderStyleSheet },
-    // text_input -> { TextInputStyle, WrappedTextInputStyle },
+    text_input -> { TextInputStyleSheet, WrappedTextInputStyleSheet },
 }

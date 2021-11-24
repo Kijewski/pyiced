@@ -5,6 +5,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
 use crate::states::{text_input_with_state, TextInputState, WrappedTextInputState};
+use crate::styles::{TextInputStyleSheet, WrappedTextInputStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
 use crate::wrapped::{MessageOrDatum, WrappedFont, WrappedLength};
 
@@ -26,7 +27,7 @@ pub(crate) struct TextInputBuilder {
     pub size: Option<u16>,
     pub on_submit: Message,
     pub password: bool,
-    // style: TODO,
+    pub style: Option<TextInputStyleSheet>,
 }
 
 impl GCProtocol for TextInputBuilder {
@@ -91,8 +92,9 @@ fn make_text_input(
     size: Option<u16>,
     on_submit: Option<MessageOrDatum>,
     password: Option<bool>,
+    style: Option<&WrappedTextInputStyleSheet>,
 ) -> WrappedWidgetBuilder {
-    TextInputBuilder {
+    let el = TextInputBuilder {
         state: state.0.clone(),
         placeholder,
         value,
@@ -104,8 +106,9 @@ fn make_text_input(
         size,
         on_submit: on_submit.unwrap_or_default().into(),
         password: password.unwrap_or(false),
-    }
-    .into()
+        style: style.map(|o| o.0),
+    };
+    el.into()
 }
 
 impl ToNative for TextInputBuilder {
@@ -113,7 +116,7 @@ impl ToNative for TextInputBuilder {
         text_input_with_state(&self.state, |state| {
             let on_change = to_msg_fn(&self.on_change);
             let el = TextInput::new(state, &self.placeholder, &self.value, on_change);
-            let el = assign!(el, self, font, width, max_width, padding, size);
+            let el = assign!(el, self, font, width, max_width, padding, size, style);
             let el = match &self.on_submit {
                 Message::None => el,
                 on_submit => el.on_submit(on_submit.clone()),

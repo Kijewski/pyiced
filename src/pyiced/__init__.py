@@ -46,7 +46,7 @@ __all__ = [
     'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
     'PaneGridStyleSheet', 'PickListMenu', 'PickListStyle', 'PickListStyleSheet',
     'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'Size', 'SliderStyle',
-    'SliderStyleSheet',
+    'SliderStyleSheet', 'TextInputStyle', 'TextInputStyleSheet',
 
     # subscription
     'every', 'stream', 'Subscription',

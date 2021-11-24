@@ -6,7 +6,7 @@ all:
 .PHONY: all clean docs install wheel
 
 ifeq ($(strip ${PYTHON}),)
-  env/: PYTHON:=$(shell readlink "$(shell "$(shell which where which | head -n1)" python3.10 python3 | head -n1)")
+  env/: PYTHON:=$(shell readlink -e "$(shell "$(shell which where which | head -n1)" python3.10 python3 | head -n1)")
 endif
 
 

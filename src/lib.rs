@@ -401,9 +401,11 @@ macro_rules! getters {
                     "    The set, copied or defaulted value."
                 )]
                 #[getter]
+                #[allow(clippy::redundant_closure_call)]
                 fn $name(&self) -> $wrapped_type {
-                    let src = $crate::extractor::Unextractor(&($get)(self).$name);
-                    $crate::extractor::Unextract::unextract(src)
+                    $crate::extractor::Unextract::unextract(
+                        $crate::extractor::Unextractor(&($get)(self).$name),
+                    )
                 }
             )*
         }

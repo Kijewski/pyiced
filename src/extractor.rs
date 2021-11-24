@@ -157,10 +157,7 @@ impl Unextract<WrappedColor> for Unextractor<'_, Color> {
 
 impl Unextract<Option<WrappedColor>> for Unextractor<'_, Option<Color>> {
     fn unextract(self) -> Option<WrappedColor> {
-        match self.0 {
-            &Some(color) => Some(WrappedColor(color)),
-            None => None,
-        }
+        self.0.map(WrappedColor)
     }
 }
 
@@ -174,10 +171,7 @@ impl Unextract<WrappedColor> for Unextractor<'_, Background> {
 
 impl Unextract<Option<WrappedColor>> for Unextractor<'_, Option<Background>> {
     fn unextract(self) -> Option<WrappedColor> {
-        match self.0 {
-            &Some(Background::Color(color)) => Some(WrappedColor(color)),
-            None => None,
-        }
+        self.0.map(|Background::Color(color)| WrappedColor(color))
     }
 }
 
@@ -202,10 +196,7 @@ impl Unextract<WrappedCheckboxStyle> for Unextractor<'_, iced::checkbox::Style> 
 
 impl Unextract<Option<WrappedLine>> for Unextractor<'_, Option<Line>> {
     fn unextract(self) -> Option<WrappedLine> {
-        match self.0 {
-            &Some(line) => Some(WrappedLine(line)),
-            None => None,
-        }
+        self.0.map(WrappedLine)
     }
 }
 

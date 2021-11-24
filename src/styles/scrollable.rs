@@ -53,8 +53,16 @@ impl WrappedScrollerStyle {
     #[args(prototype = "None", kwargs = "**")]
     #[new]
     fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
-        let proto = dyn_style_proto_get!(proto, |x: Scrollbar| x.scroller, active, hovered, dragging);
-        extract_multiple!(kwargs, ScrollerStyle(proto), color, border_radius, border_width, border_color)
+        let proto =
+            dyn_style_proto_get!(proto, |x: Scrollbar| x.scroller, active, hovered, dragging);
+        extract_multiple!(
+            kwargs,
+            ScrollerStyle(proto),
+            color,
+            border_radius,
+            border_width,
+            border_color
+        )
     }
 }
 
@@ -100,7 +108,15 @@ impl WrappedScrollbarStyle {
     #[new]
     fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
         let proto = dyn_style_proto!(proto, active, hovered, dragging);
-        extract_multiple!(kwargs, ScrollbarStyle(proto), background, border_radius, border_width, border_color, scroller)
+        extract_multiple!(
+            kwargs,
+            ScrollbarStyle(proto),
+            background,
+            border_radius,
+            border_width,
+            border_color,
+            scroller
+        )
     }
 }
 

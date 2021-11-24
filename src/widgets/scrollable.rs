@@ -5,9 +5,9 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{scrollable_with_state, ScrollableState, WrappedScrollableState};
+use crate::styles::{ScrollableStyleSheet, WrappedScrollableStyleSheet};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedAlign, WrappedLength};
-use crate::styles::{ScrollableStyleSheet, WrappedScrollableStyleSheet};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_scrollable, m)?)?;

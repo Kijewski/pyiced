@@ -5,10 +5,10 @@ use iced::{Background, Color, Vector};
 use pyo3::prelude::*;
 
 use crate::common::validate_f32;
+use crate::styles::WrappedScrollerStyle;
 use crate::wrapped::{
     WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape,
 };
-use crate::styles::WrappedScrollerStyle;
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
@@ -135,9 +135,6 @@ impl<'p> TryFrom<Extractor<'p>> for Scroller {
     type Error = PyErr;
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        value
-            .0
-            .extract()
-            .map(|WrappedScrollerStyle(a)| a.0)
+        value.0.extract().map(|WrappedScrollerStyle(a)| a.0)
     }
 }

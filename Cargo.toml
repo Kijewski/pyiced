@@ -8,7 +8,6 @@ homepage = "https://github.com/Kijewski/pyiced"
 # KEEP SYNCHRONOUS TO SETUP.CFG (version)
 # KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT (pyiced)
 # KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
-
 # Rust uses semver (https://semver.org/).
 # Python uses PEP 440 (https://www.python.org/dev/peps/pep-0440/).
 # Normal releases are exactly the same.

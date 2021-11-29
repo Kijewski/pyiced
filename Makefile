@@ -14,8 +14,7 @@ all:
 	@echo "There is no default or 'all' target!"
 	@echo " -- make docs: build HTML documentation"
 	@echo " -- make install: install into local environment"
-	@echo " -- make source: build source code distribution"
-	@echo " -- make wheel: build binary wheel"
+	@echo " -- make build: build source code and binary distribution"
 	@false
 
 
@@ -56,7 +55,7 @@ install: | env/
 	python -m pip install . || exit 1
 
 
-wheel: | env/
+build: | env/
 	if [ -e ./env/bin/activate ]
 	then
 		. ./env/bin/activate || exit 1
@@ -64,18 +63,7 @@ wheel: | env/
 		set -o igncr || true
 		. env/Scripts/activate || exit 1
 	fi
-	python ./setup.py bdist_wheel || exit 1
-
-
-source: | env/
-	if [ -e ./env/bin/activate ]
-	then
-		. ./env/bin/activate || exit 1
-	else
-		set -o igncr || true
-		. env/Scripts/activate || exit 1
-	fi
-	python ./setup.py sdist || exit 1
+	python -m build || exit 1
 
 
 docs: install | env/

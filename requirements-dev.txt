@@ -1,3 +1,4 @@
+build
 cibuildwheel == 2.*
 setuptools
 setuptools-rust == 1.*

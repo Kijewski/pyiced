@@ -2,15 +2,19 @@
 name = "_pyiced"
 edition = "2021"
 license = "MIT"
-authors = ["René Kijewski <rene.[SURNAME]@fu-berlin.de>"]
+authors = ["René Kijewski <pypi.org@k6i.de>"]
 homepage = "https://github.com/Kijewski/pyiced"
 
-# KEEP SYNCHRONOUS TO CARGO.TOML
-# KEEP SYNCHRONOUS TO DOCS/CONF.PY
-# KEEP SYNCHRONOUS TO SETUP.PY
-# KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT
+# KEEP SYNCHRONOUS TO SETUP.CFG (version)
+# KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT (pyiced)
 # KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
-version = "0.3.0"
+
+# Rust uses semver (https://semver.org/).
+# Python uses PEP 440 (https://www.python.org/dev/peps/pep-0440/).
+# Normal releases are exactly the same.
+# Pre-releases are X.Y.Z-aN in semver, and X.Y.ZaN in PEP 440.
+# Post-releases are X.Y.Z+N in semver, and X.Y.Z.postN in PEP 440.
+version = "0.3.0-a1"
 
 [lib]
 name = "_pyiced"

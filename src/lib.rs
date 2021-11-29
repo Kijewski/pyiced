@@ -52,7 +52,7 @@ init_mod! {
 #[pymodule]
 fn _pyiced(py: Python, m: &PyModule) -> PyResult<()> {
     init_mod(py, m)?;
-    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
+    m.add("__version__", env!("pyiced-version"))?;
     m.add("__author__", env!("CARGO_PKG_AUTHORS"))?;
     m.add("__license__", env!("CARGO_PKG_LICENSE"))?;
     Ok(())

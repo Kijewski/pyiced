@@ -36,7 +36,7 @@ impl GCProtocol for ButtonBuilder {
 }
 
 #[pyfunction(name = "button")]
-/// button($module, /, state, content, *, width=None, height=None, min_width=None, min_height=None, padding=None, on_press=None, style=None)
+/// button($module, /, state, content, on_press=None, *, width=None, height=None, min_width=None, min_height=None, padding=None, style=None)
 /// --
 ///
 /// A generic widget that produces a message when pressed.
@@ -47,6 +47,9 @@ impl GCProtocol for ButtonBuilder {
 ///     Current state of the button. The same object must be given between calls.
 /// content : Element
 ///     The element displayed inside the button, e.g. a :func:`~pyiced.text`.
+/// on_press : Optional[object]
+///     Message to send to the app's :meth:`~pyiced.IcedApp.update` loop when the key was clicked.
+///     Without this argument the button won't be clickable.
 /// width : Optional[Length]
 ///     Width the the button.
 /// height : Optional[Length]
@@ -57,9 +60,6 @@ impl GCProtocol for ButtonBuilder {
 ///     Minimum height of the button in pixels.
 /// padding : Optional[int]
 ///     Amount of pixels surrounding the contained element.
-/// on_press : Optional[object]
-///     Message to send to the app's :meth:`~pyiced.IcedApp.update` loop when the key was clicked.
-///     Without this argument the button won't be clickable.
 /// style : Optional[ButtonStyle]
 ///     The style of the button.
 ///
@@ -67,6 +67,17 @@ impl GCProtocol for ButtonBuilder {
 /// -------
 /// Element
 ///     The newly created button.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/button.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/button.py
+///    :language: python
 ///
 /// See also
 /// --------
@@ -74,12 +85,12 @@ impl GCProtocol for ButtonBuilder {
 fn make_button(
     state: &WrappedButtonState,
     content: &WrappedWidgetBuilder,
+    on_press: Option<MessageOrDatum>,
     width: Option<&WrappedLength>,
     height: Option<&WrappedLength>,
     min_width: Option<u32>,
     min_height: Option<u32>,
     padding: Option<u16>,
-    on_press: Option<MessageOrDatum>,
     style: Option<&WrappedButtonStyleSheet>,
 ) -> WrappedWidgetBuilder {
     let el = ButtonBuilder {

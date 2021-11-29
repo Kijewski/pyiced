@@ -1,8 +1,6 @@
 Element Styles
 ==============
 
-TODO
-
 Overview
 --------
 
@@ -35,13 +33,13 @@ Overview
 Quick Example
 -------------
 
-.. image:: _static/images/examples/Styling.png
+.. image:: ../examples/widgets/button.png
     :width: 622
     :height: 444
     :align: center
     :alt: 
 
-.. literalinclude :: ../examples/styling.py
+.. literalinclude :: ../examples/widgets/button.py
    :language: python
 
 Details

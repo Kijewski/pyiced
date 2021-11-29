@@ -34,7 +34,7 @@ impl GCProtocol for CheckboxBuilder {
 }
 
 #[pyfunction(name = "checkbox")]
-/// checkbox($module, /, is_checked, label, *, f=None, size=None, width=None, spacing=None, text_size=None, font=None, style=None)
+/// checkbox($module, /, is_checked, label, f=None, *, size=None, width=None, spacing=None, text_size=None, font=None, style=None)
 /// --
 ///
 /// A box that can be checked.
@@ -66,6 +66,17 @@ impl GCProtocol for CheckboxBuilder {
 /// -------
 /// Element
 ///     Newly created checkbox.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/checkbox.png
+///    :width: 731
+///    :height: 629
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/checkbox.py
+///    :language: python
 ///
 /// See also
 /// --------

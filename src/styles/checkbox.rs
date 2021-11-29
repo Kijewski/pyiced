@@ -111,11 +111,13 @@ getters! {
 /// active : CheckboxStyle
 ///     Normal style of this checkbox.
 /// hovered : Optional[CheckboxStyle]
-///     Style when hovering over the checkbox. Defaults to the same style as active.
+///     Style when hovering over the checkbox. Defaults to the same style as "active".
 /// active_checked : Optional[CheckboxStyle]
-///     Style of this checkbox when the checkbox is checked. Defaults to the same style as active.
+///     Style of this checkbox when the checkbox is checked. Defaults to the same style as "active".
 /// hovered_checked : Optional[CheckboxStyle]
-///     Style when hovering over the checked checkbox. Defaults to the same style hovered.
+///     Style when hovering over the checked checkbox.
+///     If None or absent, it defaults to the first argument with an explicit value in
+///     "hovered", "active_checked" or "active".
 ///
 /// See also
 /// --------
@@ -150,9 +152,12 @@ impl WrappedCheckboxStyleSheet {
         hovered_checked: Option<&WrappedCheckboxStyle>,
     ) -> Self {
         let active = active.0.0;
+        let hovered_checked = [hovered_checked, hovered, active_checked]
+            .iter()
+            .find_map(|o| o.map(|o| o.0.0))
+            .unwrap_or(active);
         let hovered = hovered.map_or(active, |s| s.0.0);
         let active_checked = active_checked.map_or(active, |s| s.0.0);
-        let hovered_checked = hovered_checked.map_or(hovered, |s| s.0.0);
         Self(CheckboxStyleSheet {
             active,
             hovered,

@@ -1,8 +1,6 @@
 Event Listening
 ===============
 
-TODO
-
 Overview
 --------
 

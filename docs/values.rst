@@ -1,8 +1,6 @@
 Values and Enums
 ================
 
-TODO
-
 Overview
 --------
 

@@ -2,16 +2,14 @@
 name = "_pyiced"
 edition = "2021"
 license = "MIT"
+authors = ["René Kijewski <rene.[SURNAME]@fu-berlin.de>"]
+homepage = "https://github.com/Kijewski/pyiced"
 
 # KEEP SYNCHRONOUS TO CARGO.TOML
 # KEEP SYNCHRONOUS TO DOCS/CONF.PY
 # KEEP SYNCHRONOUS TO SETUP.PY
-# KEEP SYNCHRONOUS TO REQUIREMENTS.READTHEDOCS.TXT
-
+# KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT
 # KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
-
-authors = ["René Kijewski <rene.[SURNAME]@fu-berlin.de>"]
-homepage = "https://github.com/Kijewski/pyiced"
 version = "0.3.0"
 
 [lib]

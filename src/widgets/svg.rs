@@ -45,6 +45,17 @@ impl GCProtocol for SvgBuilder {}
 /// -------
 /// Element
 ///     The newly created SVG image.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/svg.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/svg.py
+///    :language: python
 ///
 /// See also
 /// --------

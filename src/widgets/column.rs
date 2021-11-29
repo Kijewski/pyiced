@@ -62,6 +62,17 @@ impl GCProtocol for ColumnBuilder {
 /// -------
 /// Element
 ///     The newly created column.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/column.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/column.py
+///    :language: python
 ///
 /// See also
 /// --------

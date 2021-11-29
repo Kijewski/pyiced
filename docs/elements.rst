@@ -1,8 +1,6 @@
 Displayable Elements
 ====================
 
-TODO
-
 Overview
 --------
 

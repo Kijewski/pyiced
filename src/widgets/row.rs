@@ -62,6 +62,17 @@ impl GCProtocol for RowBuilder {
 /// -------
 /// Element
 ///     The newly created row.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/row.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/row.py
+///    :language: python
 ///
 /// See also
 /// --------

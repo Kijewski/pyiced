@@ -45,13 +45,13 @@ async def load_font():
     query = (
         f"GET {FONT_PATH} HTTP/1.0\r\n"
         f"Host: {FONT_HOST}\r\n"
+        f"Connection: closed\r\n"
         f"\r\n"
     ).encode('US-ASCII')
 
-    reader, writer = (await open_connection(FONT_HOST, 443, ssl=True))
+    reader, writer = await open_connection(FONT_HOST, 443, ssl=True)
     with closing(writer):
         writer.write(query)
-
         while (await reader.readline()) != b'\r\n':
             continue
 

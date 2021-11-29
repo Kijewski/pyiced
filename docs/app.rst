@@ -1,8 +1,6 @@
 Programming an IcedApp
 ======================
 
-TODO
-
 Overview
 --------
 

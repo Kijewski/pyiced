@@ -41,6 +41,17 @@ impl GCProtocol for ImageBuilder {}
 /// -------
 /// Element
 ///     The newly created image element.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/image.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/image.py
+///    :language: python
 ///
 /// See also
 /// --------

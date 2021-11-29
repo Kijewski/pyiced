@@ -18,13 +18,13 @@ A simple counter with two buttons to increment and decrement a value:
 Custom Styles
 -------------
 
-.. image:: _static/images/examples/Styling.png
-    :width: 622
-    :height: 444
+.. image:: ../examples/widgets/button.png
+    :width: 688
+    :height: 405
     :align: center
     :alt: 
 
-.. literalinclude :: ../examples/styling.py
+.. literalinclude :: ../examples/widgets/button.py
    :language: python
 
 Asychronous Messages

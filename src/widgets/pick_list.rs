@@ -21,7 +21,7 @@ pub(crate) struct PickListBuilder {
     pub state: PickListState,
     pub options: Vec<String>,
     pub selected: Option<String>,
-    pub on_selected: Py<PyAny>, // fn on_selected(value: String) -> crate::Message
+    pub on_selected: Py<PyAny>,
     pub text_size: Option<u16>,
     pub font: Option<Font>,
     pub style: Option<PickListStyleSheet>,
@@ -63,6 +63,17 @@ impl GCProtocol for PickListBuilder {
 /// -------
 /// Element
 ///     The newly created pick list.
+/// 
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/pick_list.png
+///    :width: 688
+///    :height: 405
+///    :align: center
+///    :alt: 
+/// 
+/// .. literalinclude :: ../examples/widgets/pick_list.py
+///    :language: python
 ///
 /// See also
 /// --------

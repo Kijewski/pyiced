@@ -19,7 +19,7 @@ class ExampleApp(IcedApp):
             on_press='incr',           # This value is received in update().
         )
         value_label = text(f'{self.__value}', size=50)
-        decerement_button = button(
+        decrement_button = button(
             self.__decr_button_state,
             text('Decrement'),
             on_press='decr',
@@ -28,7 +28,7 @@ class ExampleApp(IcedApp):
             column([
                 increment_button,
                 value_label,
-                decerement_button,
+                decrement_button,
             ]),
             padding=20, align_x=Align.CENTER, align_y=Align.CENTER,
             width=Length.FILL, height=Length.FILL,

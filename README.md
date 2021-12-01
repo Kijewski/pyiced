@@ -1,3 +1,10 @@
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Kijewski/pyiced/CI)](https://github.com/Kijewski/pyiced/actions/workflows/ci.yml)
+[![Documentation Status](https://readthedocs.org/projects/pyiced/badge/?version=main)](https://pyiced.readthedocs.io/en/main/)
+[![PyPI](https://img.shields.io/pypi/v/pyiced)](https://pypi.org/project/pyiced/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyiced?color=informational)
+![OS - Windows | Linux](https://img.shields.io/badge/os-windows%20|%20linux-informational.svg)
+[![License](https://img.shields.io/pypi/l/pyiced?color=informational)](/LICENSES/MIT.txt)
+
 Python bindings for **[Iced](https://github.com/iced-rs/iced)**.
 
 Iced is a cross-platform GUI library focused on simplicity and type-safety. Inspired by Elm.

@@ -1,3 +1,10 @@
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Kijewski/pyiced/CI)](https://github.com/Kijewski/pyiced/actions/workflows/ci.yml)
+[![Documentation Status](https://readthedocs.org/projects/pyiced/badge/?version=main)](https://pyiced.readthedocs.io/en/main/)
+[![PyPI](https://img.shields.io/pypi/v/pyiced)](https://pypi.org/project/pyiced/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyiced?color=informational)
+![OS - Windows | Linux](https://img.shields.io/badge/os-windows%20|%20linux-informational.svg)
+[![License](https://img.shields.io/pypi/l/pyiced?color=informational)](/LICENSES/MIT.txt)
+
 Python bindings for **[Iced](https://github.com/iced-rs/iced)**.
 
 Iced is a cross-platform GUI library focused on simplicity and type-safety. Inspired by Elm.
@@ -73,10 +80,11 @@ if __name__ == '__main__':
 
 ## TODOs
 
-* [ ] Better documentation
 * [ ] Add examples for every widget
 * [ ] Add a bigger example with network access, e.g. a two player game
 * [ ] Implement [Canvas](https://docs.rs/iced/latest/iced/widget/canvas/struct.Canvas.html)
 * [ ] Implement [PaneGrid](https://docs.rs/iced_native/latest/iced_native/widget/pane_grid/struct.PaneGrid.html)
+* [ ] Add [PEP 561](https://www.python.org/dev/peps/pep-0561/) typing information
+* [ ] Better documentation
 * [ ] Test on MacOS
 * [ ] Get to compile for musl wheels

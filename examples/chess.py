@@ -91,9 +91,7 @@ class ChessExample(IcedApp):
             height=Length.FILL,
             align_x=Align.CENTER,
             align_y=Align.CENTER,
-            style=ContainerStyleSheet(
-                background=Color(0xa0 / 255, 0x9c / 255, 0x9d / 255),
-            ),
+            style=ContainerStyleSheet(background=Color(0.627, 0.612, 0.616)),
         )
 
     def __view_select_role(self):
@@ -198,33 +196,55 @@ class ChessExample(IcedApp):
         )
 
     def __view_playing(self):
-        return row([
-            column([
-                tooltip(
-                    button(
-                        self.__button_states[y][x],
-                        self.__piece_at(x, y),
-                        ('select', x, y, True),
-                        width=Length.units(80),
-                        height=Length.units(80),
-                        style=ButtonStyleSheet(
-                            background=(
-                                Color(0.2, 0.6, 0.8)
-                                if self.__selected == (x, y) else
-                                Color(0xff / 255, 0xce / 255, 0x9e / 255)
-                                if (x + y) & 1 else
-                                Color(0xd1 / 255, 0x8b / 255, 0x47 / 255)
-                            ),
-                            shadow_offset=(0, 0),
-                        )
-                    ),
-                    f'{chr(ord("a") + 7 - y)}{x + 1}',
-                    TooltipPosition.FOLLOW_CURSOR,
+        return row(
+            [
+                column(
+                    [self.__cell_at(x, y) for y in range(8)],
+                    width=Length.fill_portion(1),
+                    height=Length.FILL,
                 )
-                for y in range(8)
-            ])
-            for x in range(8)
-        ])
+                for x in range(8)
+            ],
+            width=Length.units(8 * 80),
+            height=Length.units(8 * 80),
+        )
+
+    def __cell_at(self, x, y):
+        piece = self.__pieces[y][x]
+        if piece:
+            elem = svg(
+                SvgHandle.from_path(join(self.__pieces_root, piece)),
+            )
+        else:
+            elem = no_element()
+
+        return tooltip(
+            button(
+                self.__button_states[y][x],
+                container(
+                    elem,
+                    align_x=Align.CENTER,
+                    align_y=Align.CENTER,
+                    width=Length.FILL,
+                    height=Length.FILL,
+                ),
+                ('select', x, y, True),
+                width=Length.fill_portion(1),
+                height=Length.fill_portion(1),
+                style=ButtonStyleSheet(
+                    background=(
+                        Color(0.200, 0.600, 0.800)
+                        if self.__selected == (x, y) else
+                        Color(1.000, 0.808, 0.620)
+                        if (x + y) & 1 else
+                        Color(0.820, 0.545, 0.278)
+                    ),
+                    shadow_offset=(0, 0),
+                )
+            ),
+            f'{chr(ord("a") + 7 - y)}{x + 1}',
+            TooltipPosition.FOLLOW_CURSOR,
+        )
 
     def update(self, msg, clipboard):
         match msg:
@@ -312,15 +332,6 @@ class ChessExample(IcedApp):
         port = next(iter(server.sockets)).getsockname()[1]
         yield 'server', (hostname, port)
         yield 'connected', await client
-
-    def __piece_at(self, x, y):
-        piece = self.__pieces[y][x]
-        if piece:
-            return svg(
-                SvgHandle.from_path(join(self.__pieces_root, piece)),
-            )
-        else:
-            return no_element()
 
 
 if __name__ == '__main__':

@@ -35,7 +35,7 @@ pub(crate) struct ScrollableBuilder {
 impl GCProtocol for ScrollableBuilder {}
 
 #[pyfunction(name = "scrollable")]
-/// scrollable($module, /, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None, style=None)
+/// scrollable($module, /, state, children, *, spacing=None, padding=None, width=None, height=None, max_width=None, max_heigth=None, align_items=None, scrollbar_width=None, scrollbar_margin=None, scroller_width=None, style=None)
 /// --
 ///
 /// A widget that can vertically display an infinite amount of content with a scrollbar.

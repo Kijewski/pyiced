@@ -9,7 +9,8 @@ use pyo3::prelude::*;
 use tokio::sync::oneshot::channel;
 
 use super::ToSubscription;
-use crate::app::{Interop, Task};
+use crate::app::Interop;
+use crate::async_tasks::Task;
 use crate::common::{GCProtocol, Message};
 use crate::subscriptions::WrappedSubscription;
 
@@ -116,7 +117,7 @@ where
                     let (sender, receiver) = channel();
                     let task = Task {
                         task,
-                        result: ().into_py(py),
+                        result: py.None(),
                         done: Some(sender),
                     };
                     if let Err(err) = put_task.call1(py, (task,)) {

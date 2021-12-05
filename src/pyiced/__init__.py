@@ -285,38 +285,46 @@ def run_iced(app: IcedApp, *, run=None) -> NoReturn:
         subscriptions=app.subscriptions,
         settings=app.settings,
         background_color=app.background_color,
-        taskmanager=make_loop(run),
+        taskmanager=_make_loop(run),
     )
 
 
-def make_loop(run=None):
+def _make_loop(run=None):
     put_task = SyncQueue(1)
     thread = Thread(
         None,
         run if run is not None else _run,
-        args=(thread_code(put_task),),
+        args=(_thread_code(put_task),),
         name='PyIced-AsyncLoop',
     )
     thread.start()
     return put_task.get()
 
 
-async def thread_code(put_task):
+async def _thread_code(put_task):
     loop = get_event_loop()
     task_queue = AsyncQueue()
     put_task.put((
         loop,
         lambda task=None: run_coroutine_threadsafe(task_queue.put(task), loop),
     ))
+    tasks = set()
     while True:
         taskobj = await task_queue.get()
         if taskobj is None:
             break
 
-        try:
-            taskobj.result = None, (await taskobj.task)
-        except SystemExit:
-            raise
-        except BaseException as ex:
-            taskobj.result = ex, None
-        taskobj()
+        task = loop.create_task(_process_task(taskobj))
+        tasks.add(task)
+        task.add_done_callback(tasks.remove)
+
+
+async def _process_task(taskobj):
+    try:
+        result = None, await taskobj.task
+    except SystemExit:
+        raise
+    except BaseException as ex:
+        result = ex, None
+    taskobj.result = result
+    taskobj()

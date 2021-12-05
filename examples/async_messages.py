@@ -18,7 +18,7 @@ class AsyncMessageExample(IcedApp):
         return 'Asynchronous Messages'
 
     def new(self):
-        return load_font()
+        return [load_font()]
 
     def update(self, msg, clipboard):
         match msg:
@@ -46,7 +46,6 @@ async def load_font():
         f"GET {FONT_PATH} HTTP/1.0\r\n"
         f"Host: {FONT_HOST}\r\n"
         f"Connection: closed\r\n"
-        f"User-Agent: Mozilla/1.22 (compatible; MSIE 2.0; Windows 95)\r\n"
         f"\r\n"
     ).encode('US-ASCII')
 

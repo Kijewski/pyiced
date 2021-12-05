@@ -40,6 +40,7 @@ macro_rules! init_mod {
 
 init_mod! {
     mod app;
+    mod async_tasks;
     mod common;
     mod extractor;
     mod states;

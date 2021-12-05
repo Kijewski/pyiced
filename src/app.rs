@@ -1,20 +1,18 @@
-use std::pin::Pin;
 use std::rc::Rc;
 
-use futures_util::Future;
 use iced::{
     executor, window, Application, Clipboard, Color, Command, Element, Font, Length, Settings,
     Space, Subscription,
 };
-use pyo3::exceptions::{PyAttributeError, PyRuntimeError, PyTypeError};
+use pyo3::exceptions::{PyAttributeError, PyRuntimeError};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
-use tokio::sync::oneshot::{channel, Sender};
 
+use crate::async_tasks::vec_to_command;
 use crate::common::{debug_err, method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{MessageOrDatum, WrappedClipboard, WrappedColor, WrappedFont};
+use crate::wrapped::{WrappedClipboard, WrappedColor, WrappedFont};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_iced, m)?)?;
@@ -42,126 +40,27 @@ pub(crate) struct Interop {
     pub _pyloop: Py<PyAny>,
 }
 
-enum MessageOrFuture {
-    Message(Message),
-    Future(Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>),
-    None,
-}
-
-#[pyclass]
-pub(crate) struct Task {
-    #[pyo3(get)]
-    pub task: Py<PyAny>,
-
-    #[pyo3(set)]
-    pub result: Py<PyAny>,
-
-    pub done: Option<Sender<Py<PyAny>>>,
-}
-
-#[pymethods]
-impl Task {
-    fn __call__(&mut self) -> PyResult<()> {
-        let sender = match self.done.take() {
-            Some(done) => done,
-            None => return Err(PyErr::new::<PyRuntimeError, _>("Already sent")),
-        };
-        if sender.send(self.result.clone()).is_err() {
-            // the receiver was GC collected in the meantime
-        };
-        Ok(())
-    }
-}
-
-fn message_or_future(py: Python, result: PyResult<&PyAny>, app: &PythonApp) -> MessageOrFuture {
-    let task_or_message = match result {
-        Ok(task) => task,
-        Err(err) => {
-            err.print(py);
-            return MessageOrFuture::None;
-        },
-    };
-    if task_or_message.is_none() {
-        return MessageOrFuture::None;
-    }
-    match task_or_message.hasattr("__await__") {
-        Ok(hasattr) => {
-            if !hasattr {
-                return MessageOrFuture::Message(Message::Python(task_or_message.into_py(py)));
-            }
-        },
-        Err(err) => {
-            err.print(py);
-            return MessageOrFuture::None;
-        },
-    }
-
-    let (sender, receiver) = channel();
-    let task = Task {
-        task: task_or_message.into_py(py),
-        result: py.None(),
-        done: Some(sender),
-    };
-    if let Err(err) = app.interop.put_task.call1(py, (task,)) {
-        err.print(py);
-        return MessageOrFuture::None;
-    }
-
-    MessageOrFuture::Future(Box::pin(async move {
-        let outcome = receiver.await;
-        let err = match outcome {
-            Ok(outcome) => return outcome,
-            Err(err) => debug_err::<PyRuntimeError, _>(err),
-        };
-        Python::with_gil(|py| {
-            err.print(py);
-            py.None()
-        })
-    }))
-}
-
-fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) -> Command<Message> {
-    Command::perform(future, |result| {
-        Python::with_gil(|py| {
-            let result = result.as_ref(py);
-            let result = match result.extract::<(Option<&PyAny>, _)>() {
-                Ok(result) => result,
-                Err(err) => {
-                    debug_err::<PyTypeError, _>(err).print(py);
-                    return Message::None;
-                },
-            };
-            match result {
-                (Some(err), _) => {
-                    PyErr::from_instance(err).print(py);
-                    Message::None
-                },
-                (None, MessageOrDatum(result)) => result,
-            }
-        })
-    })
-}
-
 fn get_new_command(app: &PythonApp) -> Command<Message> {
     let new = match &app.interop.new {
         Some(new) => new,
         None => return Command::none(),
     };
-
-    let msg = Python::with_gil(|py| {
-        let datum = new.call0(py);
-        let datum = match datum {
-            Ok(ref datum) => Ok(datum.as_ref(py)),
-            Err(err) => Err(err),
+    Python::with_gil(|py| {
+        let vec = match new.call0(py) {
+            Ok(vec) => vec,
+            Err(err) => {
+                err.print(py);
+                return Command::none();
+            },
         };
-        message_or_future(py, datum, app)
-    });
-
-    match msg {
-        MessageOrFuture::Message(msg) => Command::from(async { msg }),
-        MessageOrFuture::Future(future) => future_to_command(future),
-        MessageOrFuture::None => Command::none(),
-    }
+        match vec_to_command(py, vec, &app.interop.put_task) {
+            Ok(command) => command,
+            Err(err) => {
+                err.print(py);
+                Command::none()
+            },
+        }
+    })
 }
 
 impl Application for PythonApp {
@@ -247,40 +146,13 @@ impl Application for PythonApp {
                     Message::None => return Command::none(), // unreachable
                 }
             };
-
-            let vec = match vec {
-                Ok(vec) => vec,
+            match vec.and_then(|vec| vec_to_command(py, vec, &self.interop.put_task)) {
+                Ok(command) => command,
                 Err(err) => {
                     err.print(py);
-                    return Command::none();
+                    Command::none()
                 },
-            };
-
-            let vec = match vec.as_ref(py) {
-                vec if vec.is_none() => return Command::none(),
-                vec => vec,
-            };
-
-            let iter = match vec.iter() {
-                Ok(iter) => iter,
-                Err(err) => {
-                    err.print(py);
-                    return Command::none();
-                },
-            };
-
-            let mut commands = Vec::new();
-            for datum in iter.take(64) {
-                let datum = message_or_future(py, datum, self);
-                let command = match datum {
-                    MessageOrFuture::Message(msg) => Command::from(async move { msg }),
-                    MessageOrFuture::Future(future) => future_to_command(future),
-                    MessageOrFuture::None => continue,
-                };
-                commands.push(command)
             }
-
-            Command::batch(commands)
         })
     }
 

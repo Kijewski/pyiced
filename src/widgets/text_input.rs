@@ -39,7 +39,7 @@ impl GCProtocol for TextInputBuilder {
 }
 
 #[pyfunction(name = "text_input")]
-/// text_input($module, /, state, placeholder, value, on_change, *, font=None, width=None, max_width=None, padding=None, size=None, on_submit=None, password=False)
+/// text_input($module, /, state, placeholder, value, on_change, *, font=None, width=None, max_width=None, padding=None, size=None, on_submit=None, password=False, style=None)
 /// --
 ///
 /// A field that can be filled with text.
@@ -71,6 +71,8 @@ impl GCProtocol for TextInputBuilder {
 ///     Message to send to :meth:`pyiced.IcedApp.update` if :kbd:`Enter` was pressed.
 /// password : bool
 ///     If set to True, the input element becomes a secure password input.
+/// style : Optional[TextInputStyleSheet]
+///     Style of the text input.
 ///
 /// Returns
 /// -------

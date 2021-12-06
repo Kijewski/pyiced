@@ -29,6 +29,8 @@ Overview
    ~pyiced.SliderStyleSheet
    ~pyiced.TextInputStyle
    ~pyiced.TextInputStyleSheet
+   ~pyiced.TooltipStyle
+   ~pyiced.TooltipStyleSheet
 
 Quick Example
 -------------
@@ -130,3 +132,7 @@ Details
 .. autoclass:: pyiced.TextInputStyleSheet
    :members:
    :undoc-members:
+
+.. autoclass:: pyiced.TooltipStyle
+
+.. autoclass:: pyiced.TooltipStyleSheet

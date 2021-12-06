@@ -36,10 +36,30 @@ impl GCProtocol for ContainerBuilder {
 /// container($module, /, content, *, padding=None, width=None, height=None, max_width=None, max_height=None, align_x=None, align_y=None, style=None)
 /// --
 ///
-/// Make a TODO.
+/// An element decorating some content.
+///
+/// It is normally used for alignment purposes.
 ///
 /// Parameters
 /// ----------
+/// content : Element
+///     The content of the container.
+/// padding : Option<u16>
+///     The padding around the content.
+/// width : Option<&WrappedLength>
+///     The width of the container.
+/// height : Option<&WrappedLength>
+///     The height of the container.
+/// max_width : Option<u32>
+///     The maximum width of the container
+/// max_height : Option<u32>
+///     The maximum height of the container.
+/// align_x : Option<&WrappedAlign>
+///     The horizontal alignment of the content inside the container.
+/// align_y : Option<&WrappedAlign>
+///     The vertical alignment of the content inside the container.
+/// style : Option<&WrappedContainerStyle>
+///     The style of the container.
 ///
 /// Returns
 /// -------

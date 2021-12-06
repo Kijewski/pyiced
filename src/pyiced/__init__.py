@@ -75,6 +75,8 @@ ContainerStyle = ContainerStyleSheet
 PaneGridStyle = PaneGridStyleSheet
 ProgressBarStyle = ProgressBarStyleSheet
 RuleStyle = RuleStyleSheet
+TooltipStyleSheet = ContainerStyle
+TooltipStyle = TooltipStyleSheet
 
 
 class WindowSettings:

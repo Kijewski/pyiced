@@ -5,6 +5,7 @@ use pyo3::wrap_pyfunction;
 
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
+use crate::styles::{ContainerStyle, WrappedContainerStyle};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{WrappedFont, WrappedTooltipPosition};
 
@@ -22,7 +23,7 @@ pub(crate) struct TooltipBuilder {
     pub font: Option<Font>,
     pub gap: Option<u16>,
     pub padding: Option<u16>,
-    // style: TODO,
+    pub style: Option<ContainerStyle>,
 }
 
 impl GCProtocol for TooltipBuilder {
@@ -52,6 +53,9 @@ impl GCProtocol for TooltipBuilder {
 /// gap : Optional[int]
 ///     The gap between the content and its tooltip.
 /// padding : Optional[int]
+///     TODO
+/// style : Optional[ContainerStyleSheet]
+///     The style of the tooltip.
 ///
 /// Returns
 /// -------
@@ -69,6 +73,7 @@ fn make_tooltip(
     font: Option<&WrappedFont>,
     gap: Option<u16>,
     padding: Option<u16>,
+    style: Option<&WrappedContainerStyle>,
 ) -> WrappedWidgetBuilder {
     let el = TooltipBuilder {
         content: Box::new(content.0.clone()),
@@ -78,6 +83,7 @@ fn make_tooltip(
         font: font.map(|o| o.0),
         gap,
         padding,
+        style: style.map(|o| o.0),
     };
     el.into()
 }
@@ -86,7 +92,7 @@ impl ToNative for TooltipBuilder {
     fn to_native(&self, py: Python) -> Element<'static, Message> {
         let content = self.content.to_native(py);
         let el = Tooltip::new(content, &self.tooltip, self.position);
-        let el = assign!(el, self, size, font, gap, padding);
+        let el = assign!(el, self, size, font, gap, padding, style);
         el.into()
     }
 }

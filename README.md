@@ -1,5 +1,5 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Kijewski/pyiced/CI)](https://github.com/Kijewski/pyiced/actions/workflows/ci.yml)
-[![Documentation Status](https://readthedocs.org/projects/pyiced/badge/?version=main)](https://pyiced.readthedocs.io/en/main/)
+[![Documentation Status](https://readthedocs.org/projects/pyiced/badge/?version=latest)](https://pyiced.readthedocs.io/)
 [![PyPI](https://img.shields.io/pypi/v/pyiced)](https://pypi.org/project/pyiced/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyiced?color=informational)
 ![OS - Windows | Linux](https://img.shields.io/badge/os-windows%20|%20linux-informational.svg)
@@ -13,8 +13,16 @@ Iced is a cross-platform GUI library focused on simplicity and type-safety. Insp
 Installation
 ------------
 
+**Precompiled wheel:**
+
 ```sh
 $ pip install pyiced
+```
+
+**From source:**
+
+```sh
+$ pip install .
 ```
 
 To install from source you need to have a recent version of [**Rust**](https://www.rust-lang.org/) installed in your $PATH.
@@ -55,11 +63,10 @@ class ExampleApp(IcedApp):
             on_press='decr',
         )
         return container(
-            column([
-                increment_button,
-                value_label,
-                decrement_button,
-            ]),
+            column(
+                [increment_button, value_label, decrement_button],
+                align_items=Align.CENTER,
+            ),
             padding=20, align_x=Align.CENTER, align_y=Align.CENTER,
             width=Length.FILL, height=Length.FILL,
         )

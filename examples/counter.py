@@ -25,11 +25,10 @@ class ExampleApp(IcedApp):
             on_press='decr',
         )
         return container(
-            column([
-                increment_button,
-                value_label,
-                decrement_button,
-            ]),
+            column(
+                [increment_button, value_label, decrement_button],
+                align_items=Align.CENTER,
+            ),
             padding=20, align_x=Align.CENTER, align_y=Align.CENTER,
             width=Length.FILL, height=Length.FILL,
         )

@@ -1,80 +1,73 @@
-all:
+all: build docs
+
 
 .DELETE_ON_ERROR:
 .ONESHELL:
+.PHONY: all build clean dists docs install sdist
 
-.PHONY: all clean docs install wheel
+
+ENV_DIR := env
 
 ifeq ($(strip ${PYTHON}),)
-  env/: PYTHON:=$(shell readlink -e "$(shell "$(shell which where which | head -n1)" python3.10 python3 | head -n1)")
+  PREFERRED_PYTHON_VERSION ?= python3.10
+  ${ENV_DIR}/: PYTHON:=$(shell readlink -e "$(shell "$(shell which where which | head -n1)" ${PREFERRED_PYTHON_VERSION} pythonw3 python3 | head -n1)")
 endif
 
 
-all:
-	@echo "There is no default or 'all' target!"
-	@echo " -- make docs: build HTML documentation"
-	@echo " -- make install: install into local environment"
-	@echo " -- make build: build source code and binary distribution"
-	@false
+define VENV
+  if [ -e "./${ENV_DIR}/bin/activate" ]; then
+    . "./${ENV_DIR}/bin/activate" || exit 1;
+  else
+    set -o igncr || true;
+    . "./${ENV_DIR}/Scripts/activate" || exit 1;
+  fi
+endef
 
 
 clean:
-	-rm -r -- "./build/"
-	-rm -r -- "./dist/"
-	-rm -r -- "./pyiced.egg-info/"
-	-rm -r -- "./src/pyiced.egg-info/"
-	-rm -r -- "./target/"
+	rm -r -- "./build/" || true
+	rm -r -- "./dist/" || true
+	rm -r -- "./pyiced.egg-info/" || true
+	rm -r -- "./src/pyiced.egg-info/" || true
+	rm -r -- "./target/" || true
 
 
-env/: requirements-dev.txt
-	-rm -r -- "./env/"
+${ENV_DIR}/: requirements-dev.txt
+	rm -r -- "./${ENV_DIR}/" || true
 
-	"${PYTHON}" -m venv -- "./env/" || exit 1
+	"${PYTHON}" -m venv -- "./${ENV_DIR}/" || exit 1
 
-	if [ -e ./env/bin/activate ]
-	then
-		. ./env/bin/activate || exit 1
-	else
-		set -o igncr || true
-		. env/Scripts/activate || exit 1
-	fi
-
+	${VENV}
 	python -m pip install -U pip || exit 1
 	python -m pip install -U wheel setuptools || exit 1
 	python -m pip install -Ur requirements-dev.txt || exit 1
 
 
-install: | env/
-	if [ -e ./env/bin/activate ]
-	then
-		. ./env/bin/activate || exit 1
-	else
-		set -o igncr || true
-		. env/Scripts/activate || exit 1
-	fi
+install: | ${ENV_DIR}/
+	${VENV}
 	python -m pip install . || exit 1
 
 
-build: | env/
-	if [ -e ./env/bin/activate ]
-	then
-		. ./env/bin/activate || exit 1
-	else
-		set -o igncr || true
-		. env/Scripts/activate || exit 1
-	fi
+build: | ${ENV_DIR}/
+	${VENV}
 	python -m build || exit 1
 
 
-docs: install | env/
-	-rm -r -- "./dist/doctrees/"
-	-rm -r -- "./dist/html/"
+sdist: | ${ENV_DIR}/
+	${VENV}
+	python -m build --sdist || exit 1
 
-	if [ -e ./env/bin/activate ]
-	then
-		. ./env/bin/activate || exit 1
-	else
-		set -o igncr || true
-		. env/Scripts/activate || exit 1
-	fi
+
+docs: install | ${ENV_DIR}/
+	rm -r -- "./dist/doctrees/" || true
+	rm -r -- "./dist/html/" || true
+
+	${VENV}
 	python -m sphinx -M html ./docs/ ./dist/
+
+
+dists:
+	${MAKE} PREFERRED_PYTHON_VERSION=python3.10 ENV_DIR=env3.10 build || true
+	${MAKE} PREFERRED_PYTHON_VERSION=python3.9 ENV_DIR=env3.9 build || true
+	${MAKE} PREFERRED_PYTHON_VERSION=python3.8 ENV_DIR=env3.8 build || true
+	${MAKE} PREFERRED_PYTHON_VERSION=python3.7 ENV_DIR=env3.7 build || true

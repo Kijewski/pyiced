@@ -5,7 +5,7 @@ __pycache__
 /build
 /cython_debug
 /dist
-/env
+/env*
 /logs
 /target
 /venv
@@ -34,3 +34,4 @@ run.cgi
 .*
 !.git*
 !.reuse/
+!.readthedocs.yaml

@@ -13,7 +13,7 @@ homepage = "https://github.com/Kijewski/pyiced"
 # Normal releases are exactly the same.
 # Pre-releases are X.Y.Z-aN in semver, and X.Y.ZaN in PEP 440.
 # Post-releases are X.Y.Z+N in semver, and X.Y.Z.postN in PEP 440.
-version = "0.3.0-a2"
+version = "0.3.0-a3"
 
 [lib]
 name = "_pyiced"

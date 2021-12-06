@@ -18,7 +18,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// PickListStyle(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a pick list for some state.
+/// The appearance of a :func:`~pyiced.pick_list()` for some state.
 ///
 /// Parameters
 /// ----------
@@ -85,7 +85,7 @@ getters! {
 /// PickListStyleSheet(menu, active, hovered=None)
 /// --
 ///
-/// The appearance of a pick list.
+/// The appearance of a :func:`~pyiced.pick_list()`.
 ///
 /// Parameters
 /// ----------

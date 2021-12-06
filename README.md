@@ -80,7 +80,7 @@ if __name__ == '__main__':
 
 ## TODOs
 
-* [ ] ButtonStyle != ButtonStyleSheet
+* [x] ButtonStyle != ButtonStyleSheet
 * [ ] Add examples for every widget
 * [x] Add a bigger example with network access, e.g. a two player game
 * [ ] Implement [Canvas](https://docs.rs/iced/latest/iced/widget/canvas/struct.Canvas.html)

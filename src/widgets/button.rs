@@ -5,7 +5,7 @@ use pyo3::wrap_pyfunction;
 use crate::assign;
 use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{button_with_state, ButtonState, WrappedButtonState};
-use crate::styles::{ButtonStyle, WrappedButtonStyleSheet};
+use crate::styles::{ButtonStyleSheet, WrappedButtonStyleSheet};
 use crate::widgets::{WidgetBuilder, WrappedWidgetBuilder};
 use crate::wrapped::{MessageOrDatum, WrappedLength};
 
@@ -24,7 +24,7 @@ pub(crate) struct ButtonBuilder {
     pub min_height: Option<u32>,
     pub padding: Option<u16>,
     pub on_press: Message,
-    pub style: Option<ButtonStyle>,
+    pub style: Option<ButtonStyleSheet>,
 }
 
 impl GCProtocol for ButtonBuilder {
@@ -60,7 +60,7 @@ impl GCProtocol for ButtonBuilder {
 ///     Minimum height of the button in pixels.
 /// padding : Optional[int]
 ///     Amount of pixels surrounding the contained element.
-/// style : Optional[ButtonStyle]
+/// style : Optional[ButtonStyleSheet]
 ///     The style of the button.
 ///
 /// Returns

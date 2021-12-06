@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// ContainerStyleSheet(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a container.
+/// The appearance of a :func:`~pyiced.container()`.
 ///
 /// Parameters
 /// ----------

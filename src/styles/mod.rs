@@ -17,7 +17,7 @@ macro_rules! init_mod {
 }
 
 init_mod! {
-    button -> { ButtonStyle, WrappedButtonStyleSheet },
+    button -> { ButtonStyle, ButtonStyleSheet, WrappedButtonStyle, WrappedButtonStyleSheet },
     checkbox -> {
         CheckboxStyle, CheckboxStyleSheet, WrappedCheckboxStyle, WrappedCheckboxStyleSheet,
     },

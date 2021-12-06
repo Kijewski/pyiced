@@ -1,6 +1,6 @@
 from pyiced import (
-    Align, button, ButtonState, ButtonStyle, Color, container,
-    ContainerStyle, IcedApp, Length, text,
+    Align, button, ButtonState, ButtonStyle, ButtonStyleSheet, Color,
+    container, ContainerStyle, IcedApp, Length, text,
 )
 
 
@@ -20,12 +20,12 @@ class ButtonExample(IcedApp):
             self.__button_state,
             text('Hello, world!', size=40),
             '',
-            style=ButtonStyle(
+            style=ButtonStyleSheet(ButtonStyle(
                 shadow_offset=(8, 8), border_radius=40, border_width=6,
                 background=Color(0.17, 0.17, 0.17),
                 border_color=Color(0.95, 0.87, 0.22),
                 text_color=Color(1.00, 0.18, 0.13)
-            ),
+            )),
             padding=40,
         )
         return container(

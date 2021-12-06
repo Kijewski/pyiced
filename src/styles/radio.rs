@@ -17,7 +17,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// RadioStyle(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a radio button for some state.
+/// The appearance of a :func:`~pyiced.radio()` for some state.
 ///
 /// Parameters
 /// ----------
@@ -76,7 +76,7 @@ getters! {
 /// RadioStyleSheet(active, hovered=None)
 /// --
 ///
-/// The appearance of a radio.
+/// The appearance of a :func:`~pyiced.radio()`.
 ///
 /// Parameters
 /// ----------
@@ -100,8 +100,8 @@ pub(crate) struct RadioStyleSheet {
 
 getters! {
     WrappedRadioStyleSheet => |&WrappedRadioStyleSheet(ref o)| o,
-    active -> "Color" WrappedRadioStyle,
-    hovered -> "Color" WrappedRadioStyle,
+    active -> "RadioStyle" WrappedRadioStyle,
+    hovered -> "RadioStyle" WrappedRadioStyle,
 }
 
 #[pymethods]

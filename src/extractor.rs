@@ -6,9 +6,10 @@ use pyo3::prelude::*;
 
 use crate::common::validate_f32;
 use crate::styles::{
-    CheckboxStyle, PickListMenu, PickListStyle, RadioStyle, ScrollbarStyle, ScrollerStyle,
-    TextInputStyle, WrappedCheckboxStyle, WrappedPickListMenu, WrappedPickListStyle,
-    WrappedRadioStyle, WrappedScrollbarStyle, WrappedScrollerStyle, WrappedTextInputStyle,
+    ButtonStyle, CheckboxStyle, PickListMenu, PickListStyle, RadioStyle, ScrollbarStyle,
+    ScrollerStyle, TextInputStyle, WrappedButtonStyle, WrappedCheckboxStyle, WrappedPickListMenu,
+    WrappedPickListStyle, WrappedRadioStyle, WrappedScrollbarStyle, WrappedScrollerStyle,
+    WrappedTextInputStyle,
 };
 use crate::wrapped::{
     WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape,
@@ -252,5 +253,11 @@ impl Unextract<WrappedSliderHandle> for Unextractor<'_, iced::slider::Handle> {
 impl Unextract<WrappedTextInputStyle> for Unextractor<'_, iced::text_input::Style> {
     fn unextract(self) -> WrappedTextInputStyle {
         WrappedTextInputStyle(TextInputStyle(*self.0))
+    }
+}
+
+impl Unextract<WrappedButtonStyle> for Unextractor<'_, iced::button::Style> {
+    fn unextract(self) -> WrappedButtonStyle {
+        WrappedButtonStyle(ButtonStyle(*self.0))
     }
 }

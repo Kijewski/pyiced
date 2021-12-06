@@ -18,7 +18,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// CheckboxStyle(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a checkbox for some state.
+/// The appearance of a :func:`~pyiced.checkbox()` for some state.
 ///
 /// Parameters
 /// ----------
@@ -104,7 +104,7 @@ getters! {
 /// CheckboxStyleSheet(active, hoverered=None, active_checked=None, hovered_checked=None)
 /// --
 ///
-/// The appearance of a checkbox.
+/// The appearance of a :func:`~pyiced.checkbox()`.
 ///
 /// Parameters
 /// ----------

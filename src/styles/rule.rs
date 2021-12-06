@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// RuleStyleSheet(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a rule.
+/// The appearance of a :func:`~pyiced.rule()`.
 ///
 /// Parameters
 /// ----------

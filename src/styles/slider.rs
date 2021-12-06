@@ -17,7 +17,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// SliderStyle(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a slider for some state.
+/// The appearance of a :func:`~pyiced.slider()` for some state.
 ///
 /// Parameters
 /// ----------
@@ -63,7 +63,7 @@ impl WrappedSliderStyle {
 /// SliderStyleSheet(active, hovered=None, dragging=None)
 /// --
 ///
-/// The appearance of a slider.
+/// The appearance of a :func:`~pyiced.slider()`.
 ///
 /// Parameters
 /// ----------

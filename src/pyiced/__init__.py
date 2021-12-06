@@ -43,7 +43,7 @@ __all__ = [
     'SliderHandleShape', 'SvgHandle', 'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
     # styles
-    'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
+    'ButtonStyle', 'ButtonStyleSheet', 'CheckboxStyle', 'CheckboxStyleSheet', 'ContainerStyleSheet',
     'PaneGridStyleSheet', 'PickListMenu', 'PickListStyle', 'PickListStyleSheet',
     'ProgressBarStyleSheet', 'RadioStyle', 'RadioStyleSheet', 'RuleStyleSheet',
     'ScrollableStyleSheet', 'ScrollbarStyle', 'ScrollerStyle', 'Size', 'SliderStyle',
@@ -71,7 +71,6 @@ __version__ = _pyiced.__version__
 Command = NewType('Command', Union[Awaitable[Optional[object]], object])
 Commands = NewType('Commands', Iterable[Optional[Command]])
 
-ButtonStyle = ButtonStyleSheet
 ContainerStyle = ContainerStyleSheet
 PaneGridStyle = PaneGridStyleSheet
 ProgressBarStyle = ProgressBarStyleSheet

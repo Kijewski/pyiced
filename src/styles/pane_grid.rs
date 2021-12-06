@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// PaneGridStyleSheet(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a pane_grid.
+/// The appearance of a :func:`~pyiced.pane_grid()`.
 ///
 /// Parameters
 /// ----------

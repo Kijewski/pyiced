@@ -14,7 +14,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// ProgressBarStyleSheet(proto=None, **kwargs)
 /// --
 ///
-/// The appearance of a progress_bar.
+/// The appearance of a :func:`~pyiced.progress_bar()`.
 ///
 /// Parameters
 /// ----------

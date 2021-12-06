@@ -412,3 +412,27 @@ macro_rules! getters {
         }
     };
 }
+
+#[macro_export]
+macro_rules! partially_defaulted_stylesheet {
+    ($style:ty, $stylesheet:ty $(, $active:ident)* => $param:ident $(,)?) => {
+        let $param = match $param {
+            ::std::option::Option::Some(o) => o.0.0,
+            ::std::option::Option::None => {
+                struct Partial {
+                    $( $active: $style),*
+                }
+
+                impl $stylesheet for Partial {
+                    $(
+                        fn $active(&self) -> Style {
+                            self.$active
+                        }
+                    )*
+                }
+
+                Partial { $($active),* }.$param()
+            },
+        };
+    };
+}

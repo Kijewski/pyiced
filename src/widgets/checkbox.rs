@@ -70,8 +70,6 @@ impl GCProtocol for CheckboxBuilder {
 /// Example
 /// -------
 /// .. image:: ../examples/widgets/checkbox.png
-///    :width: 731
-///    :height: 629
 ///    :align: center
 ///    :alt:
 ///

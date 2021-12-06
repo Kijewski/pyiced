@@ -19,9 +19,7 @@ impl GCProtocol for NoElementBuilder {}
 /// no_element($module, /, content, *, padding=None, width=None, height=None, max_width=None, max_height=None, align_x=None, align_y=None)
 /// --
 ///
-/// A :func:`~pyiced.space` with minimum width and height.
-///
-/// You should never actually need to use this function is code.
+/// A :func:`~pyiced.space()` with minimum width and height.
 ///
 /// Returns
 /// -------

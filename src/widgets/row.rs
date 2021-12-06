@@ -66,8 +66,6 @@ impl GCProtocol for RowBuilder {
 /// Example
 /// -------
 /// .. image:: ../examples/widgets/row.png
-///    :width: 688
-///    :height: 405
 ///    :align: center
 ///    :alt:
 ///

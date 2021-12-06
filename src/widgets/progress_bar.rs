@@ -55,8 +55,6 @@ impl GCProtocol for ProgressBarBuilder {}
 /// Example
 /// -------
 /// .. image:: ../examples/widgets/progress_bar.png
-///    :width: 688
-///    :height: 405
 ///    :align: center
 ///    :alt:
 ///

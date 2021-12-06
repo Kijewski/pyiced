@@ -67,8 +67,6 @@ impl GCProtocol for PickListBuilder {
 /// Example
 /// -------
 /// .. image:: ../examples/widgets/pick_list.png
-///    :width: 688
-///    :height: 405
 ///    :align: center
 ///    :alt:
 ///

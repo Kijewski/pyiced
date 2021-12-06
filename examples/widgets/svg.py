@@ -16,7 +16,7 @@ class SvgExample(IcedApp):
         return 'An SVG'
 
     def new(self):
-        return load_svg()
+        return [load_svg()]
 
     def update(self, msg, clipboard):
         match msg:

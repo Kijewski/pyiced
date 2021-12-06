@@ -37,7 +37,7 @@ impl GCProtocol for SpaceBuilder {}
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created empty space.
 ///
 /// See also
 /// --------

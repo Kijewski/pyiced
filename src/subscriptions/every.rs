@@ -122,7 +122,7 @@ impl Hash for Every {
 /// ----------
 /// duration : Union[float, datetime.timedelta]
 ///     The interval in seconds or as a duration. Must be at least 100 µs!
-/// token : Object
+/// token : object
 ///     The first item of the message tuple to send to the :meth:`pyiced.IcedApp.update`.
 ///
 /// Returns
@@ -134,6 +134,15 @@ impl Hash for Every {
 ///
 ///     .. seealso::
 ///         :class:`~pyiced.Instant`.
+///
+/// Example
+/// -------
+/// .. image :: ../examples/every.png
+///    :align: center
+///    :alt:
+///
+/// .. literalinclude :: ../examples/every.py
+///    :language: python
 ///
 /// See also
 /// --------

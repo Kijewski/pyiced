@@ -9,7 +9,9 @@ Python bindings for **[Iced](https://github.com/iced-rs/iced)**.
 
 Iced is a cross-platform GUI library focused on simplicity and type-safety. Inspired by Elm.
 
-## Installation
+
+Installation
+------------
 
 ```sh
 $ pip install pyiced
@@ -20,9 +22,10 @@ To install from source you need to have a recent version of [**Rust**](https://w
 [**Rustup**](https://rustup.rs/) is probably the most easy to use option to install and update [**Rust**](https://www.rust-lang.org/) on your system.
 
 
-## Quick Example
+Quick Example
+-------------
 
-[![](docs/_static/images/examples/Counter.png "Basic example: A counter.")](examples/counter.py)
+[![](examples/counter.png "Basic example: A counter.")](examples/counter.py)
 
 ```py
 from pyiced import (
@@ -78,10 +81,20 @@ if __name__ == '__main__':
     ExampleApp().run()
 ```
 
-## TODOs
+
+Bigger Example
+--------------
+
+[![](examples/chess.png "A bigger example: Two-player online chess.")](examples/chess.py)
+
+Please find the source code in [examples/chess.py](examples/chess.py).
+
+
+TODOs
+-----
 
 * [x] ButtonStyle != ButtonStyleSheet
-* [ ] Add examples for every widget
+* [x] Add examples for every widget
 * [x] Add a bigger example with network access, e.g. a two player game
 * [ ] Implement [Canvas](https://docs.rs/iced/latest/iced/widget/canvas/struct.Canvas.html)
 * [ ] Implement [PaneGrid](https://docs.rs/iced_native/latest/iced_native/widget/pane_grid/struct.PaneGrid.html)

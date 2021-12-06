@@ -16,7 +16,7 @@ class ImageExample(IcedApp):
         return 'An Image'
 
     def new(self):
-        return load_image()
+        return [load_image()]
 
     def update(self, msg, clipboard):
         match msg:

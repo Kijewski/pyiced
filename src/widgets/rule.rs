@@ -41,6 +41,15 @@ impl GCProtocol for RuleBuilder {}
 /// Element
 ///     The newly created divider.
 ///
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/rule.png
+///    :align: center
+///    :alt:
+///
+/// .. literalinclude :: ../examples/widgets/rule.py
+///    :language: python
+///
 /// See also
 /// --------
 /// `iced_native::widget::rule::Rule <https://docs.rs/iced_native/0.4.0/iced_native/widget/rule/struct.Rule.html>`_
@@ -49,9 +58,9 @@ fn make_rule(
     vertical: Option<u16>,
     style: Option<&WrappedRuleStyleSheet>,
 ) -> PyResult<WrappedWidgetBuilder> {
-    let horizontal = horizontal.unwrap_or_default();
-    let vertical = vertical.unwrap_or_default();
-    if (horizontal != 0) != (vertical != 0) {
+    let horizontal = horizontal.unwrap_or(0);
+    let vertical = vertical.unwrap_or(0);
+    if (horizontal == 0) == (vertical == 0) {
         return Err(PyErr::new::<PyValueError, _>(
             "You need to specify EITHER 'horizontal' OR 'vertical' with a value > 0.",
         ));
@@ -71,12 +80,12 @@ impl ToNative for RuleBuilder {
                 horizontal: spacing,
                 vertical: 0,
                 style,
-            } => (Rule::horizontal(spacing), style),
+            } if spacing > 0 => (Rule::horizontal(spacing), style),
             Self {
                 horizontal: 0,
                 vertical: spacing,
                 style,
-            } => (Rule::vertical(spacing), style),
+            } if spacing > 0 => (Rule::vertical(spacing), style),
             _ => return empty_space(),
         };
         let el = match style {

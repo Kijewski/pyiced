@@ -9,6 +9,7 @@ class SubscriptionExample(IcedApp):
         self.__instant = Instant()
         self.__last_instant = self.__instant
         self.__ts = datetime.now().time()
+        self.__subscription = every(timedelta(milliseconds=16.667), 'tick')
 
     class settings:
         class window:
@@ -26,9 +27,7 @@ class SubscriptionExample(IcedApp):
         ])
 
     def subscriptions(self):
-        return [
-            every(timedelta(milliseconds=16.667), 'tick'),
-        ]
+        return [self.__subscription]
 
     def update(self, msg, clipboard):
         match msg:

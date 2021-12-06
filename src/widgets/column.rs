@@ -66,8 +66,6 @@ impl GCProtocol for ColumnBuilder {
 /// Example
 /// -------
 /// .. image:: ../examples/widgets/column.png
-///    :width: 688
-///    :height: 405
 ///    :align: center
 ///    :alt:
 ///

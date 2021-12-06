@@ -4,10 +4,10 @@ from os.path import abspath, dirname, join
 from traceback import print_exc
 
 from pyiced import (
-    Align, ContainerStyle, ContainerStyleSheet, button, ButtonState,
-    ButtonStyleSheet, Color, column, container, HorizontalAlignment, IcedApp,
-    Length, no_element, row, stream, svg, SvgHandle, text, tooltip,
-    TooltipPosition, text_input, TextInputState,
+    Align, ContainerStyle, button, ButtonState, ButtonStyle, ButtonStyleSheet,
+    Color, column, container, HorizontalAlignment, IcedApp, Length, no_element,
+    row, stream, svg, SvgHandle, text, tooltip, TooltipPosition, text_input,
+    TextInputState,
 )
 
 
@@ -91,8 +91,10 @@ class ChessExample(IcedApp):
             height=Length.FILL,
             align_x=Align.CENTER,
             align_y=Align.CENTER,
-            style=ContainerStyleSheet(background=Color(0.627, 0.612, 0.616)),
         )
+
+    def background_color(self):
+        return Color(0.627, 0.612, 0.616)
 
     def __view_select_role(self):
         alone_state, server_state, client_state = self.__select_role_btns
@@ -218,6 +220,16 @@ class ChessExample(IcedApp):
         else:
             elem = no_element()
 
+        style = ButtonStyle(
+            background=(
+                Color(0.200, 0.600, 0.800)
+                if self.__selected == (x, y) else
+                Color(1.000, 0.808, 0.620)
+                if (x + y) & 1 else
+                Color(0.820, 0.545, 0.278)
+            ),
+            shadow_offset=(0, 0),
+        )
         return tooltip(
             button(
                 self.__button_states[y][x],
@@ -231,16 +243,7 @@ class ChessExample(IcedApp):
                 ('select', x, y, True),
                 width=Length.fill_portion(1),
                 height=Length.fill_portion(1),
-                style=ButtonStyleSheet(
-                    background=(
-                        Color(0.200, 0.600, 0.800)
-                        if self.__selected == (x, y) else
-                        Color(1.000, 0.808, 0.620)
-                        if (x + y) & 1 else
-                        Color(0.820, 0.545, 0.278)
-                    ),
-                    shadow_offset=(0, 0),
-                )
+                style=ButtonStyleSheet(style, style, style, style),
             ),
             f'{chr(ord("a") + 7 - y)}{x + 1}',
             TooltipPosition.FOLLOW_CURSOR,

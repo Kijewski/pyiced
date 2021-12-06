@@ -34,8 +34,6 @@ Quick Example
 -------------
 
 .. image:: ../examples/widgets/button.png
-    :width: 688
-    :height: 405
     :align: center
     :alt: 
 

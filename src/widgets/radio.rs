@@ -68,6 +68,15 @@ impl GCProtocol for RadioBuilder {
 /// Element
 ///     The newly created radio button.
 ///
+/// Example
+/// -------
+/// .. image:: ../examples/widgets/radio.png
+///    :align: center
+///    :alt:
+///
+/// .. literalinclude :: ../examples/widgets/radio.py
+///    :language: python
+///
 /// See also
 /// --------
 /// `iced_native::widget::radio::Radio <https://docs.rs/iced_native/0.4.0/iced_native/widget/radio/struct.Radio.html>`_

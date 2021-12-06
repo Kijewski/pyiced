@@ -21,14 +21,21 @@ Quick Example
 
 A simple counter with two buttons to increment and decrement a value:
 
-.. image:: _static/images/examples/Counter.png
-    :width: 471
-    :height: 361
+.. image:: ../examples/counter.png
     :align: center
     :alt: 
 
 .. literalinclude :: ../examples/counter.py
    :language: python
+
+Bigger Example
+--------------
+
+.. image:: ../examples/chess.png
+    :align: center
+    :alt:
+
+Please find the source code in the :ref:`examples/chess.py <examples:Two-player Online Chess>`.
 
 Table of Contents
 -----------------

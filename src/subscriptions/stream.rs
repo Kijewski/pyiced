@@ -162,7 +162,33 @@ where
     }
 }
 
-/// TODO
+/// stream($module, /, async_generator)
+/// --
+///
+/// Listen for messages until the :class:`asynchronous generator <typing.AsyncGenerator>` is exhausted.
+///
+/// Arguments
+/// ---------
+/// async_generator : AsyncGenerator[Optional[object], None]
+///     An asynchronous generator of messages.
+///
+/// Returns
+/// -------
+/// Subscription
+///     The wrapped generator.
+///
+/// Example
+/// -------
+/// .. image:: ../examples/stream.png
+///    :align: center
+///    :alt:
+///
+/// .. literalinclude :: ../examples/stream.py
+///     :language: python
+///
+/// See also
+/// --------
+/// `iced_futures::subscription::Subscription <https://docs.rs/iced_futures/0.3.0/iced_futures/subscription/struct.Subscription.html>`_
 #[pyfunction(name = "stream")]
 fn make_stream(py: Python, async_generator: Py<PyAny>) -> PyResult<WrappedSubscription> {
     Ok(Stream::try_from((py, async_generator))?.into())

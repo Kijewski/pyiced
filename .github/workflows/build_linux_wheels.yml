@@ -29,7 +29,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.9"
+          python-version: "3.10"
 
       - name: Install requirements
         run: |
@@ -48,7 +48,18 @@ jobs:
             sh /tmp/rustup-init.sh -y
           CIBW_ENVIRONMENT: PATH=$HOME/.cargo/bin:$PATH
           CIBW_BEFORE_ALL_LINUX: |
-            yum install -y freetype-devel libxkbcommon-devel || apt install -y libfreetype-dev libxkbcommon-dev
+            yum install -y freetype-devel || true
+            yum install -y libxkbcommon-devel || true
+
+            apt-get update || true
+            apt install -y libfreetype-dev || true
+            apt install -y libfreetype6-dev || true
+            apt install -y libxkbcommon-dev || true
+            apt install -y libxkbcommon-x11-dev || true
+
+            apk update || true
+            apk add freetype-dev || true
+            apk add libxkbcommon-dev || true
 
       - name: Store artifacts
         uses: actions/upload-artifact@v2

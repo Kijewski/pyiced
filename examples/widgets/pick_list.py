@@ -22,9 +22,9 @@ class PickListExample(IcedApp):
         if self.__enabled:
             element = pick_list(
                 self.__pick_list_state,
-                ['Python', 'Rust', 'both', 'neither'],
                 self.__selected,
-                self.__select,
+                'select',
+                ['Python', 'Rust', 'both', 'neither'],
             )
         else:
             element = text(':-(')
@@ -37,18 +37,13 @@ class PickListExample(IcedApp):
 
     def update(self, msg, clipboard):
         match msg:
-            case 'enable':
-                self.__enabled = True
-            case 'disable':
+            case 'select', 'neither':
                 self.__enabled = False
                 return [reenable()]
-
-    def __select(self, value):
-        if value == 'neither':
-            self.__selected = None
-            return 'disable'
-
-        self.__selected = value
+            case 'select', value:
+                self.__selected = value
+            case 'enable':
+                self.__enabled = True
 
 
 async def reenable():

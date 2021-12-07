@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
 use crate::assign;
-use crate::common::{to_msg_fn, GCProtocol, Message, ToNative};
+use crate::common::{GCProtocol, Message, ToNative};
 use crate::states::{pick_list_with_state, PickListState, WrappedPickListState};
 use crate::styles::{PickListStyleSheet, WrappedPickListStyleSheet};
 use crate::widgets::WrappedWidgetBuilder;
@@ -21,7 +21,7 @@ pub(crate) struct PickListBuilder {
     pub state: PickListState,
     pub options: Vec<String>,
     pub selected: Option<String>,
-    pub on_selected: Py<PyAny>,
+    pub token: Py<PyAny>,
     pub text_size: Option<u16>,
     pub font: Option<Font>,
     pub style: Option<PickListStyleSheet>,
@@ -29,13 +29,13 @@ pub(crate) struct PickListBuilder {
 
 impl GCProtocol for PickListBuilder {
     fn traverse(&self, visit: &pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
-        visit.call(&self.on_selected)?;
+        visit.call(&self.token)?;
         Ok(())
     }
 }
 
 #[pyfunction(name = "pick_list")]
-/// pick_list($module, /, state, options, selected, on_selected, *, text_size=None, font=None, style=None)
+/// pick_list($module, /, state, selected, token, options, *, text_size=None, font=None, style=None)
 /// --
 ///
 /// A widget for selecting a single value from a list of options.
@@ -44,14 +44,12 @@ impl GCProtocol for PickListBuilder {
 /// ----------
 /// state : PickListState
 ///     Current state of the pick list. The same object must be given between calls.
-/// options : Iterable[Optional[str]]
-///     Values to select from.
 /// selected : Optional[str]
 ///     The currently selected value.
-/// on_selected : Callable[[str], Optional[object]]
-///     Function to call when a new value was selected.
-///
-///     The function can return a message that will be received in the app's :meth:`~pyiced.IcedApp.update` loop.
+/// token : Callable[[str], Optional[object]]
+///     When the user select a value, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
+/// options : Iterable[Optional[str]]
+///     Values to select from.
 /// text_size : Optional[int]
 ///     The text size of the pick list.
 /// font : Optional[Font]
@@ -79,9 +77,9 @@ impl GCProtocol for PickListBuilder {
 fn make_pick_list(
     py: Python,
     state: &WrappedPickListState,
-    options: &PyAny,
     selected: Option<String>,
-    on_selected: Py<PyAny>,
+    token: Py<PyAny>,
+    options: &PyAny,
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
     style: Option<&WrappedPickListStyleSheet>,
@@ -107,7 +105,7 @@ fn make_pick_list(
         state: state.0.clone(),
         options,
         selected,
-        on_selected,
+        token,
         text_size,
         font: font.map(|o| o.0),
         style: style.map(|o| o.0),
@@ -118,7 +116,10 @@ fn make_pick_list(
 impl ToNative for PickListBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
         pick_list_with_state(&self.state, |state| {
-            let on_selected = to_msg_fn(&self.on_selected);
+            let token = self.token.clone();
+            let on_selected = move |value: String| {
+                Python::with_gil(|py| Message::Python((token.clone(), &value).into_py(py)))
+            };
             let options = Cow::Owned(self.options.clone());
             let el = PickList::new(state, options, self.selected.clone(), on_selected);
             let el = assign!(el, self, text_size, font, style);

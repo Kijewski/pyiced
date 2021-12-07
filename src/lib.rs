@@ -419,19 +419,19 @@ macro_rules! partially_defaulted_stylesheet {
         let $param = match $param {
             ::std::option::Option::Some(o) => o.0.0,
             ::std::option::Option::None => {
-                struct Partial {
-                    $( $active: $style),*
+                struct Partial<'a> {
+                    $( $active: &'a $style),*
                 }
 
-                impl $stylesheet for Partial {
+                impl $stylesheet for Partial<'_> {
                     $(
                         fn $active(&self) -> Style {
-                            self.$active
+                            *self.$active
                         }
                     )*
                 }
 
-                Partial { $($active),* }.$param()
+                Partial { $($active: &$active),* }.$param()
             },
         };
     };

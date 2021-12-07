@@ -44,21 +44,21 @@ impl GCProtocol for ContainerBuilder {
 /// ----------
 /// content : Element
 ///     The content of the container.
-/// padding : Option<u16>
+/// padding : Optional[int]
 ///     The padding around the content.
-/// width : Option<&WrappedLength>
+/// width : Optional[Length]
 ///     The width of the container.
-/// height : Option<&WrappedLength>
+/// height : Optional[Length]
 ///     The height of the container.
-/// max_width : Option<u32>
+/// max_width : Optional[int]
 ///     The maximum width of the container
-/// max_height : Option<u32>
+/// max_height : Optional[int]
 ///     The maximum height of the container.
-/// align_x : Option<&WrappedAlign>
+/// align_x : Optional[Length]
 ///     The horizontal alignment of the content inside the container.
-/// align_y : Option<&WrappedAlign>
+/// align_y : Optional[Length]
 ///     The vertical alignment of the content inside the container.
-/// style : Option<&WrappedContainerStyle>
+/// style : Optional[ContainerStyleSheet]
 ///     The style of the container.
 ///
 /// Returns

@@ -74,7 +74,7 @@ impl GCProtocol for SliderBuilder {
 /// Returns
 /// -------
 /// Element
-///     The newly created .
+///     The newly created slider.
 ///
 /// See also
 /// --------

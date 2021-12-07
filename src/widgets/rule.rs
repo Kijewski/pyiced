@@ -22,7 +22,7 @@ pub(crate) struct RuleBuilder {
 impl GCProtocol for RuleBuilder {}
 
 #[pyfunction(name = "rule")]
-/// rule($module, *, horizontal=0, vertical=0, style=None)
+/// rule($module, *, horizontal=None, vertical=None, style=None)
 /// --
 ///
 /// Display a horizontal or vertical rule for dividing content.

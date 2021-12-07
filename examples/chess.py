@@ -151,9 +151,6 @@ class ChessExample(IcedApp):
         if not self.__server_address:
             return text('Connecting to server …')
 
-        def set_value(index, value):
-            self.__server_address[index] = value
-
         return container(
             column(
                 [
@@ -162,17 +159,17 @@ class ChessExample(IcedApp):
                         [
                             text_input(
                                 self.__client_inputs[0],
+                                'host',
                                 'Host / IP address',
                                 self.__server_address[0],
-                                lambda value: set_value(0, value),
                                 padding=4,
                                 width=Length.units(148),
                             ),
                             text_input(
                                 self.__client_inputs[1],
+                                'port',
                                 'Port',
                                 self.__server_address[1],
-                                lambda value: set_value(1, value),
                                 padding=4,
                                 width=Length.units(148),
                             ),
@@ -294,6 +291,15 @@ class ChessExample(IcedApp):
                 self.__writer = writer
                 self.__subscription = stream(self.__read_connection(reader))
                 self.__role = 'playing'
+
+            case ('host', value):
+                self.__server_address[0] = value
+
+            case ('port', value):
+                self.__server_address[1] = value
+
+            case ('host' | 'port', None, 'submit'):
+                return [('client', self.__server_address)]
 
     async def __read_connection(self, reader):
         while not reader.at_eof():

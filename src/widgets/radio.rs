@@ -34,7 +34,7 @@ impl GCProtocol for RadioBuilder {
 }
 
 #[pyfunction(name = "radio")]
-/// radio($module, /, selected, token, value, label, *, size=None, width=None, spacing=None, text_size=None)
+/// radio($module, /, selected, token, value, label, *, size=None, width=None, spacing=None, text_size=None, style=None)
 /// --
 ///
 /// A circular button representing a choice.

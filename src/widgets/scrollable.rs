@@ -44,7 +44,7 @@ impl GCProtocol for ScrollableBuilder {}
 /// ----------
 /// state : ScrollableState
 ///     Current state of the scroll container. The same object must be given between calls.
-/// children : Iterator[Optional[Element]]
+/// children : Iterable[Optional[Element]]
 ///     Elements of the scrollable :func:`~pyiced.column`.
 /// spacing : Optional[int]
 ///     Vertical spacing between elements.

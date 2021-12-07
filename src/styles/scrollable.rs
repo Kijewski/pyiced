@@ -145,11 +145,11 @@ getters! {
 ///
 /// Parameters
 /// ----------
-/// active : ScrollableStyle
+/// active : ScrollbarStyle
 ///     Normal style of the scrollable.
-/// hovered : Optional[ScrollableStyle]
+/// hovered : Optional[ScrollbarStyle]
 ///     Style of the scrollable when the cursor is hovering over it. Defaults to "active".
-/// dragging : Optional[ScrollableStyle]
+/// dragging : Optional[ScrollbarStyle]
 ///     Style of a scrollbar that is being dragged. Defaults to "hovered".
 ///
 /// See also

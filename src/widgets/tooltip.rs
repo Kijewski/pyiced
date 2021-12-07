@@ -33,7 +33,7 @@ impl GCProtocol for TooltipBuilder {
 }
 
 #[pyfunction(name = "tooltip")]
-/// tooltip($module, /, content, tooltip, position, *, font, gap, padding)
+/// tooltip($module, /, content, tooltip, position, *, font=None, size=None, gap=None, padding=None, style=None)
 /// --
 ///
 /// Make a tooltip.
@@ -46,10 +46,10 @@ impl GCProtocol for TooltipBuilder {
 ///     Tooltip text to display.
 /// position : TooltipPosition
 ///     The position of the tooltip.
-/// size : Optional[int]
-///     The size of the text of the tooltip.
 /// font : Optional[Font]
 ///     The font of the tooltip.
+/// size : Optional[int]
+///     The size of the text of the tooltip.
 /// gap : Optional[int]
 ///     The gap between the content and its tooltip.
 /// padding : Optional[int]
@@ -69,8 +69,8 @@ fn make_tooltip(
     content: &WrappedWidgetBuilder,
     tooltip: String,
     position: &WrappedTooltipPosition,
-    size: Option<u16>,
     font: Option<&WrappedFont>,
+    size: Option<u16>,
     gap: Option<u16>,
     padding: Option<u16>,
     style: Option<&WrappedContainerStyle>,

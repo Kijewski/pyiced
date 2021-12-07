@@ -16,7 +16,7 @@ pub(crate) struct NoElementBuilder;
 impl GCProtocol for NoElementBuilder {}
 
 #[pyfunction(name = "no_element")]
-/// no_element($module, /, content, *, padding=None, width=None, height=None, max_width=None, max_height=None, align_x=None, align_y=None)
+/// no_element()
 /// --
 ///
 /// A :func:`~pyiced.space()` with minimum width and height.

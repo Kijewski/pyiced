@@ -43,7 +43,7 @@ impl WrappedSvgHandle {
     /// from_memory(bytes)
     /// --
     ///
-    /// Creates an SVG Handle pointing to the vector image of the given path.
+    /// Creates an SVG handle containing the image data directly.
     ///
     /// Parameters
     /// ----------

@@ -85,7 +85,7 @@ init_mod!(
     Tooltip(tooltip -> TooltipBuilder),
 );
 
-/// TODO
+/// A displayable widget that can be used in :meth:`~pyiced.IcedApp.view()`.
 #[pyclass(name = "Element", module = "pyiced")]
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedWidgetBuilder(pub WidgetBuilder);

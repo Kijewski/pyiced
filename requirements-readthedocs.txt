@@ -1,5 +1,5 @@
 # keep synchronous to Cargo.toml
-pyiced == 0.3.0a3
+pyiced == 0.3.0a4
 
 # keep synchronous to requirements-dev.txt
 cloud-sptheme == 1.*

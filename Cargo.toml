@@ -7,13 +7,14 @@ homepage = "https://github.com/Kijewski/pyiced"
 
 # KEEP SYNCHRONOUS TO SETUP.CFG (version)
 # KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT (pyiced)
+# KEEP SYNCHRONOUS TO IMAGE LINKS IN README.TXT (raw.githubusercontent.com)
 # KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
 # Rust uses semver (https://semver.org/).
 # Python uses PEP 440 (https://www.python.org/dev/peps/pep-0440/).
 # Normal releases are exactly the same.
 # Pre-releases are X.Y.Z-aN in semver, and X.Y.ZaN in PEP 440.
 # Post-releases are X.Y.Z+N in semver, and X.Y.Z.postN in PEP 440.
-version = "0.3.0-a3"
+version = "0.3.0-a4"
 
 [lib]
 name = "_pyiced"

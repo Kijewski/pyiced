@@ -196,7 +196,8 @@ impl Application for PythonApp {
         match &self.interop.background_color {
             Some(background_color) => Python::with_gil(|py| match background_color.call0(py) {
                 Ok(s) => match s.extract(py) {
-                    Ok(WrappedColor(color)) => color,
+                    Ok(Some(WrappedColor(color))) => color,
+                    Ok(None) => Color::WHITE,
                     Err(err) => {
                         err.print(py);
                         Color::WHITE

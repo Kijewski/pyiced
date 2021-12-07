@@ -260,7 +260,7 @@ class IcedApp(metaclass=ABCMeta):
 
     def background_color(self) -> Optional[Color]:
         '''
-        Returns the background color of the application.
+        Returns the background color of the application. Defaults to white.
         '''
         return Color.WHITE
 

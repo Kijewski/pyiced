@@ -6,4 +6,3 @@ cloud-sptheme == 1.*
 myst-parser == 0.15.*
 sphinx == 4.*
 sphinx_autodoc_typehints == 1.*
-sphinxprettysearchresults == 0.3.*

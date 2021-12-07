@@ -32,18 +32,14 @@ class RadioExample(IcedApp):
         return column(
             [
                 text("What's your favorite season?"),
-                radio(1, 'Spring', self.__season, select_season),
-                radio(2, 'Summer', self.__season, select_season),
-                radio(3, 'Fall', self.__season, select_season),
-                radio(4, 'Winter', self.__season, select_season),
+                radio(self.__season, 'select', 1, 'Spring'),
+                radio(self.__season, 'select', 2, 'Summer'),
+                radio(self.__season, 'select', 3, 'Fall'),
+                radio(self.__season, 'select', 4, 'Winter'),
             ],
             padding=20, spacing=5,
             width=Length.FILL, height=Length.FILL,
         )
-
-
-def select_season(value):
-    return 'select', value
 
 
 if __name__ == '__main__':

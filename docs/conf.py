@@ -18,7 +18,6 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
     'sphinx_autodoc_typehints',
-    'sphinxprettysearchresults',
 ]
 
 display_toc = True

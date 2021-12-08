@@ -34,17 +34,17 @@ impl GCProtocol for RadioBuilder {
 }
 
 #[pyfunction(name = "radio")]
-/// radio($module, /, selected, token, value, label, *, size=None, width=None, spacing=None, text_size=None, style=None)
+/// radio($module, /, token, selected, value, label, *, size=None, width=None, spacing=None, text_size=None, style=None)
 /// --
 ///
 /// A circular button representing a choice.
 ///
 /// Parameters
 /// ----------
-/// selected : Optional[int]
-///     The identifier of the currently selected option.
 /// token : object
 ///     When the user select this choice, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
+/// selected : Optional[int]
+///     The identifier of the currently selected option.
 /// value : int
 ///     Identifier of the option.
 /// label : str
@@ -78,8 +78,8 @@ impl GCProtocol for RadioBuilder {
 /// --------
 /// `iced_native::widget::radio::Radio <https://docs.rs/iced_native/0.4.0/iced_native/widget/radio/struct.Radio.html>`_
 fn make_radio(
-    selected: Option<i64>,
     token: Py<PyAny>,
+    selected: Option<i64>,
     value: i64,
     label: String,
     size: Option<u16>,

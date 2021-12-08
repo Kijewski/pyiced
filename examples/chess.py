@@ -158,16 +158,16 @@ class ChessExample(IcedApp):
                     row(
                         [
                             text_input(
-                                self.__client_inputs[0],
                                 'host',
+                                self.__client_inputs[0],
                                 'Host / IP address',
                                 self.__server_address[0],
                                 padding=4,
                                 width=Length.units(148),
                             ),
                             text_input(
-                                self.__client_inputs[1],
                                 'port',
+                                self.__client_inputs[1],
                                 'Port',
                                 self.__server_address[1],
                                 padding=4,

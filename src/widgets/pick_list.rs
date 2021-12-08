@@ -35,19 +35,19 @@ impl GCProtocol for PickListBuilder {
 }
 
 #[pyfunction(name = "pick_list")]
-/// pick_list($module, /, state, selected, token, options, *, text_size=None, font=None, style=None)
+/// pick_list($module, /, token, state, selected, options, *, text_size=None, font=None, style=None)
 /// --
 ///
 /// A widget for selecting a single value from a list of options.
 ///
 /// Parameters
 /// ----------
+/// token : Callable[[str], Optional[object]]
+///     When the user select a value, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
 /// state : PickListState
 ///     Current state of the pick list. The same object must be given between calls.
 /// selected : Optional[str]
 ///     The currently selected value.
-/// token : Callable[[str], Optional[object]]
-///     When the user select a value, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
 /// options : Iterable[Optional[str]]
 ///     Values to select from.
 /// text_size : Optional[int]
@@ -76,9 +76,9 @@ impl GCProtocol for PickListBuilder {
 /// `iced_native::widget::pick_list::PickList <https://docs.rs/iced_native/0.4.0/iced_native/widget/pick_list/struct.PickList.html>`_
 fn make_pick_list(
     py: Python,
+    token: Py<PyAny>,
     state: &WrappedPickListState,
     selected: Option<String>,
-    token: Py<PyAny>,
     options: &PyAny,
     text_size: Option<u16>,
     font: Option<&WrappedFont>,
@@ -115,11 +115,11 @@ fn make_pick_list(
 
 impl ToNative for PickListBuilder {
     fn to_native(&self, _py: Python) -> Element<'static, Message> {
-        pick_list_with_state(&self.state, |state| {
-            let token = self.token.clone();
-            let on_selected = move |value: String| {
-                Python::with_gil(|py| Message::Python((token.clone(), &value).into_py(py)))
-            };
+        let token = self.token.clone();
+        let on_selected = move |value| {
+            Python::with_gil(|py| Message::Python((token.clone(), &value).into_py(py)))
+        };
+        pick_list_with_state(&self.state, move |state| {
             let options = Cow::Owned(self.options.clone());
             let el = PickList::new(state, options, self.selected.clone(), on_selected);
             let el = assign!(el, self, text_size, font, style);

@@ -21,9 +21,9 @@ class PickListExample(IcedApp):
     def view(self):
         if self.__enabled:
             element = pick_list(
+                'select',
                 self.__pick_list_state,
                 self.__selected,
-                'select',
                 ['Python', 'Rust', 'both', 'neither'],
             )
         else:

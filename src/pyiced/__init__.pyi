@@ -501,9 +501,9 @@ class CheckboxStyleSheet:
 
 
 def checkbox(
+    token: object,
     is_checked: bool,
     label: str,
-    f: Optional[Callable[[bool], Optional[object]]] = None,
     *,
     size: Optional[_U16] = None,
     width: Optional[Length] = None,
@@ -731,9 +731,9 @@ class PickListStyleSheet:
 
 
 def pick_list(
+    token: object,
     state : PickListState,
     selected : Optional[str],
-    token: object,
     options : Iterable[Optional[str]],
     *,
     text_size : Optional[_U16],
@@ -846,8 +846,8 @@ class RadioStyleSheet:
 
 
 def radio(
-    selected: Optional[int],
     token: object,
+    selected: Optional[int],
     value: int,
     label: str,
     *,

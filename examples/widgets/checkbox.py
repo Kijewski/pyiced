@@ -20,9 +20,9 @@ class CheckboxExample(IcedApp):
 
     def view(self):
         styled_checkbox = checkbox(
+            'set',
             self.__is_checked,
             self.title(),
-            self.__set_checked,
             style=CheckboxStyleSheet(
                 active=CheckboxStyle(
                     'active',
@@ -40,8 +40,10 @@ class CheckboxExample(IcedApp):
             width=Length.FILL, height=Length.FILL,
         )
 
-    def __set_checked(self, value):
-        self.__is_checked = value
+    def update(self, msg, clipboard):
+        match msg:
+            case 'set', is_checked:
+                self.__is_checked = is_checked
 
 
 if __name__ == '__main__':

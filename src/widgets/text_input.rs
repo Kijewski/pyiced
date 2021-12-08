@@ -37,19 +37,19 @@ impl GCProtocol for TextInputBuilder {
 }
 
 #[pyfunction(name = "text_input")]
-/// text_input($module, /, state, token, placeholder, value, *, font=None, width=None, max_width=None, padding=None, size=None, password=False, style=None)
+/// text_input($module, /, token, state, placeholder, value, *, font=None, width=None, max_width=None, padding=None, size=None, password=False, style=None)
 /// --
 ///
 /// A field that can be filled with text.
 ///
 /// Parameters
 /// ----------
-/// state : TextInputState
-///     Current state of the input element. The same object must be given between calls.
 /// token : object
-///     When the user changes the text, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
+///     When the user changes the text, a message ``(token, new_value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
 ///
 ///     When the user hits enter, a message ``(token, None, 'submit')`` is sent.
+/// state : TextInputState
+///     Current state of the input element. The same object must be given between calls.
 /// placeholder : str
 ///     Placeholder text for an element input.
 /// value : str
@@ -78,8 +78,8 @@ impl GCProtocol for TextInputBuilder {
 /// --------
 /// `iced_native::widget::text_input::TextInput <https://docs.rs/iced_native/0.4.0/iced_native/widget/text_input/struct.TextInput.html>`_
 fn make_text_input(
-    state: &WrappedTextInputState,
     token: Py<PyAny>,
+    state: &WrappedTextInputState,
     placeholder: String,
     value: String,
     font: Option<&WrappedFont>,
@@ -111,9 +111,8 @@ impl ToNative for TextInputBuilder {
         let on_submit = Message::Python((self.token.clone(), (), "submit").into_py(py));
 
         let token = self.token.clone();
-        let on_change = move |s: String| {
-            Python::with_gil(|py| Message::Python((token.clone(), &s).into_py(py)))
-        };
+        let on_change =
+            move |s| Python::with_gil(|py| Message::Python((token.clone(), &s).into_py(py)));
 
         text_input_with_state(&self.state, move |state| {
             let el = TextInput::new(state, &self.placeholder, &self.value, on_change);

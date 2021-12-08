@@ -37,10 +37,6 @@ Details
 Type aliases
 ------------
 
-.. py:data:: pyiced.Command
+.. autoclass:: pyiced.Command
 
-   :data:`~typing.Union`\ [\ :class:`~typing.Awaitable`\ [\ :data:`~typing.Optional`\ [\ :class:`object`]] | :class:`object`]
-
-.. py:data:: pyiced.Commands
-
-   :class:`~typing.Iterable`\ [\ :data:`~typing.Optional`\ [\ :class:`~pyiced.Command`]]
+.. autoclass:: pyiced.Commands

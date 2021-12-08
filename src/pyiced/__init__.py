@@ -22,7 +22,7 @@ from abc import ABCMeta, abstractmethod
 from asyncio import get_event_loop, Queue as AsyncQueue, run as _run, run_coroutine_threadsafe
 from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Awaitable, Callable, Iterable, NewType, NoReturn, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Iterable, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
 
@@ -68,8 +68,8 @@ __author__ = _pyiced.__author__
 __license__ = _pyiced.__license__
 __version__ = _pyiced.__version__
 
-Command = NewType('Command', Union[Awaitable[Optional[object]], object])
-Commands = NewType('Commands', Iterable[Optional[Command]])
+Command = Union[Awaitable[Optional[object]], object]
+Commands = Iterable[Optional[Command]]
 
 ContainerStyle = ContainerStyleSheet
 PaneGridStyle = PaneGridStyleSheet
@@ -80,6 +80,8 @@ TooltipStyle = TooltipStyleSheet
 
 
 class WindowSettings:
+    '''TODO'''
+
     @property
     def size(self) -> Tuple[int, int]:
         '''
@@ -133,6 +135,8 @@ class WindowSettings:
 
 
 class Settings:
+    '''TODO'''
+
     @property
     def default_text_size(self) -> int:
         '''
@@ -174,7 +178,9 @@ class Settings:
 
 
 class IcedApp(metaclass=ABCMeta):
-    def run(self, *, run: Optional[Callable[[Awaitable], None]]=None) -> NoReturn:
+    '''TODO'''
+
+    def run(self, *, run: Optional[Callable[[Awaitable[Any]], Union[None, Any, NoReturn]]]=None) -> NoReturn:
         '''
         Runs the application.
 
@@ -187,14 +193,14 @@ class IcedApp(metaclass=ABCMeta):
         run
             Coroutine executor. Defaults to :func:`asyncio.run()`.
         '''
-        return run_iced(self, run=run)
+        return _run_iced(self, run=run)
 
     @property
     def settings(self) -> Optional[Settings]:
         '''
         The initial settings of the program.
 
-        Once queried once.
+        Only queried once.
         '''
         return None
 
@@ -274,7 +280,7 @@ class IcedApp(metaclass=ABCMeta):
         ...
 
 
-def run_iced(app: IcedApp, *, run=None) -> NoReturn:
+def _run_iced(app: IcedApp, *, run=None) -> NoReturn:
     return _pyiced.run_iced(
         new=app.new,
         title=app.title,

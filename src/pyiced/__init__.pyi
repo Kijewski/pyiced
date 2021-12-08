@@ -1,7 +1,11 @@
+from datetime import timedelta
 from functools import wraps
 from math import isnan, isinf, isfinite
 from pathlib import Path
-from typing import Annotated, Callable, Iterable, Optional, Tuple, Union, final, get_args, get_origin, get_type_hints, overload
+from typing import (
+    Annotated, Any, Awaitable, Callable, Iterable, Literal, NoReturn, Optional, Protocol, Tuple,
+    TypeVar, Union, final, get_args, get_origin, get_type_hints, overload,
+)
 
 
 class _CheckableType:
@@ -95,6 +99,8 @@ _U64 = Annotated[int, _ValueRange(range(0x1_0000_0000_0000_0000))]
 _FloatNonNan = Annotated[float, _NonNan()]
 _FloatNonInf = Annotated[float, _NonInf()]
 _FloatFinite = Annotated[float, _Finite()]
+
+DeltaSeconds = TypeVar('DeltaSeconds', Annotated[float, _Finite(), _Positive()])
 
 
 ###################################################################################################
@@ -221,17 +227,17 @@ class Size:
 
     def __init__(
         self,
-        width: Annotated[_FloatNonNan, _NonNegative()],
-        height: Annotated[_FloatNonNan, _NonNegative()],
+        width: Annotated[float, _NonNan(), _NonNegative()],
+        height: Annotated[float, _NonNan(), _NonNegative()],
     ) -> Size:
         ...
 
     @property
-    def width(self) -> Annotated[_FloatNonNan, _NonNegative()]:
+    def width(self) -> Annotated[float, _NonNan(), _NonNegative()]:
         '''The "width" parameter given when constructing this size.'''
 
     @property
-    def height(self) -> Annotated[_FloatNonNan, _NonNegative()]:
+    def height(self) -> Annotated[float, _NonNan(), _NonNegative()]:
         '''The "height" parameter given when constructing this size.'''
 
     ZERO: Size
@@ -325,7 +331,208 @@ class Element:
     '''A displayable widget that can be used in view().'''
 
 
-# TODO: __init__.py
+Command = Union[Awaitable[Optional[object]], object]
+Commands = Iterable[Optional[Command]]
+
+
+@final
+class Subscription:
+    '''TODO'''
+
+    NONE: Subscription
+    '''TODO'''
+
+    UNCAPTURED: Subscription
+    '''TODO'''
+
+
+def every(
+    duration: Union[DeltaSeconds, timedelta],
+    token: object,
+) -> Subscription:
+    '''A Subscription that produces messages at a set interval.'''
+
+
+@final
+class Message:
+    '''A message generated through user interaction.'''
+
+    @property
+    def kind(self) -> Literal[None, 'mouse', 'window', 'touch', 'keyboard']:
+        '''The kind of the native message.'''
+
+    # keyboard
+
+    @property
+    def keyboard(self) -> Literal[None, 'keypressed', 'keyreleased', 'characterreceived', 'modifierschanged']:
+        '''The kind of the keyboard interaction.'''
+
+    @property
+    def key_code(self) -> Optional[str]:
+        '''The name of the pressed or released key.'''
+
+    @property
+    def shift(self) -> Optional[bool]:
+        '''The shift key was pressed / released.'''
+
+    @property
+    def alt(self) -> Optional[bool]:
+        '''The alt key was pressed / released.'''
+
+    @property
+    def logo(self) -> Optional[bool]:
+        '''The "logo" key was pressed / released.'''
+
+    @property
+    def control(self) -> Optional[bool]:
+        '''The control key was pressed / released.'''
+
+    @property
+    def characterreceived(self) -> Optional[str]:
+        '''The control key was pressed / released.'''
+
+    # mouse
+
+    @property
+    def mouse(self) -> Literal[None, 'cursorentered', 'cursorleft', 'cursormoved', 'buttonpressed', 'buttonreleased', 'wheelscrolled']:
+        '''A mouse event.'''
+
+    @property
+    def button(self) -> Union[None, Literal['left', 'right', 'middle'], _U32]:
+        '''The mouse cursor was moved.'''
+
+    @property
+    def wheelscrolled(self) -> Literal[None, 'lines', 'pixels']:
+        '''The unit of the scroll movement.'''
+
+    @property
+    def amount(self) -> Optional[Tuple[float, float]]:
+        '''The scroll movement.'''
+
+    # touch
+
+    @property
+    def touch(self) -> Literal[None, 'fingerpressed', 'fingermoved', 'fingerlifted', 'fingerlost']:
+        '''A touch interaction.'''
+
+    @property
+    def finger(self) -> Optional[_U64]:
+        '''A unique identifier representing a finger on a touch interaction.'''
+
+    @property
+    def position(self) -> Optional[Tuple[float, float]]:
+        '''A 2D point for the touch interaction.'''
+
+    # window
+
+    @property
+    def window(self) -> Literal[None, 'resized', 'closerequested', 'focused', 'unfocused', 'filehovered', 'filedropped', 'fileshoveredleft']:
+        '''The kind of the window message.'''
+
+    @property
+    def resized(self) -> Optional[Tuple[int, int]]:
+        '''The width and height in pixels or null, if it's not a resize action.'''
+
+    @property
+    def file(self) -> Optional[Path]:
+        '''The path of the hovering or dropped file.'''
+
+
+@final
+class Clipboard:
+    '''A buffer for short-term storage and transfer within and between applications.'''
+
+    def read(self) -> Optional[str]:
+        '''Reads the current content of the clipboard as text.'''
+
+    def write(self, value: str) -> None:
+        '''Writes the given text contents to the clipboard.'''
+
+
+class WindowSettings(Protocol):
+    '''TODO'''
+
+    size: Tuple[int, int]
+    '''Dimensions of the newly crated window.'''
+
+    min_size: Optional[Tuple[int, int]]
+    '''The minimum size of the window.'''
+
+    max_size: Optional[Tuple[int, int]]
+    '''The maximum size of the window.'''
+
+    resizable: bool
+    '''Whether the window should be resizable or not.'''
+
+    decorations: bool
+    '''Whether the window should have a border, a title bar, etc. or not.'''
+
+    transparent: bool
+    '''Whether the window should be transparent.'''
+
+    always_on_top: bool
+    '''Whether the window will always be on top of other windows.'''
+
+
+class Settings(Protocol):
+    '''TODO'''
+
+    default_text_size: int
+    '''The text size that will be used by default.'''
+
+    exit_on_close_request: bool
+    '''Whether the IcedApp should exit when the user requests the window to close (e.g. the user presses the close button).'''
+
+    antialiasing: bool
+    '''If set to true, the renderer will try to perform antialiasing for some primitives.'''
+
+    window: Optional[WindowSettings]
+    '''The window settings.'''
+
+    default_font: Optional[Font]
+    '''The font that will be used by default.'''
+
+
+class IcedApp:
+    '''TODO'''
+
+    def run(
+        self,
+        *,
+        run: Optional[Callable[[Awaitable[Any]], Union[None, Any, NoReturn]]] = None,
+    ) -> NoReturn:
+        '''Runs the application.'''
+
+    @property
+    def settings(self) -> Optional[Settings]:
+        '''The initial settings of the program.'''
+
+    def new(self) -> Optional[Commands]:
+        '''Initialize the application.'''
+
+    def title(self) -> str:
+        '''The current title of the application.'''
+
+    def should_exit(self) -> bool:
+        '''Returns whether the application should be terminated.'''
+
+    def scale_factor(self) -> Annotated[float, _Finite(), _Positive()]:
+        '''The scale factor of the application.'''
+
+    def fullscreen(self) -> bool:
+        '''True if the program should run in fullscreen mode.'''
+
+    def update(self, msg: Union[Message, object], clipboard: Clipboard) -> Optional[Commands]:
+        '''Handles a message and updates the state of the application.'''
+
+    def subscriptions(self) -> Optional[Iterable[Optional[Subscription]]]:
+        '''Subscriptions for the current state of the application.'''
+
+    def background_color(self) -> Optional[Color]:
+        '''Background color of the application.'''
+
+    def view(self) -> Element:
+        '''Element to display in the application.'''
 
 
 ###################################################################################################
@@ -566,8 +773,8 @@ def container(
     height: Optional[Length] = None,
     max_width: Optional[_U32] = None,
     max_height: Optional[_U32] = None,
-    align_x: Optional[Length] = None,
-    align_y: Optional[Length] = None,
+    align_x: Optional[Align] = None,
+    align_y: Optional[Align] = None,
     style: Optional[ContainerStyle] = None,
 ) -> Element:
     '''An element decorating some content.'''

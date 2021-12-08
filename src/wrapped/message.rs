@@ -236,11 +236,11 @@ impl WrappedMessage {
         })
     }
 
-    /// The mouse cursor was moved
+    /// The mouse cursor was moved.
     ///
     /// Returns
     /// -------
-    /// Optional[tuple[float, float]]
+    /// Optional[Tuple[float, float]]
     ///     Horizontal and vertical pixels, or `None` if cursor was not moved.
     #[getter]
     fn cursormoved(&self) -> Option<(f32, f32)> {
@@ -298,7 +298,7 @@ impl WrappedMessage {
     ///
     /// Returns
     /// -------
-    /// Optional[tuple[float, float]]
+    /// Optional[Tuple[float, float]]
     ///     The horizontal and vertical amount.
     ///     The unit can be determined by inspecting :attr:`~pyiced.Message.wheelscrolled`.
     ///
@@ -357,7 +357,7 @@ impl WrappedMessage {
     ///
     /// Returns
     /// -------
-    /// tuple[float, float]
+    /// Tuple[float, float]
     ///     A 2D point
     #[getter]
     fn position(&self) -> Option<(f32, f32)> {

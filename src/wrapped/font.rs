@@ -12,12 +12,12 @@ use pyo3::{AsPyPointer, PyBufferProtocol};
 use crate::common::debug_str;
 use crate::format_to_cow;
 
-struct NameAndData {
-    name: String,
-    bytes: Vec<u8>,
+pub(crate) struct NameAndData {
+    pub name: String,
+    pub bytes: Vec<u8>,
 }
 
-static KNOWN_FONTS: Mutex<Vec<NameAndData>> = const_mutex(Vec::new());
+pub(crate) static KNOWN_FONTS: Mutex<Vec<NameAndData>> = const_mutex(Vec::new());
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedFont>()?;
@@ -51,7 +51,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 #[derive(Debug, Clone)]
 pub(crate) struct WrappedFont(pub Font);
 
-fn font_from_list(font: &NameAndData) -> WrappedFont {
+pub(crate) fn font_from_list(font: &NameAndData) -> WrappedFont {
     let name = font.name.as_str();
     let bytes = font.bytes.as_slice();
 
@@ -69,13 +69,11 @@ impl WrappedFont {
     fn new(name: &str, data: &[u8]) -> Self {
         let mut guard = KNOWN_FONTS.lock();
         let list = &mut *guard;
-
         for font in list.iter_mut() {
             if font.name == name {
                 return font_from_list(font);
             }
         }
-
         list.push(NameAndData {
             name: name.to_owned(),
             bytes: data.to_owned(),

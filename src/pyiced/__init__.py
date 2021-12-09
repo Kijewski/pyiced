@@ -22,7 +22,7 @@ from abc import ABCMeta, abstractmethod
 from asyncio import get_event_loop, Queue as AsyncQueue, run as _run, run_coroutine_threadsafe
 from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Any, Awaitable, Callable, Iterable, NoReturn, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Iterable, Iterator, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
 
@@ -52,6 +52,11 @@ __all__ = [
     # subscription
     'every', 'stream', 'Subscription',
 ]
+
+if hasattr(_pyiced, 'findfont'):
+    __all__.extend((
+        'FontFamily', 'FontId', 'FontStretch', 'FontStyle', 'FontWeight', 'findfont', 'systemfonts',
+    ))
 
 for name in __all__:
     exec(f'{name} = _pyiced.{name}')

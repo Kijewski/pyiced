@@ -48,6 +48,8 @@ Table of Contents
     elements.rst
     state_objects.rst
     values.rst
+    colors.rst
+    fonts.rst
     styles.rst
     subscriptions.rst
 

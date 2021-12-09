@@ -27,12 +27,20 @@ use pyo3::prelude::*;
 static GLOBAL: MiMalloc = MiMalloc;
 
 macro_rules! init_mod {
-    ($(mod $name:ident;)*) => {
-        $( mod $name; )*
+    ($(mod $name:ident $($feature:literal)?;)*) => {
+        $(
+            $( #[cfg(feature = $feature)] )?
+            mod $name;
+        )*
 
         #[pymodule]
         fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
-            $( $name::init_mod(py, m)?; )*
+            $(
+                $( #[cfg(feature = $feature)] )?
+                {
+                    $name::init_mod(py, m)?;
+                }
+            )*
             Ok(())
         }
     };
@@ -43,6 +51,7 @@ init_mod! {
     mod async_tasks;
     mod common;
     mod extractor;
+    mod fontdb_integration "fontdb-integration";
     mod states;
     mod styles;
     mod subscriptions;

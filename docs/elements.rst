@@ -10,6 +10,7 @@ Overview
     ~pyiced.column
     ~pyiced.container
     ~pyiced.image
+    ~pyiced.no_element
     ~pyiced.pick_list
     ~pyiced.progress_bar
     ~pyiced.radio
@@ -22,7 +23,6 @@ Overview
     ~pyiced.text
     ~pyiced.text_input
     ~pyiced.tooltip
-    ~pyiced.no_element
 
 Details
 -------

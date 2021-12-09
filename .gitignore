@@ -34,3 +34,4 @@ run.cgi
 !.git*
 !.reuse/
 !.readthedocs.yaml
+!.flake8

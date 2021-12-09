@@ -4,10 +4,10 @@ from os.path import abspath, dirname, join
 from traceback import print_exc
 
 from pyiced import (
-    Align, ContainerStyle, button, ButtonState, ButtonStyle, ButtonStyleSheet,
-    Color, column, container, HorizontalAlignment, IcedApp, Length, no_element,
-    row, stream, svg, SvgHandle, text, tooltip, TooltipPosition, text_input,
-    TextInputState,
+    Align, ContainerStyle, button, ButtonState, ButtonStyle,
+    ButtonStyleSheet, Color, column, container, HorizontalAlignment,
+    IcedApp, Length, no_element, row, stream, svg, SvgHandle, text,
+    tooltip, TooltipPosition, text_input, TextInputState,
 )
 
 

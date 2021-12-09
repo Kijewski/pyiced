@@ -1,7 +1,9 @@
 from asyncio import open_connection
 from contextlib import closing
 
-from pyiced import Align, container, IcedApp, image, ImageHandle, Length, text
+from pyiced import (
+    Align, container, IcedApp, image, ImageHandle, Length, text,
+)
 
 
 class ImageExample(IcedApp):

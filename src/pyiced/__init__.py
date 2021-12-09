@@ -1,4 +1,4 @@
-# Copyright (c) 2021 René Kijewski <rene.[surname]@fu-berlin.de>
+# Copyright (c) 2021 René Kijewski <pypi.org@k6i.de>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,33 @@ from abc import ABCMeta, abstractmethod
 from asyncio import get_event_loop, Queue as AsyncQueue, run as _run, run_coroutine_threadsafe
 from queue import Queue as SyncQueue
 from threading import Thread
-from typing import Any, Awaitable, Callable, Iterable, Iterator, NoReturn, Optional, Tuple, Union
+from typing import Any, Awaitable, Callable, Iterable, NoReturn, Optional, Tuple, Union
 
 from . import _pyiced
+from ._pyiced import (
+    # states
+    ButtonState, PickListState, ScrollableState, SliderState, TextInputState,
+
+    # widgets
+    Element, no_element, button, checkbox, column, container, image, pick_list,
+    progress_bar, radio, row, rule, scrollable, slider, space, svg, text,
+    text_input, tooltip,
+
+    # wrapped
+    Align, Clipboard, Color, FillMode, Font, HorizontalAlignment, ImageHandle,
+    Instant, Length, Line, Message, Point, Rectangle, SliderHandle,
+    SliderHandleShape, SvgHandle, TextInputCursor, TooltipPosition, VerticalAlignment,
+
+    # styles
+    ButtonStyle, ButtonStyleSheet, CheckboxStyle, CheckboxStyleSheet, ContainerStyleSheet,
+    PaneGridStyleSheet, PickListMenu, PickListStyle, PickListStyleSheet,
+    ProgressBarStyleSheet, RadioStyle, RadioStyleSheet, RuleStyleSheet,
+    ScrollableStyleSheet, ScrollbarStyle, ScrollerStyle, Size, SliderStyle,
+    SliderStyleSheet, TextInputStyle, TextInputStyleSheet,
+
+    # subscription
+    every, stream, Subscription,
+)
 
 
 # KEEP SYNCHRONOUS TO MODULE EXPORTS
@@ -51,23 +75,22 @@ __all__ = [
 
     # subscription
     'every', 'stream', 'Subscription',
-]
 
-if hasattr(_pyiced, 'findfont'):
-    __all__.extend((
-        'FontFamily', 'FontId', 'FontStretch', 'FontStyle', 'FontWeight', 'findfont', 'systemfonts',
-    ))
-
-for name in __all__:
-    exec(f'{name} = _pyiced.{name}')
-
-__all__ += [
     # interfaces
     'IcedApp', 'Settings', 'WindowSettings',
 
     # aliases
     'ButtonStyle', 'ContainerStyle', 'PaneGridStyle', 'ProgressBarStyle',
 ]
+
+if hasattr(_pyiced, 'findfont'):
+    from .pyiced import (  # noqa
+        FontFamily, FontId, FontStretch, FontStyle, FontWeight, findfont, systemfonts,
+    )
+
+    __all__.extend((
+        'FontFamily', 'FontId', 'FontStretch', 'FontStyle', 'FontWeight', 'findfont', 'systemfonts',
+    ))
 
 __author__ = _pyiced.__author__
 __license__ = _pyiced.__license__
@@ -152,7 +175,8 @@ class Settings:
     @property
     def exit_on_close_request(self) -> bool:
         '''
-        Whether the :class:`~pyiced.IcedApp` should exit when the user requests the window to close (e.g. the user presses the close button).
+        Whether the :class:`~pyiced.IcedApp` should exit when the user requests the window to close
+        (e.g. the user presses the close button).
         '''
         return True
 
@@ -161,7 +185,8 @@ class Settings:
         '''
         If set to true, the renderer will try to perform antialiasing for some primitives.
 
-        Enabling it can produce a smoother result in some widgets, like the Canvas, at a performance cost.
+        Enabling it can produce a smoother result in some widgets, like the Canvas, at a performance
+        cost.
         '''
         return True
 
@@ -185,11 +210,15 @@ class Settings:
 class IcedApp(metaclass=ABCMeta):
     '''TODO'''
 
-    def run(self, *, run: Optional[Callable[[Awaitable[Any]], Union[None, Any, NoReturn]]]=None) -> NoReturn:
+    def run(
+        self, *,
+        run: Optional[Callable[[Awaitable[Any]], Union[None, Any, NoReturn]]] = None,
+    ) -> NoReturn:
         '''
         Runs the application.
 
-        This method will take control of the current thread and will NOT return unless there is an error during startup.
+        This method will take control of the current thread and will NOT return unless there is an
+        error during startup.
 
         It should probably be that last thing you call in your main function.
 
@@ -213,7 +242,9 @@ class IcedApp(metaclass=ABCMeta):
         '''
         Initialize the application.
 
-        You can return :class:`~pyiced.Commands` if you need to perform some async action in the background on startup. This is useful if you want to load state from a file, perform an initial HTTP request, etc.
+        You can return :class:`~pyiced.Commands` if you need to perform some async action in the
+        background on startup. This is useful if you want to load state from a file, perform an
+        initial HTTP request, etc.
         '''
         return None
 
@@ -221,7 +252,8 @@ class IcedApp(metaclass=ABCMeta):
         '''
         The current title of the application.
 
-        This title can be dynamic! The runtime will automatically update the title of your application when necessary.
+        This title can be dynamic! The runtime will automatically update the title of your
+        application when necessary.
         '''
         return f'PyIced {__version__}'
 
@@ -239,7 +271,8 @@ class IcedApp(metaclass=ABCMeta):
 
         It can be used to dynamically control the size of the UI at runtime (i.e. zooming).
 
-        For instance, a scale factor of 2.0 will make widgets twice as big, while a scale factor of 0.5 will shrink them to half their size.
+        For instance, a scale factor of 2.0 will make widgets twice as big, while a scale factor of
+        0.5 will shrink them to half their size.
         '''
         return 1.0
 
@@ -255,7 +288,8 @@ class IcedApp(metaclass=ABCMeta):
         '''
         Handles a message and updates the state of the application.
 
-        This is where you define your update logic. All the messages, produced by either user interactions or commands, will be handled by this method.
+        This is where you define your update logic. All the messages, produced by either user
+        interactions or commands, will be handled by this method.
 
         Any :class:`~pyiced.Command` returned will be executed immediately in the background.
         '''
@@ -263,9 +297,11 @@ class IcedApp(metaclass=ABCMeta):
 
     def subscriptions(self) -> Optional[Iterable[Optional[Subscription]]]:
         '''
-        Returns the event :ref:`subscriptions <subscriptions:Event Listening>` for the current state of the application.
+        Returns the event :ref:`subscriptions <subscriptions:Event Listening>` for the current state
+        of the application.
 
-        A subscription will be kept alive as long as you keep returning it, and the messages produced will be handled by update.
+        A subscription will be kept alive as long as you keep returning it, and the messages
+        produced will be handled by update.
         '''
         return None
 

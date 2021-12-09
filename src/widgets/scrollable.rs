@@ -136,10 +136,6 @@ impl ToNative for ScrollableBuilder {
     fn to_native(&self, py: Python) -> Element<'static, Message> {
         scrollable_with_state(&self.state, |state| {
             let el = Scrollable::new(state);
-            // let el = match self.on_scroll.is_none(py) {
-            //     false => el.on_scroll(to_msg_fn(&self.on_scroll)),
-            //     true => el,
-            // };
             let el = self
                 .children
                 .iter()

@@ -84,7 +84,7 @@ __all__ = [
 ]
 
 if hasattr(_pyiced, 'findfont'):
-    from .pyiced import (  # noqa
+    from ._pyiced import (  # noqa
         FontFamily, FontId, FontStretch, FontStyle, FontWeight, findfont, systemfonts,
     )
 

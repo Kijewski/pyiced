@@ -6,11 +6,9 @@ use iced::{Element, Length, Space};
 use iced_native::Event;
 use pyo3::exceptions::{PyException, PyTypeError, PyValueError};
 use pyo3::prelude::*;
-use pyo3::types::PyTuple;
 use pyo3::{PyTraverseError, PyTypeInfo, PyVisit};
 
 use crate::format_to_string_ignore;
-use crate::wrapped::MessageOrDatum;
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
     Ok(())
@@ -69,24 +67,6 @@ pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
 
 pub(crate) fn empty_space() -> Element<'static, Message> {
     Space::new(Length::Shrink, Length::Shrink).into()
-}
-
-pub(crate) fn to_msg_fn<T>(f: &Py<PyAny>) -> impl Fn(T) -> Message
-where
-    (T,): IntoPy<Py<PyTuple>>,
-{
-    let f = f.clone();
-    move |value: T| {
-        Python::with_gil(
-            |py| match f.call1(py, (value,)).and_then(|res| res.extract(py)) {
-                Ok(MessageOrDatum(message)) => message,
-                Err(err) => {
-                    err.print(py);
-                    Message::None
-                },
-            },
-        )
-    }
 }
 
 pub(crate) fn method_into_py(py: Python, method: &PyAny) -> Option<Py<PyAny>> {
@@ -199,5 +179,13 @@ pub(crate) fn f32_nonneg(value: f32) -> PyResult<f32> {
             c if c < 0.0f32 => Err(PyErr::new::<PyValueError, _>("float value must be >= 0")),
             c => Ok(c),
         },
+    }
+}
+
+pub(crate) fn some_err<T, E>(value: Option<Result<T, E>>) -> Result<Option<T>, E> {
+    match value {
+        Some(Ok(value)) => Ok(Some(value)),
+        Some(Err(err)) => Err(err),
+        None => Ok(None),
     }
 }

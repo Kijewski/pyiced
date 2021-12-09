@@ -42,8 +42,8 @@ impl GCProtocol for PickListBuilder {
 ///
 /// Parameters
 /// ----------
-/// token : Callable[[str], Optional[object]]
-///     When the user select a value, a message ``(token, value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
+/// token : object
+///     When the user select a value, a message ``(token, new_value)`` is sent to the app's :meth:`~pyiced.IcedApp.update()` method.
 /// state : PickListState
 ///     Current state of the pick list. The same object must be given between calls.
 /// selected : Optional[str]

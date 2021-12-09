@@ -13,13 +13,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Install cargo
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
           override: true
           components: rustfmt
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-fmt-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-fmt-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
 
       - run: cargo fmt --all -- --check
 
@@ -29,19 +40,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          key: cache-clippy
-          path: target
-
-      - name: Install cargo
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
           override: true
           components: clippy
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-clippy-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-clippy-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
 
       - run: cargo clippy --all-targets -- -D warnings
 
@@ -51,18 +67,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          key: cache-check
-          path: target
-
-      - name: Install cargo
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
           override: true
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-check-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-check-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
 
       - run: cargo check
 
@@ -72,29 +93,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          key: cache-python-pip
-          path: ~/.cache/pip
-
-      - name: Cache cargo
-        uses: actions/cache@v2
-        with:
-          key: cache-python-cargo
-          path: target
-
-      - name: Install cargo
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: nightly
           override: true
 
-      - name: Install python
+      - name: Install Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.10'
+
+      - name: Cache Rust
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-install-cargo-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-install-cargo-
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+
+      - name: Cache Python
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-install-pip-${{ hashFiles('requirements-dev.txt') }}
+          restore-keys: ${{ runner.os }}-install-pip-
+          path: ~/.cache/pip
 
       - name: Install requirements
         run: python -m pip install -Ur requirements-dev.txt

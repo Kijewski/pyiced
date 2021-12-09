@@ -126,16 +126,13 @@ pub(crate) fn vec_to_command(
         vec if vec.is_none() => return Ok(Command::none()),
         vec => vec,
     };
-
-    let mut commands = Vec::new();
-    for datum in vec.iter()?.take(64) {
-        let datum = message_or_future(py, datum, put_task);
-        let command = match datum {
-            MessageOrFuture::Message(msg) => Command::from(async move { msg }),
-            MessageOrFuture::Future(future) => future_to_command(future),
-            MessageOrFuture::None => continue,
-        };
-        commands.push(command)
-    }
+    let commands =
+        vec.iter()?
+            .take(64)
+            .filter_map(|datum| match message_or_future(py, datum, put_task) {
+                MessageOrFuture::Message(msg) => Some(Command::from(async move { msg })),
+                MessageOrFuture::Future(future) => Some(future_to_command(future)),
+                MessageOrFuture::None => None,
+            });
     Ok(Command::batch(commands))
 }

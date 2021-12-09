@@ -8,7 +8,6 @@ use pyo3::types::PyString;
 use pyo3::wrap_pyfunction;
 
 use crate::common::EitherPy::{self, Left, Right};
-use crate::fontdb_integration::family::FamilyEnum;
 use crate::fontdb_integration::{
     WrappedFontFamily, WrappedFontId, WrappedFontStretch, WrappedFontStyle, WrappedFontWeight,
 };
@@ -36,18 +35,16 @@ fn get_arc() -> Arc<Database> {
     arc
 }
 
-fn py_to_fontfamily(
-    family: EitherPy<WrappedFontFamily, &PyString>,
-) -> PyResult<EitherPy<FamilyEnum, String>> {
+fn py_to_fontfamily(family: EitherPy<WrappedFontFamily, &PyString>) -> PyResult<Family<'_>> {
     match family {
-        Left(WrappedFontFamily(family)) => Ok(Left(family)),
+        Left(WrappedFontFamily(family)) => Ok(family.into()),
         Right(family) => match family.to_str()? {
-            "serif" => Ok(Left(FamilyEnum::Serif)),
-            "sans-serif" => Ok(Left(FamilyEnum::SansSerif)),
-            "cursive" => Ok(Left(FamilyEnum::Cursive)),
-            "fantasy" => Ok(Left(FamilyEnum::Fantasy)),
-            "monospace" => Ok(Left(FamilyEnum::Monospace)),
-            s => Ok(Right(s.to_owned())),
+            "serif" => Ok(Family::Serif),
+            "sans-serif" => Ok(Family::SansSerif),
+            "cursive" => Ok(Family::Cursive),
+            "fantasy" => Ok(Family::Fantasy),
+            "monospace" => Ok(Family::Monospace),
+            family => Ok(Family::Name(family)),
         },
     }
 }
@@ -96,7 +93,7 @@ fn findfont(
     stretch: Option<EitherPy<WrappedFontStretch, &PyString>>,
     style: Option<EitherPy<WrappedFontStyle, &PyString>>,
 ) -> PyResult<Option<WrappedFontId>> {
-    let families: Vec<EitherPy<FamilyEnum, String>> = match families {
+    let families: Vec<_> = match families {
         None => vec![],
         Some(Left(family)) => vec![py_to_fontfamily(family)?],
         Some(Right(families)) => families
@@ -105,13 +102,6 @@ fn findfont(
             .take(64)
             .collect::<PyResult<_>>()?,
     };
-    let families: Vec<Family<'_>> = families
-        .iter()
-        .map(|family| match family {
-            Left(family) => Family::from(*family),
-            Right(family) => Family::Name(family.as_str()),
-        })
-        .collect();
     let families = match families.is_empty() {
         true => &[Family::SansSerif],
         false => families.as_slice(),

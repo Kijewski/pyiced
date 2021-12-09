@@ -164,8 +164,8 @@ impl Unextract<Option<WrappedColor>> for Unextractor<'_, Option<Color>> {
 
 impl Unextract<WrappedColor> for Unextractor<'_, Background> {
     fn unextract(self) -> WrappedColor {
-        match self.0 {
-            &Background::Color(color) => WrappedColor(color),
+        match *self.0 {
+            Background::Color(color) => WrappedColor(color),
         }
     }
 }

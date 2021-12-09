@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use fontdb::{Weight, Stretch, Style, Family, Query, Database};
-use parking_lot::{Mutex, const_mutex};
+use fontdb::{Database, Family, Query, Stretch, Style, Weight};
+use parking_lot::{const_mutex, Mutex};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyString;
@@ -9,7 +9,9 @@ use pyo3::wrap_pyfunction;
 
 use crate::common::EitherPy::{self, Left, Right};
 use crate::fontdb_integration::family::FamilyEnum;
-use crate::fontdb_integration::{WrappedFontWeight, WrappedFontStretch, WrappedFontStyle, WrappedFontFamily, WrappedFontId};
+use crate::fontdb_integration::{
+    WrappedFontFamily, WrappedFontId, WrappedFontStretch, WrappedFontStyle, WrappedFontWeight,
+};
 use crate::format_to_string_ignore;
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -34,7 +36,9 @@ fn get_arc() -> Arc<Database> {
     arc
 }
 
-fn py_to_fontfamily(family: EitherPy<WrappedFontFamily, &PyString>) -> PyResult<EitherPy<FamilyEnum, String>> {
+fn py_to_fontfamily(
+    family: EitherPy<WrappedFontFamily, &PyString>,
+) -> PyResult<EitherPy<FamilyEnum, String>> {
     match family {
         Left(WrappedFontFamily(family)) => Ok(Left(family)),
         Right(family) => match family.to_str()? {
@@ -50,18 +54,18 @@ fn py_to_fontfamily(family: EitherPy<WrappedFontFamily, &PyString>) -> PyResult<
 
 /// findfont($module, /, family=None, weight=None, stretch=None, style=None)
 /// --
-/// 
+///
 /// Performs a CSS-like query and returns the best matched font face.
-/// 
+///
 /// Arguments can be given using their constants or using their CSS value, e.g.
-/// 
+///
 /// .. code:: python
 ///
 ///     >>> from pyiced import  *
 ///     >>> findfont("serif", "extra-light", "normal", "italic")
 ///     FontId(name="TimesNewRomanPS-ItalicMT", family="Times New Roman",
 ///            style=Italic, weight=Weight(400), stretch=Normal)
-/// 
+///
 /// Arguments
 /// ---------
 /// families : Union[FontFamily, str, Iterable[Union[FontFamily, str]], None]
@@ -76,12 +80,12 @@ fn py_to_fontfamily(family: EitherPy<WrappedFontFamily, &PyString>) -> PyResult<
 /// style : Union[FontStyle, str, None]
 ///     Allows italic or oblique faces to be selected.
 ///     Defaults to :attr:`~pyiced.FontStyle.NORMAL`.
-/// 
+///
 /// Returns
 /// -------
 /// Optional[FontId]
 ///     The best match found, if one was found.
-/// 
+///
 /// See also
 /// --------
 /// `fontdb::Query <https://docs.rs/fontdb/0.7.0/fontdb/struct.Query.html>`_
@@ -95,13 +99,11 @@ fn findfont(
     let families: Vec<EitherPy<FamilyEnum, String>> = match families {
         None => vec![],
         Some(Left(family)) => vec![py_to_fontfamily(family)?],
-        Some(Right(families)) => {
-            families
-                .iter()?
-                .map(|family| py_to_fontfamily(family?.extract()?))
-                .take(64)
-                .collect::<PyResult<_>>()?
-        },
+        Some(Right(families)) => families
+            .iter()?
+            .map(|family| py_to_fontfamily(family?.extract()?))
+            .take(64)
+            .collect::<PyResult<_>>()?,
     };
     let families: Vec<Family<'_>> = families
         .iter()
@@ -128,7 +130,12 @@ fn findfont(
             "bold" => Weight::BOLD,
             "extra-bold" => Weight::EXTRA_BOLD,
             "black" => Weight::BLACK,
-            s => return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!("Unknown font-weight: {:?}", s))),
+            s => {
+                return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!(
+                    "Unknown font-weight: {:?}",
+                    s,
+                )));
+            },
         },
         None => Weight::NORMAL,
     };
@@ -145,7 +152,12 @@ fn findfont(
             "expanded" => Stretch::Expanded,
             "extra-expanded" => Stretch::ExtraExpanded,
             "ultra-expanded" => Stretch::UltraExpanded,
-            s => return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!("Unknown font-stretch: {:?}", s))),
+            s => {
+                return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!(
+                    "Unknown font-stretch: {:?}",
+                    s,
+                )));
+            },
         },
         None => Stretch::Normal,
     };
@@ -156,22 +168,36 @@ fn findfont(
             "normal" => Style::Normal,
             "italic" => Style::Italic,
             "oblique" => Style::Oblique,
-            s => return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!("Unknown font-style: {:?}", s))),
+            s => {
+                return Err(PyErr::new::<PyValueError, _>(format_to_string_ignore!(
+                    "Unknown font-style: {:?}",
+                    s,
+                )));
+            },
         },
         None => Style::Normal,
     };
 
-    let query = Query { families, weight, stretch, style };
+    let query = Query {
+        families,
+        weight,
+        stretch,
+        style,
+    };
 
     let arc = get_arc();
-    Ok(arc.as_ref().query(&query).map(|id| WrappedFontId { id, arc }))
+    let result = arc
+        .as_ref()
+        .query(&query)
+        .map(|id| WrappedFontId { id, arc });
+    Ok(result)
 }
 
 /// systemfonts($self)
 /// --
-/// 
+///
 /// List loaded system fonts.
-/// 
+///
 /// Returns
 /// -------
 /// Iterator[FontId]

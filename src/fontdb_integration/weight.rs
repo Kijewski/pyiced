@@ -11,7 +11,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 /// Specifies the weight of glyphs in the font, their degree of blackness or stroke thickness.
-/// 
+///
 /// See also
 /// --------
 /// `fontdb::Weight <https://docs.rs/fontdb/0.7.0/fontdb/struct.Weight.html>`_

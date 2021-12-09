@@ -1,13 +1,13 @@
 use std::borrow::Cow;
 use std::sync::Arc;
 
-use fontdb::{ID, FaceInfo, Database};
+use fontdb::{Database, ID};
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 
+use crate::fontdb_integration::{WrappedFontStretch, WrappedFontStyle, WrappedFontWeight};
 use crate::format_to_string_ignore;
-use crate::wrapped::{WrappedFont, KNOWN_FONTS, font_from_list, NameAndData};
-use crate::fontdb_integration::{WrappedFontStretch, WrappedFontWeight, WrappedFontStyle};
+use crate::wrapped::{font_from_list, NameAndData, WrappedFont, KNOWN_FONTS};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedFontId>()?;
@@ -34,9 +34,9 @@ pub(crate) struct WrappedFontId {
 impl WrappedFontId {
     /// load($self)
     /// --
-    /// 
+    ///
     /// Loads the referenced font into memory.
-    /// 
+    ///
     /// Returns
     /// -------
     /// Font
@@ -45,7 +45,7 @@ impl WrappedFontId {
         let id = self.id;
         let db = self.arc.as_ref();
         let name = match db.face(id) {
-            Some(FaceInfo { post_script_name, .. }) => post_script_name.as_str(),
+            Some(info) => info.post_script_name.as_str(),
             _ => return Err(expired()),
         };
 
@@ -70,37 +70,61 @@ impl WrappedFontId {
     /// Corresponds to a Font Family in a TrueType font.
     #[getter]
     fn family(&self) -> PyResult<String> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| info.family.clone())
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| info.family.clone())
     }
 
     /// Corresponds to a PostScript name in a TrueType font.
     #[getter]
     fn name(&self) -> PyResult<String> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| info.post_script_name.clone())
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| info.post_script_name.clone())
     }
 
     /// A font face style.
     #[getter]
     fn style(&self) -> PyResult<WrappedFontStyle> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| WrappedFontStyle(info.style))
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| WrappedFontStyle(info.style))
     }
 
     /// A font face weight.
     #[getter]
     fn weight(&self) -> PyResult<WrappedFontWeight> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| WrappedFontWeight(info.weight))
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| WrappedFontWeight(info.weight))
     }
 
     /// A font face stretch.
     #[getter]
     fn stretch(&self) -> PyResult<WrappedFontStretch> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| WrappedFontStretch(info.stretch))
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| WrappedFontStretch(info.stretch))
     }
 
     /// Indicates that the font face is monospaced.
     #[getter]
     fn monospaced(&self) -> PyResult<bool> {
-        self.arc.as_ref().face(self.id).ok_or_else(expired).map(|info| info.monospaced)
+        self.arc
+            .as_ref()
+            .face(self.id)
+            .ok_or_else(expired)
+            .map(|info| info.monospaced)
     }
 
     fn __repr__(&self) -> Cow<str> {
@@ -113,7 +137,7 @@ impl WrappedFontId {
                 weight = info.weight,
                 stretch = info.stretch,
             ),
-            None => return Cow::Borrowed("FontId(<expired>)"),
+            None => Cow::Borrowed("FontId(<expired>)"),
         }
     }
 

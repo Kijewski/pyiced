@@ -7,7 +7,7 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 /// A font family.
-/// 
+///
 /// See also
 /// --------
 /// `fontdb::Family <https://docs.rs/fontdb/0.7.0/fontdb/enum.Family.html>`_

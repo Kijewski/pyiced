@@ -61,6 +61,19 @@ you can make :meth:`pyiced.IcedApp.subscriptions()` return a list
 .. literalinclude :: ../examples/fullscreen.py
    :language: python
 
+Using System Fonts
+------------------
+
+You can load use :func:`~pyiced.findfont()` to find and load system fonts.
+This example gives you a preview of the installed fonts.
+
+.. image:: ../examples/fontpreview.png
+    :align: center
+    :alt: 
+
+.. literalinclude :: ../examples/fontpreview.py
+   :language: python
+
 Two-player Online Chess
 -----------------------
 

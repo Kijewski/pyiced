@@ -204,7 +204,7 @@ class Settings:
 
         If `None` or `Font.DEFAULT` is provided, a default system font will be chosen.
         '''
-        Font.DEFAULT
+        return Font.DEFAULT
 
 
 class IcedApp(metaclass=ABCMeta):

@@ -1,6 +1,6 @@
+use std::future::Future;
 use std::pin::Pin;
 
-use futures_util::Future;
 use iced::Command;
 use pyo3::exceptions::{PyRuntimeError, PyTypeError};
 use pyo3::prelude::*;

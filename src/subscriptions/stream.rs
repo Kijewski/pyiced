@@ -8,11 +8,10 @@ use pyo3::exceptions::{PyStopAsyncIteration, PyTypeError};
 use pyo3::prelude::*;
 use tokio::sync::oneshot::channel;
 
-use super::ToSubscription;
 use crate::app::Interop;
 use crate::async_tasks::Task;
 use crate::common::{GCProtocol, Message};
-use crate::subscriptions::WrappedSubscription;
+use crate::subscriptions::{ToSubscription, WrappedSubscription};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(make_stream, m)?)?;

@@ -33,7 +33,7 @@ To install from source you need to have a recent version of [**Rust**](https://w
 Quick Example
 -------------
 
-[![](https://raw.githubusercontent.com/Kijewski/pyiced/v0.3.0a6/examples/counter.png "Basic example: A counter.")](https://github.com/Kijewski/pyiced/blob/v0.3.0a4/examples/counter.py)
+[![](https://raw.githubusercontent.com/Kijewski/pyiced/v0.3.0a6/examples/counter.png "Basic example: A counter.")](https://github.com/Kijewski/pyiced/blob/v0.3.0a6/examples/counter.py)
 
 ```py
 from pyiced import (
@@ -94,4 +94,4 @@ Bigger Example
 
 [![](https://raw.githubusercontent.com/Kijewski/pyiced/v0.3.0a6/examples/chess.png "A bigger example: Two-player online chess.")](https://github.com/Kijewski/pyiced/blob/v0.3.0a4/examples/chess.py)
 
-Please find the source code in [examples/chess.py](https://github.com/Kijewski/pyiced/blob/v0.3.0a4/examples/chess.py).
+Please find the source code in [examples/chess.py](https://github.com/Kijewski/pyiced/blob/v0.3.0a6/examples/chess.py).

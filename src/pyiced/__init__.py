@@ -368,11 +368,15 @@ async def _thread_code(put_task):
 
 
 async def _process_task(taskobj):
+    value = err = None
     try:
-        result = None, await taskobj.task
-    except SystemExit:
-        raise
+        value = await taskobj.task
     except BaseException as ex:
-        result = ex, None
-    taskobj.result = result
-    taskobj()
+        err = ex
+
+    try:
+        taskobj.result = err, value
+        taskobj()
+    finally:
+        if isinstance(err, SystemExit):
+            raise err

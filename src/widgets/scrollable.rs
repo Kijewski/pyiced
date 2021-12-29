@@ -74,6 +74,10 @@ impl GCProtocol for ScrollableBuilder {}
 /// Element
 ///     The newly created scrollable widget.
 ///
+/// Example
+/// -------
+/// TODO
+///
 /// See also
 /// --------
 /// `iced_native::widget::scrollable::Scrollable <https://docs.rs/iced_native/0.4.0/iced_native/widget/scrollable/struct.Scrollable.html>`_

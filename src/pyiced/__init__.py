@@ -24,8 +24,8 @@ from queue import Queue as SyncQueue
 from threading import Thread
 from typing import Any, Awaitable, Callable, Iterable, NoReturn, Optional, Tuple, Union
 
-from . import _pyiced
-from ._pyiced import (
+from pyiced import _pyiced
+from pyiced._pyiced import (
     # states
     ButtonState, PickListState, ScrollableState, SliderState, TextInputState,
 
@@ -49,6 +49,7 @@ from ._pyiced import (
     # subscription
     every, stream, Subscription,
 )
+from pyiced._pyiced import __author__, __license__, __version__  # noqa
 
 
 # KEEP SYNCHRONOUS TO MODULE EXPORTS
@@ -84,7 +85,7 @@ __all__ = [
 ]
 
 if hasattr(_pyiced, 'findfont'):
-    from ._pyiced import (  # noqa
+    from pyiced._pyiced import (  # noqa
         FontFamily, FontId, FontStretch, FontStyle, FontWeight, findfont, systemfonts,
     )
 
@@ -92,9 +93,6 @@ if hasattr(_pyiced, 'findfont'):
         'FontFamily', 'FontId', 'FontStretch', 'FontStyle', 'FontWeight', 'findfont', 'systemfonts',
     ))
 
-__author__ = _pyiced.__author__
-__license__ = _pyiced.__license__
-__version__ = _pyiced.__version__
 
 Command = Union[Awaitable[Optional[object]], object]
 Commands = Iterable[Optional[Command]]
@@ -108,107 +106,92 @@ TooltipStyle = TooltipStyleSheet
 
 
 class WindowSettings:
-    '''TODO'''
+    '''
+    (Immutable) settings of the :class:`~pyiced.IcedApp` window.
+    '''
 
-    @property
-    def size(self) -> Tuple[int, int]:
-        '''
-        Dimensions of the newly crated window.
-        '''
-        return (1024, 768)
+    size: Tuple[int, int] = (1024, 768)
+    '''
+    Initial dimensions of the newly crated window.
+    '''
 
-    @property
-    def min_size(self) -> Optional[Tuple[int, int]]:
-        '''
-        The minimum size of the window.
-        '''
-        return None
+    min_size: Optional[Tuple[int, int]] = None
+    '''
+    The minimum size of the window.
+    '''
 
-    @property
-    def max_size(self) -> Optional[Tuple[int, int]]:
-        '''
-        The maximum size of the window.
-        '''
-        return None
+    max_size: Optional[Tuple[int, int]] = None
+    '''
+    The maximum size of the window.
+    '''
 
-    @property
-    def resizable(self) -> bool:
-        '''
-        Whether the window should be resizable or not.
-        '''
-        return True
+    resizable: bool = True
+    '''
+    Whether the window should be resizable or not.
+    '''
 
-    @property
-    def decorations(self) -> bool:
-        '''
-        Whether the window should have a border, a title bar, etc. or not.
-        '''
-        return True
+    decorations: bool = True
+    '''
+    Whether the window should have a border, a title bar, etc. or not.
+    '''
 
-    @property
-    def transparent(self) -> bool:
-        '''
-        Whether the window should be transparent.
-        '''
-        return False
+    transparent: bool = False
+    '''
+    Whether the window should be transparent.
+    '''
 
-    @property
-    def always_on_top(self) -> bool:
-        '''
-        Whether the window will always be on top of other windows.
-        '''
-        return False
+    always_on_top: bool = False
+    '''
+    Whether the window will always be on top of other windows.
+    '''
 
     # TODO: pub icon: Option<Icon>,
 
 
 class Settings:
-    '''TODO'''
+    '''
+    (Immutable) settings of the :class:`~pyiced.IcedApp` application.
+    '''
 
-    @property
-    def default_text_size(self) -> int:
-        '''
-        The text size that will be used by default.
-        '''
-        return 20
+    default_text_size: int = 20
+    '''
+    The text size that will be used by default.
+    '''
 
-    @property
-    def exit_on_close_request(self) -> bool:
-        '''
-        Whether the :class:`~pyiced.IcedApp` should exit when the user requests the window to close
-        (e.g. the user presses the close button).
-        '''
-        return True
+    exit_on_close_request: bool = True
+    '''
+    Whether the :class:`~pyiced.IcedApp` should exit when the user requests the window to close
+    (e.g. the user presses the close button).
+    '''
 
-    @property
-    def antialiasing(self) -> bool:
-        '''
-        If set to true, the renderer will try to perform antialiasing for some primitives.
+    antialiasing: bool = True
+    '''
+    If set to true, the renderer will try to perform antialiasing for some primitives.
 
-        Enabling it can produce a smoother result in some widgets, like the Canvas, at a performance
-        cost.
-        '''
-        return True
+    Enabling it can produce a smoother result in some widgets, like the Canvas, at a performance
+    cost.
+    '''
 
-    @property
-    def window(self) -> Optional[WindowSettings]:
-        '''
-        The window settings.
-        '''
-        return None
+    window: WindowSettings = WindowSettings()
+    '''
+    The window settings.
+    '''
 
-    @property
-    def default_font(self) -> Optional[Font]:
-        '''
-        The font that will be used by default.
+    default_font: Font = Font.DEFAULT
+    '''
+    The font that will be used by default.
 
-        If `None` or `Font.DEFAULT` is provided, a default system font will be chosen.
-        '''
-        return Font.DEFAULT
+    If `None` or `Font.DEFAULT` is provided, a default system font will be chosen.
+    '''
 
 
 class IcedApp(metaclass=ABCMeta):
-    '''TODO'''
+    '''
+    An interactive application.
+
+    An application can execute asynchronous actions by returning :class:`~pyiced.Commands` in some
+    of its methods. A debug view can be toggled by pressing F12.
+    '''
 
     def run(
         self, *,
@@ -229,14 +212,12 @@ class IcedApp(metaclass=ABCMeta):
         '''
         return _run_iced(self, run=run)
 
-    @property
-    def settings(self) -> Optional[Settings]:
-        '''
-        The initial settings of the program.
+    settings: Settings = Settings()
+    '''
+    The initial settings of the program.
 
-        Only queried once.
-        '''
-        return None
+    Only queried once.
+    '''
 
     def new(self) -> Optional[Commands]:
         '''
@@ -290,8 +271,26 @@ class IcedApp(metaclass=ABCMeta):
 
         This is where you define your update logic. All the messages, produced by either user
         interactions or commands, will be handled by this method.
+        The method call be must executed quite fast. Long running tasks should be executed
+        asynchronously.
 
         Any :class:`~pyiced.Command` returned will be executed immediately in the background.
+
+        Arguments
+        ---------
+        msg: Union[Message | object]
+            A message to handle. Generated either through user iteraction, or though an
+            (asynchronous) :class:`pyiced.Command`.
+        clipboard: Clipboard
+            The OS's inter-application message buffer. Can only be interacted with during this call
+            to :meth:`~Pyiced.IcedApp.update()`. Accessing it later or in another thread may crash
+            the application.
+
+        Returns
+        -------
+        Optional[Commands]
+            The update invocation may return a list of coroutines for asynchronous message handling,
+            e.g. to open a socket.
         '''
         return None
 
@@ -318,7 +317,7 @@ class IcedApp(metaclass=ABCMeta):
 
         These widgets can produce messages based on user interaction.
         '''
-        ...
+        raise NotImplementedError('You need to implement (at least) IcedApp.view().')
 
 
 def _run_iced(app: IcedApp, *, run=None) -> NoReturn:
@@ -345,6 +344,7 @@ def _make_loop(run=None):
         args=(_thread_code(put_task),),
         name='PyIced-AsyncLoop',
     )
+    thread.daemon = True
     thread.start()
     return put_task.get()
 

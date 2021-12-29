@@ -1,5 +1,6 @@
 build
 cibuildwheel == 2.*
+mypy
 setuptools
 setuptools-rust == 1.*
 wheel

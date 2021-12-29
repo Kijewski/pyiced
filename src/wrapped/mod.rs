@@ -33,7 +33,7 @@ init_mod! {
     point -> { WrappedPoint },
     rectangle -> { WrappedRectangle },
     size -> { WrappedSize },
-    slider_handle -> { WrappedSliderHandle },
+    slider_handle -> { SliderHandle, WrappedSliderHandle },
     slider_handle_shape -> { WrappedSliderHandleShape },
     svg -> { WrappedSvgHandle },
     text_cursor -> { WrappedTextCursor },

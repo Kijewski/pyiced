@@ -50,7 +50,7 @@ impl WrappedSliderHandleShape {
     ///
     /// Parameters
     /// ----------
-    /// width : float
+    /// width : int
     ///     The length of an edge.
     /// border_radius : float
     ///     The border radius.

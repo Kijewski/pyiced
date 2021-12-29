@@ -118,6 +118,9 @@ jobs:
       - name: Install library
         run: python -m pip install .
 
+      - name: Check typing
+        run: python -m mypy -p pyiced --strict
+
   flake8:
     runs-on: ubuntu-latest
     steps:

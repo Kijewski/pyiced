@@ -24,7 +24,6 @@ pub(crate) struct WrappedSliderState(pub SliderState);
 
 #[pymethods]
 impl WrappedSliderState {
-    /// TODO
     #[new]
     fn new() -> Self {
         Self::default()

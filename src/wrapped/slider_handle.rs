@@ -1,25 +1,35 @@
-use iced::slider::Handle;
-use pyo3::prelude::*;
+#![allow(clippy::needless_option_as_deref)]
 
-use crate::common::{debug_str, validate_f32_nonneg};
-use crate::format_to_py;
-use crate::wrapped::color::ColorFormat;
-use crate::wrapped::slider_handle_shape::SliderHandleShapeFormat;
-use crate::wrapped::{WrappedColor, WrappedSliderHandleShape};
+use iced::slider::{Handle, Style, StyleSheet};
+use pyo3::exceptions::PyValueError;
+use pyo3::prelude::*;
+use pyo3::types::{PyDict, PyString};
+
+use crate::common::debug_str;
+use crate::wrapped::color::{ColorFormat, WrappedColor};
+use crate::wrapped::slider_handle_shape::{SliderHandleShapeFormat, WrappedSliderHandleShape};
+use crate::{extract_multiple, format_to_py, getters};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<WrappedSliderHandle>()?;
     Ok(())
 }
 
-/// SliderHandle(shape, color, border_width, border_color)
+/// SliderHandle(proto, **kwargs)
 /// --
 ///
 /// The appearance of the handle of a slider.
-
 ///
 /// Parameters
 /// ----------
+/// proto : Optional[Union[SliderHandle, str]]
+///     Source style sheet to clone and modify.
+///     Defaults to `iced_style's <https://docs.rs/iced_style/0.3.0/iced_style/>`_ default style.
+///
+///     The valid string values are "active", "hovered" and "dragging",
+///     same as the argument for :class:`~pyiced.SliderStyleSheet`.
+///
+///     None is the same as "active".
 /// shape : SliderHandleShape
 ///     The color of the slider_handle.
 /// color : Color
@@ -34,23 +44,33 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// `iced::widget::slider::Handle <https://docs.rs/iced/0.3.0/iced/widget/slider/struct.Handle.html>`_
 #[pyclass(name = "SliderHandle", module = "pyiced")]
 #[derive(Debug, Clone)]
-pub(crate) struct WrappedSliderHandle(pub Handle);
+pub(crate) struct WrappedSliderHandle(pub SliderHandle);
+
+#[derive(Debug, Clone)]
+pub(crate) struct SliderHandle(pub Handle);
+
+getters! {
+    WrappedSliderHandle => |&WrappedSliderHandle(SliderHandle(ref o))| o,
+    color -> "Color" WrappedColor,
+    border_width -> "float" f32,
+    border_color -> "Color" WrappedColor,
+}
 
 #[pymethods]
 impl WrappedSliderHandle {
     #[new]
-    fn new(
-        shape: &WrappedSliderHandleShape,
-        color: &WrappedColor,
-        border_width: f32,
-        border_color: &WrappedColor,
-    ) -> PyResult<Self> {
-        Ok(Self(Handle {
-            shape: shape.0,
-            color: color.0,
-            border_width: validate_f32_nonneg(border_width)?,
-            border_color: border_color.0,
-        }))
+    #[args(prototype = "None", kwargs = "**")]
+    fn new(proto: Option<&PyAny>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let proto =
+            crate::dyn_style_proto_get!(proto, |x: Style| x.handle, active, hovered, dragging);
+        extract_multiple!(
+            kwargs,
+            SliderHandle(proto),
+            shape,
+            color,
+            border_width,
+            border_color,
+        )
     }
 
     fn __str__(&self) -> PyResult<String> {
@@ -63,7 +83,7 @@ impl WrappedSliderHandle {
             ref color,
             border_width,
             ref border_color,
-        } = self.0;
+        } = self.0.0;
         format_to_py!(
             "SliderHandle({}, {}, {:?}, {})",
             SliderHandleShapeFormat(shape),
@@ -71,5 +91,9 @@ impl WrappedSliderHandle {
             border_width,
             ColorFormat(border_color),
         )
+    }
+
+    fn shape(&self) -> WrappedSliderHandleShape {
+        WrappedSliderHandleShape(self.0.0.shape)
     }
 }

@@ -12,7 +12,8 @@ use crate::styles::{
     WrappedTextInputStyle,
 };
 use crate::wrapped::{
-    WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle, WrappedSliderHandleShape,
+    SliderHandle, WrappedColor, WrappedFillMode, WrappedLine, WrappedSliderHandle,
+    WrappedSliderHandleShape,
 };
 
 pub(crate) fn init_mod(_py: Python, _m: &PyModule) -> PyResult<()> {
@@ -113,7 +114,10 @@ impl<'p> TryFrom<Extractor<'p>> for iced::slider::Handle {
     type Error = PyErr;
 
     fn try_from(value: Extractor<'p>) -> Result<Self, Self::Error> {
-        value.0.extract().map(|WrappedSliderHandle(c)| c)
+        value
+            .0
+            .extract()
+            .map(|WrappedSliderHandle(SliderHandle(c))| c)
     }
 }
 
@@ -246,7 +250,7 @@ impl Unextract<(WrappedColor, WrappedColor)> for Unextractor<'_, (Color, Color)>
 
 impl Unextract<WrappedSliderHandle> for Unextractor<'_, iced::slider::Handle> {
     fn unextract(self) -> WrappedSliderHandle {
-        WrappedSliderHandle(*self.0)
+        WrappedSliderHandle(SliderHandle(*self.0))
     }
 }
 

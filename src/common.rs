@@ -28,12 +28,9 @@ impl Debug for Message {
             Self::Native(arg) => return f.debug_tuple("Native").field(arg).finish(),
             Self::Python(obj) => obj,
         };
-
-        Python::with_gil(|py| -> Result<(), std::fmt::Error> {
-            match obj.as_ref(py).repr() {
-                Ok(obj) => write!(f, "Python({})", obj.to_string_lossy()),
-                Err(_) => write!(f, "Python({})", obj),
-            }
+        Python::with_gil(|py| match obj.as_ref(py).repr() {
+            Ok(obj) => write!(f, "{}", obj.to_string_lossy()),
+            Err(_) => write!(f, "<Err({})>", obj),
         })
     }
 }

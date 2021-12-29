@@ -30,9 +30,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 ///
 ///     None is the same as "active".
 /// rail_colors : Tuple[Color, Color]
-///     TODO
+///     Colors of the rail.
 /// handle : SliderHandle
-///     TODO
+///     Colors of the handle.
 ///
 /// See also
 /// --------

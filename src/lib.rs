@@ -51,7 +51,7 @@ init_mod! {
     mod async_tasks;
     mod common;
     mod extractor;
-    mod fontdb_integration "fontdb-integration";
+    mod fontdb_integration "fontdb";
     mod states;
     mod styles;
     mod subscriptions;

@@ -1,11 +1,12 @@
 from pyiced import (
-    Align, column, container, IcedApp, Length, SliderState, slider, text,
+    Align, column, container, IcedApp, Length, Settings, SliderState,
+    slider, text, WindowSettings,
 )
 
 
 class SliderApp(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

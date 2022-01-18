@@ -1,13 +1,14 @@
 from bisect import bisect_left, bisect_right
 
 from pyiced import (
-    Align, column, container, IcedApp, Length, PickListState, pick_list,
-    row, text, text_input, TextInputState, systemfonts, findfont,
+    Align, column, container, findfont, IcedApp, Length, PickListState,
+    pick_list, row, Settings, systemfonts, text, text_input,
+    TextInputState,
 )
 
 
 class FontPreview(IcedApp):
-    class settings:
+    class settings(Settings):
         default_text_size = 24
 
     def __init__(self):

@@ -18,7 +18,7 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'ImageHandle',
+    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'Icon', 'ImageHandle',
     'Instant', 'Length', 'Line', 'Message', 'Point', 'Rectangle', 'SliderHandle',
     'SliderHandleShape', 'SvgHandle', 'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
@@ -732,6 +732,20 @@ def container(
     style: Optional[ContainerStyle] = None,
 ) -> Element:
     '''An element decorating some content.'''
+
+
+###################################################################################################
+### Icon ##########################################################################################
+###################################################################################################
+
+
+@final
+class Icon:
+    '''TODO'''
+
+    def __init__(self, path: Path) -> None:
+        '''TODO'''
+        ...
 
 
 ###################################################################################################

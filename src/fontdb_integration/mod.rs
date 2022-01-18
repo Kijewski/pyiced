@@ -5,9 +5,7 @@ macro_rules! init_mod {
         $( mod $module; )*
 
         #[allow(unused_imports)]
-        pub(crate) use {
-            $( $module :: { $($types),* } ),*
-        };
+        pub(crate) use self::{ $( $module :: { $($types),* } ),* };
 
         pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
             $( $module::init_mod(py, m)?; )*

@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 
-from pyiced import column, every, IcedApp, Instant, text
+from pyiced import (
+    column, every, IcedApp, Instant, Settings, text, WindowSettings,
+)
 
 
 class SubscriptionExample(IcedApp):
@@ -11,8 +13,8 @@ class SubscriptionExample(IcedApp):
         self.__ts = datetime.now().time()
         self.__subscription = every(timedelta(milliseconds=16.667), 'tick')
 
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (320, 64)
 
     def title(self):

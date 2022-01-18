@@ -1,9 +1,9 @@
-from pyiced import column, IcedApp, text
+from pyiced import column, IcedApp, Settings, text, WindowSettings
 
 
 class ColumnExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def title(self):

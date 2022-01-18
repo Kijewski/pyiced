@@ -5,11 +5,7 @@ macro_rules! init_mod {
         $( mod $module; )*
 
         #[allow(unused_imports)]
-        pub(crate) use {
-            crate::wrapped::{
-                $( $module :: { $($typ),* } ),*
-            }
-        };
+        pub(crate) use self::{ $( $module :: { $($typ),* } ),* };
 
         pub(crate) fn init_mod(py: Python, m: &PyModule) -> PyResult<()> {
             $( $module::init_mod(py, m)?; )*
@@ -25,6 +21,7 @@ init_mod! {
     fill_mode -> { WrappedFillMode },
     font -> { font_from_list, KNOWN_FONTS, NameAndData, WrappedFont },
     horizontal_alignment -> { WrappedHorizontalAlignment },
+    icon -> { WrappedIcon },
     image -> { WrappedImageHandle },
     instant -> { WrappedInstant },
     length -> { WrappedLength },

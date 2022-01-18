@@ -1,11 +1,14 @@
 from datetime import timedelta
 
-from pyiced import Align, container, every, IcedApp, Length, progress_bar
+from pyiced import (
+    Align, container, every, IcedApp, Length, progress_bar, Settings,
+    WindowSettings,
+)
 
 
 class ProgressBarExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

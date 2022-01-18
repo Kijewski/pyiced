@@ -2,7 +2,8 @@ from asyncio import open_connection
 from contextlib import closing
 
 from pyiced import (
-    Align, Color, container, ContainerStyle, Font, IcedApp, Length, text,
+    Align, Color, container, ContainerStyle, Font, IcedApp, Length,
+    Settings, text, WindowSettings,
 )
 
 
@@ -10,8 +11,8 @@ class AsyncMessageExample(IcedApp):
     def __init__(self):
         self.__font = None
 
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def title(self):

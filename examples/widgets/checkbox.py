@@ -1,12 +1,12 @@
 from pyiced import (
-    Align, checkbox, CheckboxStyle, CheckboxStyleSheet, Color, container,
-    IcedApp, Length,
+    Align, checkbox, CheckboxStyle, CheckboxStyleSheet, Color,
+    container, IcedApp, Length, Settings, WindowSettings,
 )
 
 
 class CheckboxExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

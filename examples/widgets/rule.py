@@ -1,12 +1,12 @@
 from pyiced import (
     Color, column, every, FillMode, IcedApp, Length, row, rule,
-    RuleStyleSheet, text,
+    RuleStyleSheet, Settings, text, WindowSettings,
 )
 
 
 class RuleExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def new(self):

@@ -1,9 +1,12 @@
-from pyiced import column, css_color, IcedApp, Length, radio, text
+from pyiced import (
+    column, css_color, IcedApp, Length, radio, Settings, text,
+    WindowSettings,
+)
 
 
 class RadioExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

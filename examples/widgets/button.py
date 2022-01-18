@@ -1,12 +1,13 @@
 from pyiced import (
     Align, button, ButtonState, ButtonStyle, ButtonStyleSheet, Color,
-    container, ContainerStyle, IcedApp, Length, text,
+    container, ContainerStyle, IcedApp, Length, Settings, text,
+    WindowSettings,
 )
 
 
 class ButtonExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

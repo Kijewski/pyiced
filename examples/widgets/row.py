@@ -1,9 +1,9 @@
-from pyiced import IcedApp, row, text
+from pyiced import IcedApp, row, Settings, text, WindowSettings
 
 
 class RowExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def title(self):

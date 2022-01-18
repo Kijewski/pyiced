@@ -12,7 +12,7 @@ use crate::async_tasks::vec_to_command;
 use crate::common::{debug_err, method_into_py, Message, ToNative};
 use crate::subscriptions::{ToSubscription, WrappedSubscription};
 use crate::widgets::WrappedWidgetBuilder;
-use crate::wrapped::{WrappedClipboard, WrappedColor, WrappedFont};
+use crate::wrapped::{WrappedClipboard, WrappedColor, WrappedFont, WrappedIcon};
 
 pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(run_iced, m)?)?;
@@ -315,14 +315,18 @@ pub(crate) fn run_iced(
         assign_py_to_obj!(py, settings_, settings, antialiasing);
 
         match settings.getattr("default_font") {
-            Ok(data) if !data.is_none() => match data.extract()? {
-                WrappedFont(Font::Default) => {},
-                WrappedFont(Font::External { bytes, .. }) => {
+            Ok(data) => match data.extract()? {
+                Some(WrappedFont(Font::Default)) => {},
+                Some(WrappedFont(Font::External { bytes, .. })) => {
                     settings_.default_font = Some(bytes);
                 },
+                None => {},
             },
-            Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
-            Ok(_) | Err(_) => {},
+            Err(err) => {
+                if !err.is_instance::<PyAttributeError>(py) {
+                    return Err(err);
+                }
+            },
         }
 
         match settings.getattr("window") {
@@ -334,7 +338,20 @@ pub(crate) fn run_iced(
                 assign_py_to_obj!(py, settings_.window, window, decorations);
                 assign_py_to_obj!(py, settings_.window, window, transparent);
                 assign_py_to_obj!(py, settings_.window, window, always_on_top);
-                // TODO: icon
+                assign_py_to_obj!(py, settings_.window, window, always_on_top);
+
+                match window.getattr("icon") {
+                    Ok(data) => {
+                        if let Some(WrappedIcon(icon)) = data.extract()? {
+                            settings_.window.icon = Some(icon)
+                        }
+                    },
+                    Err(err) => {
+                        if !err.is_instance::<PyAttributeError>(py) {
+                            return Err(err);
+                        }
+                    },
+                }
             },
             Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
             Ok(_) | Err(_) => {},

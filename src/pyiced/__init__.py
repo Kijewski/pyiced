@@ -20,6 +20,7 @@
 
 from abc import ABCMeta, abstractmethod
 from asyncio import get_event_loop, Queue as AsyncQueue, run as _run, run_coroutine_threadsafe
+from os.path import abspath, dirname, join
 from queue import Queue as SyncQueue
 from threading import Thread
 from typing import Any, Awaitable, Callable, Iterable, NoReturn, Optional, Tuple, Union
@@ -35,7 +36,7 @@ from pyiced._pyiced import (
     text_input, tooltip,
 
     # wrapped
-    Align, Clipboard, Color, FillMode, Font, HorizontalAlignment, ImageHandle,
+    Align, Clipboard, Color, FillMode, Font, HorizontalAlignment, Icon, ImageHandle,
     Instant, Length, Line, Message, Point, Rectangle, SliderHandle,
     SliderHandleShape, SvgHandle, TextInputCursor, TooltipPosition, VerticalAlignment,
 
@@ -63,7 +64,7 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'ImageHandle',
+    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'Icon', 'ImageHandle',
     'Instant', 'Length', 'Line', 'Message', 'Point', 'Rectangle', 'SliderHandle',
     'SliderHandleShape', 'SvgHandle', 'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
@@ -103,6 +104,8 @@ ProgressBarStyle = ProgressBarStyleSheet
 RuleStyle = RuleStyleSheet
 TooltipStyleSheet = ContainerStyle
 TooltipStyle = TooltipStyleSheet
+
+DefaultIcon = Icon(join(dirname(abspath(__file__)), 'logo.png'))
 
 
 class WindowSettings:
@@ -145,7 +148,10 @@ class WindowSettings:
     Whether the window will always be on top of other windows.
     '''
 
-    # TODO: pub icon: Option<Icon>,
+    icon: Optional[Icon] = DefaultIcon
+    '''
+    TODO
+    '''
 
 
 class Settings:

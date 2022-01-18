@@ -1,13 +1,14 @@
 from asyncio import sleep
 
 from pyiced import (
-    Align, container, IcedApp, Length, pick_list, PickListState, text,
+    Align, container, IcedApp, Length, pick_list, PickListState,
+    Settings, text, WindowSettings,
 )
 
 
 class PickListExample(IcedApp):
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def __init__(self):

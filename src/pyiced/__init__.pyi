@@ -14,7 +14,7 @@ __all__ = [
     'text_input', 'tooltip',
 
     # wrapped
-    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'ImageHandle',
+    'Align', 'Clipboard', 'Color', 'FillMode', 'Font', 'HorizontalAlignment', 'Icon', 'ImageHandle',
     'Instant', 'Length', 'Line', 'Message', 'Point', 'Rectangle', 'SliderHandle',
     'SliderHandleShape', 'SvgHandle', 'TextInputCursor', 'TooltipPosition', 'VerticalAlignment',
 
@@ -59,6 +59,9 @@ class WindowSettings(Protocol):
 
     always_on_top: bool
     '''Whether the window will always be on top of other windows.'''
+
+    icon: Optional[Icon]
+    '''Icon'''
 
 
 class Settings(Protocol):

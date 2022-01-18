@@ -1,5 +1,6 @@
 from pyiced import (
-    Align, container, Message, IcedApp, Length, Subscription, text,
+    Align, container, Message, IcedApp, Length, Settings, Subscription,
+    text, WindowSettings,
 )
 
 
@@ -8,8 +9,8 @@ class FullscreenExample(IcedApp):
         self.__fullscreen = False
         self.__should_exit = False
 
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def subscriptions(self):

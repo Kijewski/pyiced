@@ -26,6 +26,7 @@ futures-util = { version = "0.3", default-features = false, features = ["alloc"]
 iced = { version = "0.3", default-features = false, features = ["canvas", "debug", "image", "svg", "tokio"] }
 iced_native = { version = "0.4", default-features = false, features = ["debug"] }
 iced_wgpu = { version = "0.4", default-features = false, optional = true }
+image = { version = "0.23", default-features = false, features = ["ico"] }
 mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
 ouroboros = "0.14"
 parking_lot = { version = "0.11", features = ["arc_lock"] }
@@ -36,8 +37,7 @@ tokio = { version = "1", default-features = false, features = ["parking_lot", "s
 pyo3-build-config = "0.15"
 
 [features]
-default = ["wgpu", "fontdb-integration"]
-fontdb-integration = ["fontdb"]
+default = ["wgpu", "fontdb"]
 wgpu = ["iced_wgpu", "iced/wgpu"]
 
 [profile.release]

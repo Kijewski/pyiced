@@ -1,15 +1,18 @@
 from asyncio import open_connection
 from contextlib import closing
 
-from pyiced import Align, container, IcedApp, Length, svg, SvgHandle, text
+from pyiced import (
+    Align, container, IcedApp, Length, Settings, svg, SvgHandle, text,
+    WindowSettings,
+)
 
 
 class SvgExample(IcedApp):
     def __init__(self):
         self.__handle = None
 
-    class settings:
-        class window:
+    class settings(Settings):
+        class window(WindowSettings):
             size = (640, 320)
 
     def title(self):

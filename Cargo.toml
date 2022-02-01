@@ -26,7 +26,7 @@ futures-util = { version = "0.3", default-features = false, features = ["alloc"]
 iced = { version = "0.3", default-features = false, features = ["canvas", "debug", "image", "svg", "tokio"] }
 iced_native = { version = "0.4", default-features = false, features = ["debug"] }
 iced_wgpu = { version = "0.4", default-features = false, optional = true }
-image = { version = "0.23", default-features = false, features = ["ico"] }
+image = { version = "0.24", default-features = false, features = ["ico"] }
 mimalloc = { version = "0.1", features = ["secure", "local_dynamic_tls"] }
 ouroboros = "0.14"
 parking_lot = { version = "0.11", features = ["arc_lock"] }

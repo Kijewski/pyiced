@@ -47,13 +47,13 @@ pub(crate) trait ToNative {
 
 pub(crate) fn debug_str(value: &dyn Debug) -> PyResult<String> {
     let mut result = String::new();
-    let err = match write!(&mut result, "{:#?}", value) {
+    let err = match write!(result, "{:#?}", value) {
         Ok(()) => return Ok(result),
         Err(err) => err,
     };
 
     let mut result = String::new();
-    match write!(&mut result, "{:#?}", err) {
+    match write!(result, "{:#?}", err) {
         Ok(()) => Err(PyException::new_err(result)),
         Err(err) => {
             dbg!(err);

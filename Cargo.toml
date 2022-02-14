@@ -21,7 +21,7 @@ name = "_pyiced"
 crate-type = ["cdylib"]
 
 [dependencies]
-fontdb = { version = "0.7", default-features = false, optional = true, features = ["fs", "memmap"] }
+fontdb = { version = "0.8", default-features = false, optional = true, features = ["fs", "memmap"] }
 futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
 iced = { version = "0.3", default-features = false, features = ["canvas", "debug", "image", "svg", "tokio"] }
 iced_native = { version = "0.4", default-features = false, features = ["debug"] }

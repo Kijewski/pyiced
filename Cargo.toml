@@ -25,7 +25,7 @@ iced = { version = "=0.3.0", default-features = false, features = ["canvas", "de
 iced_native = { version = "=0.4.0", default-features = false, features = ["debug"] }
 iced_wgpu = { version = "=0.4.0", default-features = false, optional = true }
 
-fontdb = { version = "0.8.0", default-features = false, optional = true, features = ["fs", "memmap"] }
+fontdb = { version = "0.9.1", default-features = false, optional = true, features = ["fs", "memmap"] }
 futures-util = { version = "0.3.21", default-features = false, features = ["alloc"] }
 image = { version = "0.24.0", default-features = false, features = ["ico"] }
 mimalloc = { version = "0.1.28", features = ["secure", "local_dynamic_tls"] }

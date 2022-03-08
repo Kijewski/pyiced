@@ -7,7 +7,7 @@ use parking_lot::{const_mutex, Mutex};
 use pyo3::exceptions::{PyNotImplementedError, PyValueError};
 use pyo3::ffi::{PyBUF_FORMAT, PyBUF_ND, PyBUF_STRIDES, PyBUF_WRITABLE, Py_buffer};
 use pyo3::prelude::*;
-use pyo3::{AsPyPointer, PyBufferProtocol};
+use pyo3::AsPyPointer;
 
 use crate::common::debug_str;
 use crate::format_to_cow;
@@ -145,11 +145,8 @@ impl WrappedFont {
             },
         }
     }
-}
 
-#[pyproto]
-impl PyBufferProtocol for WrappedFont {
-    fn bf_getbuffer(slf: PyRefMut<Self>, view: *mut Py_buffer, flags: c_int) -> PyResult<()> {
+    unsafe fn __getbuffer__(slf: PyRefMut<Self>, view: *mut Py_buffer, flags: c_int) -> PyResult<()> {
         if (flags & PyBUF_WRITABLE) == PyBUF_WRITABLE {
             return Err(PyValueError::new_err("Font is not writable."));
         }
@@ -163,7 +160,7 @@ impl PyBufferProtocol for WrappedFont {
             Font::External { bytes, .. } => bytes,
         };
 
-        let view = unsafe { &mut *view };
+        let view = &mut *view;
         view.obj = slf.as_ptr();
         view.buf = bytes.as_ptr() as _;
         view.len = bytes.len() as _;
@@ -188,8 +185,8 @@ impl PyBufferProtocol for WrappedFont {
         Ok(())
     }
 
-    fn bf_releasebuffer(_slf: PyRefMut<Self>, view: *mut Py_buffer) -> PyResult<()> {
-        let view = unsafe { &mut *view };
+    unsafe fn __releasebuffer__(_slf: PyRefMut<Self>, view: *mut Py_buffer) -> PyResult<()> {
+        let view = &mut *view;
         view.obj = null_mut();
         view.buf = null_mut();
         view.len = 0;

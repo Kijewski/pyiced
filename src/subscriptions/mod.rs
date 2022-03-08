@@ -1,5 +1,4 @@
 use pyo3::prelude::*;
-use pyo3::PyGCProtocol;
 
 use crate::app::Interop;
 use crate::common::{GCProtocol, Message};
@@ -50,8 +49,8 @@ macro_rules! init_mod {
             }
         )*
 
-        #[pyproto]
-        impl PyGCProtocol for WrappedSubscription {
+        #[pymethods]
+        impl WrappedSubscription {
             fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
                 match &self.0 {
                     $( Subscription::$typ(value) => value.traverse(&visit) ),*

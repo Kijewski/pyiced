@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
-use pyo3::{PyGCProtocol, PyTraverseError, PyVisit};
+use pyo3::{PyTraverseError, PyVisit};
 
 use crate::common::{debug_str, EitherPy, Message};
 use crate::format_to_py;
@@ -16,23 +16,9 @@ pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
 /// A message generated through user interaction.
 ///
 /// Messages get passed to to :meth:`~pyiced.IcedApp.update()`.
-#[pyclass(name = "Message", module = "pyiced", gc)]
+#[pyclass(name = "Message", module = "pyiced")]
 #[derive(Debug, Default, Clone)]
 struct WrappedMessage(pub Message);
-
-#[pyproto]
-impl PyGCProtocol for WrappedMessage {
-    fn __traverse__(&self, visit: PyVisit) -> Result<(), PyTraverseError> {
-        if let Message::Python(obj) = &self.0 {
-            visit.call(obj)?;
-        }
-        Ok(())
-    }
-
-    fn __clear__(&mut self) {
-        *self = WrappedMessage(Message::None);
-    }
-}
 
 impl IntoPy<Py<PyAny>> for Message {
     fn into_py(self, py: Python<'_>) -> Py<PyAny> {
@@ -448,6 +434,17 @@ impl WrappedMessage {
                 )),
             }
         })
+    }
+
+    fn __traverse__(&self, visit: PyVisit) -> Result<(), PyTraverseError> {
+        if let Message::Python(obj) = &self.0 {
+            visit.call(obj)?;
+        }
+        Ok(())
+    }
+
+    fn __clear__(&mut self) {
+        *self = WrappedMessage(Message::None);
     }
 }
 

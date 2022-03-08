@@ -144,8 +144,8 @@ where
                     };
                     let result = match tuple {
                         (Some(err), _) => {
-                            let err = PyErr::from_instance(err.as_ref(py));
-                            if !err.is_instance::<PyStopAsyncIteration>(py) {
+                            let err = PyErr::from_value(err.as_ref(py));
+                            if !err.is_instance_of::<PyStopAsyncIteration>(py) {
                                 err.print(py);
                             }
                             return None;

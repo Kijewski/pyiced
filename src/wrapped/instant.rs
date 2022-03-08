@@ -3,7 +3,6 @@ use std::time::{Duration, Instant};
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::PyNumberProtocol;
 
 use crate::common::{debug_str, EitherPy};
 
@@ -38,11 +37,8 @@ impl WrappedInstant {
     fn __str__(&self) -> PyResult<String> {
         debug_str(&self.0)
     }
-}
 
-#[pyproto]
-impl PyNumberProtocol for WrappedInstant {
-    fn __add__(lhs: WrappedInstant, rhs: EitherPy<f64, Py<PyAny>>) -> PyResult<WrappedInstant> {
+    fn __add__(&self, rhs: EitherPy<f64, Py<PyAny>>) -> PyResult<WrappedInstant> {
         let secs = match rhs {
             EitherPy::Left(secs) => secs,
             EitherPy::Right(duration) => Python::with_gil(|py| -> PyResult<f64> {
@@ -53,7 +49,7 @@ impl PyNumberProtocol for WrappedInstant {
             Ok(duration) => duration,
             Err(_) => return Err(PyErr::new::<PyValueError, _>("Illegal duration")),
         };
-        let result = match lhs.0.checked_add(duration) {
+        let result = match self.0.checked_add(duration) {
             Some(result) => result,
             None => return Err(PyErr::new::<PyValueError, _>("Duration too big")),
         };
@@ -61,7 +57,7 @@ impl PyNumberProtocol for WrappedInstant {
     }
 
     fn __sub__(
-        lhs: WrappedInstant,
+        &self,
         rhs: EitherPy<f64, WrappedInstant>,
     ) -> PyResult<EitherPy<WrappedInstant, f64>> {
         match rhs {
@@ -70,7 +66,7 @@ impl PyNumberProtocol for WrappedInstant {
                     Ok(duration) => duration,
                     Err(_) => return Err(PyErr::new::<PyValueError, _>("Illegal duration")),
                 };
-                let instant = match lhs.0.checked_sub(duration) {
+                let instant = match self.0.checked_sub(duration) {
                     Some(instant) => instant,
                     None => return Err(PyErr::new::<PyValueError, _>("Duration too big")),
                 };
@@ -78,7 +74,7 @@ impl PyNumberProtocol for WrappedInstant {
             },
 
             EitherPy::Right(rhs) => {
-                let duration = match lhs.0.checked_duration_since(rhs.0) {
+                let duration = match self.0.checked_duration_since(rhs.0) {
                     Some(duration) => duration,
                     None => {
                         return Err(PyErr::new::<PyValueError, _>(

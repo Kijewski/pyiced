@@ -1,6 +1,5 @@
 use iced::Element;
 use pyo3::prelude::*;
-use pyo3::PyGCProtocol;
 
 use crate::common::{debug_str, GCProtocol, Message, ToNative};
 
@@ -103,8 +102,8 @@ impl Default for WidgetBuilder {
     }
 }
 
-#[pyproto]
-impl PyGCProtocol for WrappedWidgetBuilder {
+#[pymethods]
+impl WrappedWidgetBuilder {
     fn __traverse__(&self, visit: pyo3::PyVisit) -> Result<(), pyo3::PyTraverseError> {
         self.0.traverse(&visit)?;
         Ok(())

@@ -108,7 +108,7 @@ fn future_to_command(future: Pin<Box<dyn Future<Output = Py<PyAny>> + Send>>) ->
             };
             match result {
                 (Some(err), _) => {
-                    PyErr::from_instance(err).print(py);
+                    PyErr::from_value(err).print(py);
                     Message::None
                 },
                 (None, MessageOrDatum(result)) => result,

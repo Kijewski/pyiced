@@ -255,7 +255,7 @@ macro_rules! assign_py_to_obj {
     ($py:expr, $dest:expr, $src:expr, $name:ident $(,)?) => {
         match $src.getattr(stringify!($name)) {
             Ok(data) if !data.is_none() => $dest.$name = data.extract()?,
-            Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
+            Err(err) if !err.is_instance_of::<PyAttributeError>($py) => return Err(err),
             Ok(_) | Err(_) => {},
         }
     };
@@ -263,7 +263,7 @@ macro_rules! assign_py_to_obj {
     ($py:expr, $dest:expr, $src:expr, $name:ident, $func:expr $(,)?) => {
         match $src.getattr(stringify!($name)) {
             Ok(data) if !data.is_none() => $dest.$name = $func(data.extract()?),
-            Err(err) if !err.is_instance::<PyAttributeError>($py) => return Err(err),
+            Err(err) if !err.is_instance_of::<PyAttributeError>($py) => return Err(err),
             Ok(_) | Err(_) => {},
         }
     };
@@ -323,7 +323,7 @@ pub(crate) fn run_iced(
                 None => {},
             },
             Err(err) => {
-                if !err.is_instance::<PyAttributeError>(py) {
+                if !err.is_instance_of::<PyAttributeError>(py) {
                     return Err(err);
                 }
             },
@@ -347,13 +347,13 @@ pub(crate) fn run_iced(
                         }
                     },
                     Err(err) => {
-                        if !err.is_instance::<PyAttributeError>(py) {
+                        if !err.is_instance_of::<PyAttributeError>(py) {
                             return Err(err);
                         }
                     },
                 }
             },
-            Err(err) if !err.is_instance::<PyAttributeError>(py) => return Err(err),
+            Err(err) if !err.is_instance_of::<PyAttributeError>(py) => return Err(err),
             Ok(_) | Err(_) => {},
         }
     }

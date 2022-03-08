@@ -1,6 +1,10 @@
 PyIced
 ======
 
+|Python|
+|OS|
+|License|
+
 Python bindings for |iced|_.
 
 Iced is a cross-platform GUI library focused on simplicity and type-safety. Inspired by Elm.
@@ -66,3 +70,7 @@ Table of Contents
 
 .. _iced: https://github.com/iced-rs/iced
 .. |iced| replace:: **Iced**
+
+.. |Python| image:: https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9%20|%203.10-84A6C7?logo=python&logoColor=efefef
+.. |OS| image:: https://img.shields.io/badge/os-windows%20|%20linux-84A6C7?logo=windowsxp&logoColor=efefef
+.. |License| image:: https://img.shields.io/badge/license-Apache--2.0-84A6C7?logo=apache&logoColor=efefef

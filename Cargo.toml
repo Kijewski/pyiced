@@ -1,20 +1,20 @@
 [package]
 name = "_pyiced"
 edition = "2021"
-license = "MIT"
+license = "Apache-2.0"
 authors = ["René Kijewski <pypi.org@k6i.de>"]
 homepage = "https://github.com/Kijewski/pyiced"
 
 # KEEP SYNCHRONOUS TO SETUP.CFG (version)
 # KEEP SYNCHRONOUS TO REQUIREMENTS-READTHEDOCS.TXT (pyiced)
-# KEEP SYNCHRONOUS TO IMAGE LINKS IN README.MD (raw.githubusercontent.com)
+# KEEP SYNCHRONOUS TO LINKS IN README.MD (raw.githubusercontent.com)
 # KEEP SYNCHRONOUS TO ICED {major.minor} WITH INCREASING PATCH LEVEL
 # Rust uses semver (https://semver.org/).
 # Python uses PEP 440 (https://www.python.org/dev/peps/pep-0440/).
 # Normal releases are exactly the same.
 # Pre-releases are X.Y.Z-aN in semver, and X.Y.ZaN in PEP 440.
 # Post-releases are X.Y.Z+N in semver, and X.Y.Z.postN in PEP 440.
-version = "0.3.0-a6"
+version = "0.3.0-a7"
 
 [lib]
 name = "_pyiced"

@@ -10,7 +10,7 @@ checksum = "fe438c63458706e03479442743baae6c88256498e6431708f6dfc520a26515d3"
 
 [[package]]
 name = "_pyiced"
-version = "0.3.0-a6"
+version = "0.3.0-a7"
 dependencies = [
  "fontdb 0.9.1",
  "futures-util",

@@ -1,9 +1,12 @@
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Kijewski/pyiced/CI)](https://github.com/Kijewski/pyiced/actions/workflows/ci.yml)
-[![Documentation Status](https://readthedocs.org/projects/pyiced/badge/?version=latest)](https://pyiced.readthedocs.io/)
-[![PyPI](https://img.shields.io/pypi/v/pyiced)](https://pypi.org/project/pyiced/)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyiced?color=informational)
-![OS - Windows | Linux](https://img.shields.io/badge/os-windows%20|%20linux-informational.svg)
-[![License](https://img.shields.io/pypi/l/pyiced?color=informational)](/LICENSES/MIT.txt)
+PyIced
+======
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Kijewski/pyiced/CI?logo=github&logoColor=efefef)](https://github.com/Kijewski/pyiced/actions/workflows/ci.yml)
+[![Documentation Status](https://img.shields.io/readthedocs/pyiced?logo=readthedocs&logoColor=efefef)](https://pyiced.readthedocs.io/)
+[![PyPI](https://img.shields.io/pypi/v/pyiced?logo=pypi&logoColor=efefef)](https://pypi.org/project/pyiced/)
+![PyPI - Python Version](https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9%20|%203.10-informational?logo=python&logoColor=efefef)
+![OS - Windows | Linux](https://img.shields.io/badge/os-windows%20|%20linux-informational?logo=windowsxp&logoColor=efefef)
+[![License](https://img.shields.io/badge/license-Apache--2.0-informational?logo=apache&logoColor=efefef)](/LICENSE.md)
 
 Python bindings for **[Iced](https://github.com/iced-rs/iced)**.
 
@@ -33,7 +36,7 @@ To install from source you need to have a recent version of [**Rust**](https://w
 Quick Example
 -------------
 
-[![](https://raw.githubusercontent.com/Kijewski/pyiced/v0.3.0a6/examples/counter.png "Basic example: A counter.")](https://github.com/Kijewski/pyiced/blob/v0.3.0a6/examples/counter.py)
+[![](https://raw.githubusercontent.com/Kijewski/pyiced/v0.3.0a7/examples/counter.png "Basic example: A counter.")](https://github.com/Kijewski/pyiced/blob/v0.3.0a6/examples/counter.py)
 
 ```py
 from pyiced import (

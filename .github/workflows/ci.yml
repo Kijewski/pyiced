@@ -38,7 +38,7 @@ jobs:
           components: clippy
 
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ runner.os }}-clippy-${{ hashFiles('Cargo.lock') }}
           restore-keys: ${{ runner.os }}-clippy-
@@ -64,7 +64,7 @@ jobs:
           override: true
 
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ runner.os }}-check-${{ hashFiles('Cargo.lock') }}
           restore-keys: ${{ runner.os }}-check-
@@ -95,7 +95,7 @@ jobs:
           python-version: '3.10'
 
       - name: Cache Rust
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ runner.os }}-install-cargo-${{ hashFiles('Cargo.lock') }}
           restore-keys: ${{ runner.os }}-install-cargo-
@@ -106,7 +106,7 @@ jobs:
             target/
 
       - name: Cache Python
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           key: ${{ runner.os }}-install-pip-${{ hashFiles('requirements-dev.txt') }}
           restore-keys: ${{ runner.os }}-install-pip-

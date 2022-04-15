@@ -94,8 +94,7 @@ macro_rules! make_with_state {
             use ouroboros::self_referencing;
             use parking_lot::lock_api::ArcRwLockWriteGuard;
             use parking_lot::{RawRwLock, RwLock};
-
-            use crate::common::{empty_space, Message};
+            use $crate::common::{empty_space, Message};
 
             #[self_referencing]
             struct WidgetWithState {
@@ -223,8 +222,7 @@ macro_rules! wrap_rust_enum {
         }
     ) => {
         use pyo3::prelude::*;
-
-        use crate::common::debug_str;
+        use $crate::common::debug_str;
 
         pub(crate) fn init_mod(_py: Python, m: &PyModule) -> PyResult<()> {
             m.add_class::<$WrappedName>()?;
@@ -292,7 +290,7 @@ macro_rules! extract_multiple {
             };
             for (key, value) in kwargs.iter() {
                 let key = key.str()?;
-                let value = crate::extractor::Extractor(value);
+                let value = $crate::extractor::Extractor(value);
                 match key.to_str()? {
                     $(
                         stringify!($name) => result.0.$name = value.try_into()?,

@@ -63,7 +63,7 @@ jobs:
           CIBW_TEST_COMMAND: "{project}/tests/can_load.py"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: "${{ matrix.version }}-${{ matrix.build }}-${{ matrix.tag }}"

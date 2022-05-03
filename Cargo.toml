@@ -22,7 +22,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 iced = { version = "=0.3.0", default-features = false, features = ["canvas", "debug", "image", "svg", "tokio"] }
-iced_native = { version = "=0.4.0", default-features = false, features = ["debug"] }
+iced_native = { version = "=0.5.0", default-features = false, features = ["debug"] }
 iced_wgpu = { version = "=0.4.0", default-features = false, optional = true }
 
 fontdb = { version = "0.9.1", default-features = false, optional = true, features = ["fs", "memmap"] }

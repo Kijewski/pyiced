@@ -25,17 +25,17 @@ iced = { version = "=0.3.0", default-features = false, features = ["canvas", "de
 iced_native = { version = "=0.4.0", default-features = false, features = ["debug"] }
 iced_wgpu = { version = "=0.4.0", default-features = false, optional = true }
 
-fontdb = { version = "0.9.1", default-features = false, optional = true, features = ["fs", "memmap"] }
-futures-util = { version = "0.3.21", default-features = false, features = ["alloc"] }
-image = { version = "0.24.1", default-features = false, features = ["ico"] }
-mimalloc = { version = "0.1.28", features = ["secure", "local_dynamic_tls"] }
-ouroboros = "0.15.0"
-parking_lot = { version = "0.12.0", features = ["arc_lock"] }
-pyo3 = { version = "0.16.4", default-features = false, features = ["extension-module", "macros", "multiple-pymethods"] }
-tokio = { version = "1.17.0", default-features = false, features = ["parking_lot", "sync"] }
+fontdb = { version = "=0.9", default-features = false, optional = true, features = ["fs", "memmap"] }
+futures-util = { version = "=0.3", default-features = false, features = ["alloc"] }
+image = { version = "=0.24", default-features = false, features = ["ico"] }
+mimalloc = { version = "=0.1", features = ["secure", "local_dynamic_tls"] }
+ouroboros = "=0.15"
+parking_lot = { version = "=0.12", features = ["arc_lock"] }
+pyo3 = { version = "=0.16", default-features = false, features = ["extension-module", "macros", "multiple-pymethods"] }
+tokio = { version = "=1", default-features = false, features = ["parking_lot", "sync"] }
 
 [build-dependencies]
-pyo3-build-config = "0.16.4"
+pyo3-build-config = "=0.16"
 
 [features]
 default = ["wgpu", "fontdb"]

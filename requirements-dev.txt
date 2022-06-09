@@ -9,5 +9,5 @@ wheel
 # keep synchronous to requirements-readthedocs.txt
 cloud-sptheme == 1.*
 myst-parser == 0.17.*
-sphinx == 4.*
+sphinx == 5.*
 sphinx_autodoc_typehints == 1.*

@@ -4,5 +4,5 @@ pyiced == 0.3.0a7
 # keep synchronous to requirements-dev.txt
 cloud-sptheme == 1.*
 myst-parser == 0.17.*
-sphinx == 4.*
+sphinx == 6.*
 sphinx_autodoc_typehints == 1.*
